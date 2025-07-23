@@ -4,7 +4,7 @@
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Registrate</title>
+        <title>Regístrate</title>
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
         <style>
             body {
@@ -12,7 +12,7 @@
                 justify-content: center;
                 align-items: center;
                 min-height: 100vh;
-                background-color: #18042c;
+                background-color: #3498DB;
                 font-family: "Verdana", sans-serif;
             }
             .register-container {
@@ -21,10 +21,10 @@
                 border-radius: 10px;
                 box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
                 overflow: hidden;
-                background-color: #ffffff;
+                background: linear-gradient(135deg, #f8f8f8 0%, #e0f2f7 100%);
             }
             .logo-header {
-                background-color: rgba(24, 4, 44, 0.8);
+                background-color: rgba(93, 173, 226, 0.9);
                 padding: 30px 20px;
                 text-align: center;
                 position: relative;
@@ -46,15 +46,13 @@
             .logo-placeholder {
                 width: 120px;
                 height: 120px;
-                background-color: rgba(255, 255, 255, 0.2);
+  
+                background-color: #333333;
                 border-radius: 50%;
                 margin: 0 auto 15px auto;
                 display: flex;
                 justify-content: center;
                 align-items: center;
-                font-size: 2rem;
-                font-weight: bold;
-                color: rgba(255, 255, 255, 0.7);
                 position: relative;
                 z-index: 1;
                 backdrop-filter: blur(10px);
@@ -65,11 +63,13 @@
                 padding: 40px;
             }
             .form-content h2 {
+                color: #3498DB;
                 font-family: "Papyrus", fantasy;
             }
             .form-label {
                 font-weight: 500;
                 margin-bottom: 8px;
+                color: #717D7E;
             }
             .form-control {
                 border-radius: 6px;
@@ -77,17 +77,22 @@
                 transition: border-color 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
             }
             .form-control:focus {
-                border-color: #80bdff;
-                box-shadow: 0 0 0 0.25rem rgba(0, 123, 255, 0.25);
+                border-color: #3498DB;
+                box-shadow: 0 0 0 0.25rem rgba(52, 152, 219, 0.25);
                 outline: none;
             }
             .btn {
                 padding: 12px 20px;
                 font-size: 1.1rem;
                 border-radius: 6px;
+                background-color: #3498DB;
+                border-color: #3498DB;
+                color: #ffffff;
                 transition: background-color 0.3s ease-in-out, transform 0.2s ease-in-out;
             }
             .btn:hover {
+                background-color: #2874A6 !important;
+                border-color: #2874A6 !important;
                 transform: translateY(-2px);
                 box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
             }
@@ -95,22 +100,32 @@
                 transform: translateY(0);
                 box-shadow: none;
             }
-            .text-center.mt-3 a {
+            .btn-success {
+                background-color: #3498DB !important;
+                border-color: #3498DB !important;
+            }
+            .btn-success:hover {
+                background-color: #2874A6 !important;
+                border-color: #2874A6 !important;
+            }
+            .text-center.mt-4 a {
                 text-decoration: none;
                 font-weight: 500;
+                color: #3498DB;
                 transition: color 0.3s ease-in-out;
             }
-            .text-center.mt-3 a:hover {
+            .text-center.mt-4 a:hover {
+                color: #717D7E;
                 text-decoration: underline;
                 -webkit-font-smoothing: antialiased;
             }
         </style>
     </head>
-    <body style="background-color: #18042c;">
+    <body style="background-color: #3498DB;">
         <div class="register-container">
             <div class="logo-header">
                 <div class="logo-placeholder">
-                    Logo
+                    <img src="image/Logo.png" alt="Logo de Hyprdesk" class="img-fluid" style="max-width: 120px; height: auto; display: block; margin: 0 auto; position: relative; z-index: 1;"/>
                 </div>
                 <h3 class="mt-3" style="position: relative; z-index: 1;">Bienvenido a Hyprdesk</h3>
             </div>
@@ -128,28 +143,28 @@
                         </div>
                     </div>
                     <div class="mb-3">
-                        <label for="email" class="form-label">Correo Electronico</label>
+                        <label for="email" class="form-label">Correo Electrónico</label>
                         <input type="email" class="form-control" id="email" name="email" required>
                     </div>
                     <div class="mb-3">
-                        <label for="telefono" class="form-label">Telefono</label>
+                        <label for="telefono" class="form-label">Teléfono</label>
                         <input type="tel" class="form-control" id="telefono" name="telefono" required>
                     </div>
                     <div class="mb-3">
-                        <label for="direccionUsuario" class="form-label">Direccion</label>
+                        <label for="direccionUsuario" class="form-label">Dirección</label>
                         <input type="text" class="form-control" id="direccionUsuario" name="direccionUsuario" required>
                     </div>
                     <div class="mb-3">
-                        <label for="contrasena" class="form-label">Contrasena</label>
+                        <label for="contrasena" class="form-label">Contraseña</label>
                         <input type="password" class="form-control" id="contrasena" name="contrasena" required>
                     </div>
                     <div class="mb-4">
-                        <label for="confirmarContrasena" class="form-label">Confirmar Contrasena</label>
+                        <label for="confirmarContrasena" class="form-label">Confirmar Contraseña</label>
                         <input type="password" class="form-control" id="confirmarContrasena" required>
                     </div>
                     <button type="submit" class="btn btn-success w-100 mt-3">Registrarse</button>
                     <p class="text-center mt-4">
-                        Ya tienes una cuenta? <a href="Login.jsp">Inicia Sesion aqui</a>
+                        ¿Ya tienes una cuenta? <a href="Login.jsp">Inicia Sesión aquí</a>
                     </p>
                 </form>
             </div>
