@@ -1,10 +1,10 @@
-<%@page contentType="text/html" pageEncoding="windows-1252"%>
+<%@page contentType="text/html" pageEncoding="UTF-8"%> 
 <!DOCTYPE html>
 <html lang="es">
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Reg�strate</title>
+        <title>Regístrate</title>
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
         <style>
             body {
@@ -46,7 +46,7 @@
             .logo-placeholder {
                 width: 120px;
                 height: 120px;
-  
+
                 background-color: #333333;
                 border-radius: 50%;
                 margin: 0 auto 15px auto;
@@ -122,6 +122,19 @@
         </style>
     </head>
     <body style="background-color: #3498DB;">
+
+        <%
+           
+            String confirmacion = request.getParameter("confirmacion");
+            if ("guardado".equals(confirmacion)) {
+        %>
+        <div class="alert alert-success" role="alert">
+            ¡Registro exitoso! Ahora puedes iniciar sesión.
+        </div>
+        <%
+            }
+        %>
+
         <div class="register-container">
             <div class="logo-header">
                 <div class="logo-placeholder">
@@ -131,7 +144,7 @@
             </div>
             <div class="form-content">
                 <h2 class="text-center mb-5 fw-bold">Crear una Cuenta</h2>
-                <form>
+                <form id="formulario" action="guardarUsuario" method="POST"> 
                     <div class="row mb-3">
                         <div class="col-md-6">
                             <label for="nombreUsuario" class="form-label">Nombre</label>
@@ -143,28 +156,28 @@
                         </div>
                     </div>
                     <div class="mb-3">
-                        <label for="email" class="form-label">Correo Electr�nico</label>
+                        <label for="email" class="form-label">Correo Electrónico</label>
                         <input type="email" class="form-control" id="email" name="email" required>
                     </div>
                     <div class="mb-3">
-                        <label for="telefono" class="form-label">Tel�fono</label>
+                        <label for="telefono" class="form-label">Teléfono</label>
                         <input type="tel" class="form-control" id="telefono" name="telefono" required>
                     </div>
                     <div class="mb-3">
-                        <label for="direccionUsuario" class="form-label">Direcci�n</label>
+                        <label for="direccionUsuario" class="form-label">Dirección</label>
                         <input type="text" class="form-control" id="direccionUsuario" name="direccionUsuario" required>
                     </div>
                     <div class="mb-3">
-                        <label for="contrasena" class="form-label">Contrase�a</label>
+                        <label for="contrasena" class="form-label">Contraseña</label>
                         <input type="password" class="form-control" id="contrasena" name="contrasena" required>
                     </div>
                     <div class="mb-4">
-                        <label for="confirmarContrasena" class="form-label">Confirmar Contrase�a</label>
-                        <input type="password" class="form-control" id="confirmarContrasena" required>
+                        <label for="confirmarContrasena" class="form-label">Confirmar Contraseña</label>
+                        <input type="password" class="form-control" id="confirmarContrasena" oninput="this.setCustomValidity(this.value !== contrasena.value ? 'Las contraseñas no coinciden' : '')" required> <%-- **Validación de contraseña añadida** --%>
                     </div>
                     <button type="submit" class="btn btn-success w-100 mt-3">Registrarse</button>
                     <p class="text-center mt-4">
-                        �Ya tienes una cuenta? <a href="Login.jsp">Inicia Sesi�n aqu�</a>
+                        ¿Ya tienes una cuenta? <a href="login.jsp">Inicia Sesión aquí</a>
                     </p>
                 </form>
             </div>
