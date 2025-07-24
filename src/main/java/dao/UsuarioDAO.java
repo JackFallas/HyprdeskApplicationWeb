@@ -22,7 +22,34 @@ public class UsuarioDAO {
         }
     }
     
-    public List<Usuarios> listarUsuarios(){
+    public Usuarios buscarPorEmail(String email) {
+        EntityManager en = enti.createEntityManager();
+        Usuarios usuario = null;
+        try {
+            TypedQuery<Usuarios> query = en.createQuery("SELECT u FROM Usuarios u WHERE u.email = :email", Usuarios.class);
+            query.setParameter("email", email);
+            usuario = query.getSingleResult(); 
+        } catch (NoResultException e) {
+            return null;
+        } catch (Exception e) {
+            System.err.println("Error al buscar usuario por email: " + e.getMessage());
+        } finally {
+            if (en != null && en.isOpen()) {
+                en.close();
+            }
+        }
+        return usuario;
+    }
+    
+    public Usuarios validarCredenciales(String email, String contraseña) {
+        Usuarios usuario = buscarPorEmail(email);
+        if (usuario != null && usuario.getContrasena().equals(contraseña)) {
+            return usuario; 
+        }
+        return null; 
+    }
+    
+   public List<Usuarios> listarUsuarios(){
         return null;
     }
     
