@@ -1,9 +1,3 @@
-<%-- 
-    Document   : login
-    Created on : 23/07/2025, 19:24:32
-    Author     : 
---%>
-
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <!doctype html>
 <html lang="es">
@@ -11,68 +5,146 @@
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <title>Iniciar Sesión</title>
-        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-LN+7fdVzj6u52u30Kp6M/trliBMCMKTyK833zpbD+pXdCLuTusPj697FH4R/5mcr" crossorigin="anonymous">
+        <link href="Css/bootstrap.min.css" rel="stylesheet">
         <style>
             body {
-                background-color: #f0f2f5;
+                background-color: #3498DB;
                 display: flex;
                 justify-content: center;
                 align-items: center;
                 min-height: 100vh;
                 margin: 0;
+                font-family: "Verdana", sans-serif;
             }
             .login-container {
-                background-color: #ffffff;
-                padding: 40px;
-                border-radius: 8px;
-                box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+                padding: 0;
+                border-radius: 10px;
+                box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
                 width: 100%;
-                max-width: 400px;
+                max-width: 450px;
+                overflow: hidden;
+                background: linear-gradient(135deg, #f8f8f8 0%, #e0f2f7 100%);
             }
-            .login-container h2 {
-                margin-bottom: 30px;
-                color: #333;
+            .logo-header {
+                background-color: rgba(93, 173, 226, 0.9);
+                padding: 30px 20px;
                 text-align: center;
+                position: relative;
+                color: #ffffff;
+                font-family: "Papyrus", fantasy;
+            }
+            .logo-header::before {
+                content: '';
+                position: absolute;
+                top: 0;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                background-size: cover;
+                background-position: center;
+                filter: blur(8px);
+                z-index: 0;
+            }
+            .logo-placeholder {
+                width: 120px;
+                height: 120px;
+                background-color: #333333;
+                border-radius: 50%;
+                margin: 0 auto 15px auto;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                position: relative;
+                z-index: 1;
+                backdrop-filter: blur(10px);
+                -webkit-backdrop-filter: blur(10px);
+                border: 1px solid rgba(255, 255, 255, 0.3);
+            }
+            .form-content {
+                padding: 40px;
+            }
+            .form-content h2 {
+                margin-bottom: 30px;
+                color: #3498DB;
+                text-align: center;
+                font-family: "Papyrus", fantasy;
             }
             .form-label {
                 font-weight: 500;
+                margin-bottom: 8px;
+                color: #717D7E;
+            }
+            .form-control {
+                border-radius: 6px;
+                padding: 10px 15px;
+                transition: border-color 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+            }
+            .form-control:focus {
+                border-color: #3498DB;
+                box-shadow: 0 0 0 0.25rem rgba(52, 152, 219, 0.25);
+                outline: none;
             }
             .btn-primary {
-                background-color: #007bff;
-                border-color: #007bff;
+                background-color: #3498DB;
+                border-color: #3498DB;
                 font-weight: 600;
+                padding: 12px 20px;
+                font-size: 1.1rem;
+                border-radius: 6px;
+                color: #ffffff;
+                transition: background-color 0.3s ease-in-out, transform 0.2s ease-in-out, box-shadow 0.3s ease-in-out;
             }
             .btn-primary:hover {
-                background-color: #0056b3;
-                border-color: #0056b3;
+                background-color: #2874A6;
+                border-color: #2874A6;
+                transform: translateY(-2px);
+                box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+            }
+            .btn-primary:active {
+                transform: translateY(0);
+                box-shadow: none;
             }
             .text-center a {
-                color: #007bff;
+                color: #3498DB;
                 text-decoration: none;
+                font-weight: 500;
+                transition: color 0.3s ease-in-out;
             }
             .text-center a:hover {
+                color: #717D7E;
                 text-decoration: underline;
+                -webkit-font-smoothing: antialiased;
+            }
+            hr {
+                border-top: 1px solid rgba(0, 0, 0, 0.1);
             }
         </style>
     </head>
     <body>
         <div class="login-container">
-            <h2>Iniciar Sesión</h2>
-            <form action="loginController" method="post"> 
-                <div class="mb-3">
-                    <label for="username" class="form-label">Correo</label>
-                    <input type="text" class="form-control" id="email" name="email" placeholder="Ingresa tu usuario" required>
+            <div class="logo-header">
+                <div class="logo-placeholder">
+                    <img src="image/Logo.png" alt="Logo de Hyprdesk" class="img-fluid" style="max-width: 120px; height: auto; display: block; margin: 0 auto; position: relative; z-index: 1;"/>
                 </div>
-                <div class="mb-4">
-                    <label for="password" class="form-label">Contraseña</label>
-                    <input type="password" class="form-control" id="contrasena" name="contrasena" placeholder="Ingresa tu contraseña" required>
-                </div>
-                <button type="submit" class="btn btn-primary w-100">Ingresar</button>
-            </form>
-            <hr class="my-4">
-            <p class="text-center">¿No tienes una cuenta? <a href="register.jsp">Regístrate aquí</a></p>
+                <h3 class="mt-3" style="position: relative; z-index: 1;">Bienvenido a Hyprdesk</h3>
+            </div>
+            <div class="form-content">
+                <h2 class="text-center mb-5 fw-bold">Iniciar Sesión</h2>
+                <form action="loginController" method="post">
+                    <div class="mb-3">
+                        <label for="username" class="form-label">Correo</label>
+                        <input type="text" class="form-control" id="email" name="email" placeholder="Ingresa tu correo" required>
+                    </div>
+                    <div class="mb-4">
+                        <label for="password" class="form-label">Contraseña</label>
+                        <input type="password" class="form-control" id="contrasena" name="contrasena" placeholder="Ingresa tu contraseña" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary w-100">Ingresar</button>
+                </form>
+                <hr class="my-4">
+                <p class="text-center">¿No tienes una cuenta? <a href="register.jsp">Regístrate aquí</a></p>
+            </div>
         </div>
-
-        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/js/bootstrap.bundle.min.js" integrity="sha384-ndDqU0Gzau9qJ1lfW4pNLlhNTkCfHzAVBReH9diLvGRem5+R9g2FzA8ZGN954O5Q" crossorigin="anonymous"></script>
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     </body>
 </html>

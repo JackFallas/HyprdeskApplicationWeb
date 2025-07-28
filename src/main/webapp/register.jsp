@@ -5,7 +5,7 @@
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>Regístrate</title>
-        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+        <link href="Css/bootstrap.min.css" rel="stylesheet">
         <style>
             body {
                 display: flex;
@@ -46,7 +46,6 @@
             .logo-placeholder {
                 width: 120px;
                 height: 120px;
-
                 background-color: #333333;
                 border-radius: 50%;
                 margin: 0 auto 15px auto;
@@ -124,12 +123,11 @@
     <body style="background-color: #3498DB;">
 
         <%
-           
             String confirmacion = request.getParameter("confirmacion");
             if ("guardado".equals(confirmacion)) {
         %>
         <div class="alert alert-success" role="alert">
-            ¡Registro exitoso! Ahora puedes iniciar sesión.
+            ¡Registro completo!  inicia sesión.
         </div>
         <%
             }
@@ -173,7 +171,7 @@
                     </div>
                     <div class="mb-4">
                         <label for="confirmarContrasena" class="form-label">Confirmar Contraseña</label>
-                        <input type="password" class="form-control" id="confirmarContrasena" oninput="this.setCustomValidity(this.value !== contrasena.value ? 'Las contraseñas no coinciden' : '')" required> <%-- **Validación de contraseña añadida** --%>
+                        <input type="password" class="form-control" id="confirmarContrasena" oninput="this.setCustomValidity(this.value !== contrasena.value ? 'Las contraseñas no coinciden' : '')" required> 
                     </div>
                     <button type="submit" class="btn btn-success w-100 mt-3">Registrarse</button>
                     <p class="text-center mt-4">
@@ -182,6 +180,5 @@
                 </form>
             </div>
         </div>
-        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    </body>
+        </body>
 </html>
