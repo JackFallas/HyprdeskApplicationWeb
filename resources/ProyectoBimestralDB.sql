@@ -1,5 +1,6 @@
 drop database if exists HyprDeskDB_PFB3;
 create database HyprDeskDB_PFB3;
+
 use HyprDeskDB_PFB3;
 
 create table Usuarios(
@@ -10,7 +11,7 @@ create table Usuarios(
 	direccionUsuario varchar(128) not null,
     email varchar(128) not null,
     contrasena varchar(64) not null,
-    estadoUsuario varchar(32) default 'Activo',
+    estadoUsuario enum('Activo', 'Inactivo', 'Suspendido') default 'Activo',
     fechaCreacion datetime default current_timestamp,
     fechaNacimiento date,
     constraint pk_usuarios primary key (codigoUsuario)
@@ -20,7 +21,7 @@ create table Marcas(
 	codigoMarca int auto_increment,
     nombreMarca varchar(64) not null,
     descripcion varchar(128) not null,
-    estadoMarca varchar(32) default 'Disponible',
+    estadoMarca enum('Disponible', 'No disponible') default 'Disponible',
     constraint pk_marcas primary key (codigoMarca)
 );
 
@@ -48,41 +49,47 @@ create table Productos(
 		references Categorias(codigoCategoria)
 );
 
-CREATE TABLE MetodoPagos (
-    codigoMetodoPago int auto_increment,
-    tipoMetodo VARCHAR(64) NOT NULL,
-    CONSTRAINT pk_metodo_pagos PRIMARY KEY (codigoMetodoPago)
+create table Tarjetas (
+    codigoTarjeta int auto_increment,
+    codigoUsuario int not null,
+    ultimos_4 char(4) not null,
+    marca enum('Visa', 'MasterCard', 'Amex', 'Discover', 'Otro') not null,
+    token varchar(36) not null,
+    fechaExpiracion date not null,
+    nombreTitular varchar(40) not null,
+    tipoTarjeta enum('Crédito', 'Débito', 'Prepago') default 'Crédito',
+    fechaRegistro datetime default current_timestamp,
+    constraint pk_tarjetas primary key (codigoTarjeta),
+    constraint fk_tarjeta_usuario foreign key (codigoUsuario) references Usuarios(codigoUsuario)
 );
 
-create table DetalleMetodoPagos(
-	codigoDetalleMetodoPago int auto_increment,
-    numeroCuenta varchar(128) not null,
-    fechaExpiracion varchar(16) not null,
-    nombreTitular varchar(64) not null,
+
+create table Recibos(
+	codigoRecibo int auto_increment,
+    fechaPago datetime default current_timestamp,
+    monto decimal(10,2) not null,
+    metodoPago varchar(64) not null,
     codigoUsuario int,
-    codigoMetodoPago int,
-    constraint pk_Detalle_Metodo_Pagos primary key (codigoDetalleMetodoPago),
-    constraint fk_Detalle_Metodo_Pagos_Usuarios foreign key (codigoUsuario)
+    codigoTarjeta int,
+    constraint pk_recibos primary key (codigoRecibo),
+    constraint fk_recibo_usuario foreign key (codigoUsuario)
 		references Usuarios(codigoUsuario),
-	constraint fk_Detalle_Metodo_Pagos_Metodo_Pagos foreign key (CodigoMetodoPago)
-		references MetodoPagos(CodigoMetodoPago)
+	constraint fk_recibo_tarjetas foreign key (codigoTarjeta)
+		references Tarjetas(codigoTarjeta)
 );
 
 create table Pedidos(
 	codigoPedido int auto_increment,
-    fechaPedido datetime,
-    estadoPedido varchar(64) not null,
+    fechaPedido datetime default current_timestamp,
+    estadoPedido enum('Pendiente', 'En proceso', 'Enviado', 'Entregado', 'Cancelado') not null,
     totalPedido decimal(10,2) default 0.00,
     direccionPedido varchar(128) not null,
-    codigoMetodoPago int,
-    codigoDetalleMetodoPago int,
+    codigoRecibo int,
     codigoUsuario int,
-    constraint pk_pedidos primary key (codigoPedido),
-    constraint fk_Pedidos_Metodo_Pagos foreign key (codigoMetodoPago)
-		references MetodoPagos(codigoMetodoPago),
-	constraint fk_Pedidos_Detalle_Metodo_Pagos foreign key (CodigoDetalleMetodoPago)
-		references DetalleMetodoPagos(CodigoDetalleMetodoPago),
-	constraint fk_Pedidos_Usuarios foreign key (codigoUsuario)
+	constraint pk_pedidos primary key (codigoPedido),
+    constraint fk_pedido_recibos foreign key (codigoRecibo)
+		references Recibos(codigoRecibo),
+	constraint fk_pedido_usuario foreign key (codigoUsuario)
 		references Usuarios(codigoUsuario)
 );
 
@@ -93,7 +100,7 @@ create table DetallePedidos(
     subtotal decimal(10,2) default 0.00,
     codigoPedido int,
     codigoProducto int,
-    constraint pk_detalle_pedidos primary key (codigoDetallePedido),
+	constraint pk_detalle_pedidos primary key (codigoDetallePedido),
     constraint fk_Detalle_Pedidos_Pedidos foreign key (codigoPedido)
 		references Pedidos(codigoPedido),
 	constraint fk_Detalle_Pedidos_Productos foreign key (codigoProducto)
