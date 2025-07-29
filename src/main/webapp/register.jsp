@@ -1,4 +1,4 @@
-<%@page contentType="text/html" pageEncoding="UTF-8"%> 
+<%@page contentType="text/html" pageEncoding="UTF-8"%>
 <!DOCTYPE html>
 <html lang="es">
     <head>
@@ -6,6 +6,7 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>Regístrate</title>
         <link href="Css/bootstrap.min.css" rel="stylesheet">
+        <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
         <style>
             body {
                 display: flex;
@@ -13,7 +14,7 @@
                 align-items: center;
                 min-height: 100vh;
                 background-color: #3498DB;
-                font-family: "Verdana", sans-serif;
+                font-family: "Verdana", sans-serif; 
             }
             .register-container {
                 max-width: 500px;
@@ -29,7 +30,7 @@
                 text-align: center;
                 position: relative;
                 color: #ffffff;
-                font-family: "Papyrus", fantasy;
+                font-family: "Roboto", sans-serif;
             }
             .logo-header::before {
                 content: '';
@@ -63,7 +64,7 @@
             }
             .form-content h2 {
                 color: #3498DB;
-                font-family: "Papyrus", fantasy;
+                font-family: "Roboto", sans-serif;
             }
             .form-label {
                 font-weight: 500;
@@ -142,7 +143,7 @@
             </div>
             <div class="form-content">
                 <h2 class="text-center mb-5 fw-bold">Crear una Cuenta</h2>
-                <form id="formulario" action="guardarUsuario" method="POST"> 
+                <form id="formulario" action="guardarUsuario" method="POST">
                     <div class="row mb-3">
                         <div class="col-md-6">
                             <label for="nombreUsuario" class="form-label">Nombre</label>
@@ -171,7 +172,7 @@
                     </div>
                     <div class="mb-4">
                         <label for="confirmarContrasena" class="form-label">Confirmar Contraseña</label>
-                        <input type="password" class="form-control" id="confirmarContrasena" oninput="this.setCustomValidity(this.value !== contrasena.value ? 'Las contraseñas no coinciden' : '')" required> 
+                        <input type="password" class="form-control" id="confirmarContrasena" oninput="this.setCustomValidity(this.value !== contrasena.value ? 'Las contraseñas no coinciden' : '')" required>
                     </div>
                     <button type="submit" class="btn btn-success w-100 mt-3">Registrarse</button>
                     <p class="text-center mt-4">
@@ -180,5 +181,5 @@
                 </form>
             </div>
         </div>
-        </body>
+    </body>
 </html>

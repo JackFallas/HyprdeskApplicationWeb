@@ -6,6 +6,7 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <title>Iniciar Sesión</title>
         <link href="Css/bootstrap.min.css" rel="stylesheet">
+        <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
         <style>
             body {
                 background-color: #3498DB;
@@ -31,7 +32,7 @@
                 text-align: center;
                 position: relative;
                 color: #ffffff;
-                font-family: "Papyrus", fantasy;
+                font-family: "Roboto", sans-serif;
             }
             .logo-header::before {
                 content: '';
@@ -67,7 +68,7 @@
                 margin-bottom: 30px;
                 color: #3498DB;
                 text-align: center;
-                font-family: "Papyrus", fantasy;
+                font-family: "Roboto", sans-serif;
             }
             .form-label {
                 font-weight: 500;
@@ -145,6 +146,5 @@
                 <p class="text-center">¿No tienes una cuenta? <a href="register.jsp">Regístrate aquí</a></p>
             </div>
         </div>
-        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     </body>
 </html>
