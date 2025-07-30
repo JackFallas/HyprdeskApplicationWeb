@@ -3,6 +3,7 @@ package dao;
 import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
+import javax.persistence.EntityTransaction;
 import javax.persistence.NoResultException;
 import javax.persistence.Persistence;
 import javax.persistence.TypedQuery;
@@ -62,18 +63,53 @@ public class UsuarioDAO {
     }
     
    public List<Usuarios> listarUsuarios(){
-        return null;
+        String jpql = "SELECT u FROM Usuarios u";
+        EntityManager admin = enti.createEntityManager();
+        try{
+            return admin.createQuery(jpql, Usuarios.class).getResultList();
+        }finally{
+            admin.close();
+        }
     }
     
     public Usuarios buscarPorId(int id){
-        return null;
+        EntityManager admin = enti.createEntityManager();
+        try{
+            return admin.find(Usuarios.class, id);
+        }finally {
+         admin.close();
+        }
     }
     
     public void actualizar(Usuarios usuario){
+        EntityManager admin = enti.createEntityManager();
+        EntityTransaction transaccion = admin.getTransaction();
         
+        try {
+            transaccion.begin();
+            admin.merge(usuario);
+            transaccion.commit();
+        } catch (Exception e) {
+            if(transaccion.isActive()) transaccion.rollback();
+        }finally{
+            admin.close();
+        }
     }
     
     public void eliminar(int id){
-        
+        EntityManager admin = enti.createEntityManager();
+        EntityTransaction transaccion = admin.getTransaction();
+        try {
+            transaccion.begin();
+            Usuarios usuarios = admin.find(Usuarios.class, id);
+            if (usuarios != null) {
+                admin.remove(usuarios);
+            }
+            transaccion.commit();
+        } catch (Exception e) {
+            if(transaccion.isActive()) transaccion.rollback();
+        }finally{
+            admin.close();
+        }
     }
 }
