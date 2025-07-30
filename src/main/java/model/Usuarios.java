@@ -1,5 +1,7 @@
 package model;
  
+import java.time.LocalDate;
+import java.sql.Timestamp;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -25,8 +27,27 @@ public class Usuarios {
     private String email;
     @Column (name ="contrasena", nullable = false)
     private String contrasena;
- 
+    @Column (name = "estadoUsuario")
+    private String estadoUsuario;
+    @Column (name = "rol")
+    private String rol;
+    @Column(name = "fechaCreacion", insertable = false, updatable = false)
+    private Timestamp fechaCreacion;
+    @Column (name = "fechaNacimiento")
+    private LocalDate fechaNacimiento;
     public Usuarios() {
+    }
+ 
+    public Usuarios(String nombreUsuario, String apellidoUsuario, String telefono, String direccionUsuario, String email, String contrasena, String estadoUsuario, String rol, LocalDate fechaNacimiento) {
+        this.nombreUsuario = nombreUsuario;
+        this.apellidoUsuario = apellidoUsuario;
+        this.telefono = telefono;
+        this.direccionUsuario = direccionUsuario;
+        this.email = email;
+        this.contrasena = contrasena;
+        this.estadoUsuario = estadoUsuario;
+        this.rol = rol;
+        this.fechaNacimiento = fechaNacimiento;
     }
  
     public Usuarios(String nombreUsuario, String apellidoUsuario, String telefono, String direccionUsuario, String email, String contrasena) {
@@ -37,7 +58,6 @@ public class Usuarios {
         this.email = email;
         this.contrasena = contrasena;
     }
- 
     public String getContrasena() {
         return contrasena;
     }
@@ -92,5 +112,37 @@ public class Usuarios {
  
     public void setEmail(String email) {
         this.email = email;
-    }    
+    }
+
+    public String getRol() {
+        return rol;
+    }
+
+    public void setRol(String rol) {
+        this.rol = rol;
+    }
+ 
+    public String getEstadoUsuario() {
+        return estadoUsuario;
+    }
+ 
+    public void setEstadoUsuario(String estadoUsuario) {
+        this.estadoUsuario = estadoUsuario;
+    }
+ 
+    public Timestamp getFechaCreacion() {
+        return fechaCreacion;
+    }
+ 
+    public void setFechaCreacion(Timestamp fechaCreacion) {
+        this.fechaCreacion = fechaCreacion;
+    }
+ 
+    public LocalDate getFechaNacimiento() {
+        return fechaNacimiento;
+    }
+ 
+    public void setFechaNacimiento(LocalDate fechaNacimiento) {
+        this.fechaNacimiento = fechaNacimiento;
+    }
 }

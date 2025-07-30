@@ -49,6 +49,18 @@ public class UsuarioDAO {
         return null; 
     }
     
+    public boolean erorEmail(String email) {
+        EntityManager en = enti.createEntityManager();
+        try {
+            Long count = en.createQuery("select count(u) from Usuarios u where u.email = :email", Long.class)
+                           .setParameter("email", email)
+                           .getSingleResult();
+            return count > 0;
+        } finally {
+            en.close();
+        }
+    }
+    
    public List<Usuarios> listarUsuarios(){
         return null;
     }
