@@ -121,7 +121,7 @@ public class ServletTarjetas extends HttpServlet {
             Tarjetas nuevaTarjeta = new Tarjetas(codigoUsuario, ultimos4, marca, token, fechaExpiracion, nombreTitular, tipoTarjeta);
             tarjetaDAO.guardar(nuevaTarjeta);
 
-            response.sendRedirect("TarjetaController?accion=listarTodas&success=true"); 
+            response.sendRedirect("ServletTarjetas?accion=listarTodas&success=true"); 
         } catch (ParseException e) {
             request.setAttribute("error", "El formato de la fecha de expiración es incorrecto. Use AAAA-MM-DD.");
             listarTodasLasTarjetas(request, response);
@@ -161,7 +161,7 @@ public class ServletTarjetas extends HttpServlet {
             Tarjetas tarjetaActualizar = new Tarjetas(codigoTarjeta, codigoUsuario, ultimos4, marca, token, fechaExpiracion, nombreTitular, tipoTarjeta);
             tarjetaDAO.actualizar(tarjetaActualizar);
 
-            response.sendRedirect("TarjetaController?accion=listarTodas&success=true"); 
+            response.sendRedirect("ServletTarjetas?accion=listarTodas&success=true"); 
 
         } catch (NumberFormatException e) {
             request.setAttribute("error", "ID de tarjeta inválido para actualizar.");
@@ -179,7 +179,7 @@ public class ServletTarjetas extends HttpServlet {
         try {
             int codigoTarjeta = Integer.parseInt(request.getParameter("id"));
             tarjetaDAO.eliminar(codigoTarjeta);
-            response.sendRedirect("TarjetaController?accion=listarTodas&deleted=true");
+            response.sendRedirect("ServletTarjetas?accion=listarTodas&deleted=true");
         } catch (NumberFormatException e) {
             request.setAttribute("error", "ID de tarjeta inválido.");
             listarTodasLasTarjetas(request, response);
