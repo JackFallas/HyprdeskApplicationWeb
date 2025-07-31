@@ -6,9 +6,10 @@
         <!--        clases a persistir-->
         <class>model.Marcas</class>
         <class>model.Usuarios</class>
+        <class>model.Categorias</class>
         <properties>
             <property name="javax.persistence.jdbc.url" value="jdbc:mysql://127.0.0.1:3306/HyprDeskDB_PFB3?useSSL=false&amp;serverTimezone=UTC"/>
-            <property name="javax.persistence.jdbc.user" value="quintom"/>
+            <property name="javax.persistence.jdbc.user" value="root"/>
             <property name="javax.persistence.jdbc.password" value="admin"/>
             <property name="javax.persistence.jdbc.driver" value="com.mysql.jdbc.Driver"/>
             <property name="hibernate.dialect" value="org.hibernate.dialect.MySQL8Dialect"/>
