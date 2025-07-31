@@ -125,7 +125,7 @@
         <div class="login-container">
             <div class="logo-header">
                 <div class="logo-placeholder">
-                    <img src="image/Logo.png" alt="Logo de Hyprdesk" class="img-fluid" style="max-width: 120px; height: auto; display: block; margin: 0 auto; position: relative; z-index: 1;"/>
+                    <img src="resources/image/Logo.png" alt="Logo de Hyprdesk" class="img-fluid" style="max-width: 120px; height: auto; display: block; margin: 0 auto; position: relative; z-index: 1;"/>
                 </div>
                 <h3 class="mt-3" style="position: relative; z-index: 1;">Bienvenido a Hyprdesk</h3>
             </div>
