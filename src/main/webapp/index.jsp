@@ -8,10 +8,10 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <title>�Bienvenido!</title>
+        <title>Bienvenido!</title>
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <link href="resources/css/bootstrap.min.css" rel="stylesheet">
-        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+        <link href="resources/css/bootstrap-icons.min.css" rel="stylesheet">
     </head>
     <body style="background-color: #18042c;"class="bg-light d-flex justify-content-center align-items-center vh-100">
         <div class="card shadow-lg p-5 bg-white text-center">
@@ -20,7 +20,7 @@
             <a href="register.jsp" class="btn btn-success btn-lg px-5 mb-3">
                 </i>Ir al Registro
             </a>
-            <p class="mt-3">�Ya tienes cuenta? <a href="login.jsp" class="text-decoration-none">Inicia sesi�n</a></p>
+            <p class="mt-3">Ya tienes cuenta? <a href="login.jsp" class="text-decoration-none">Inicia sesion</a></p>
         </div>
 
         </body>

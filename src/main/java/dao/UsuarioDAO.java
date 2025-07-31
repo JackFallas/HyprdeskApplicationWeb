@@ -3,6 +3,7 @@ package dao;
 import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
+import javax.persistence.EntityTransaction;
 import javax.persistence.NoResultException;
 import javax.persistence.Persistence;
 import javax.persistence.TypedQuery;
@@ -49,19 +50,52 @@ public class UsuarioDAO {
         return null; 
     }
     
+    public boolean erorEmail(String email) {
+        EntityManager en = enti.createEntityManager();
+        try {
+            Long count = en.createQuery("select count(u) from Usuarios u where u.email = :email", Long.class)
+                           .setParameter("email", email)
+                           .getSingleResult();
+            return count > 0;
+        } finally {
+            en.close();
+        }
+    }
+    
    public List<Usuarios> listarUsuarios(){
-        return null;
+        String jpql = "SELECT u FROM Usuarios u";
+        EntityManager admin = enti.createEntityManager();
+        try{
+            return admin.createQuery(jpql, Usuarios.class).getResultList();
+        }finally{
+            admin.close();
+        }
     }
     
     public Usuarios buscarPorId(int id){
-        return null;
+        EntityManager admin = enti.createEntityManager();
+        try{
+            return admin.find(Usuarios.class, id);
+        }finally {
+           admin.close();
+        }
     }
     
     public void actualizar(Usuarios usuario){
+        EntityManager admin = enti.createEntityManager();
+        EntityTransaction transaccion = admin.getTransaction();
         
+        try {
+            transaccion.begin();
+            admin.merge(usuario);
+            transaccion.commit();
+        } catch (Exception e) {
+            if(transaccion.isActive()) transaccion.rollback();
+            System.err.println("Error al actualizar usuario: " + e.getMessage()); 
+        }finally{
+            admin.close();
+        }
     }
     
-    public void eliminar(int id){
-        
-    }
+    
 }

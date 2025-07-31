@@ -5,7 +5,8 @@
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>Regístrate</title>
-        <link href="Css/bootstrap.min.css" rel="stylesheet">
+        <link href="resources/css/bootstrap.min.css" rel="stylesheet">
+        <link href="resources/css/bootstrap-icons.min.css" rel="stylesheet">
         <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
         <style>
             body {
@@ -14,7 +15,7 @@
                 align-items: center;
                 min-height: 100vh;
                 background-color: #3498DB;
-                font-family: "Verdana", sans-serif; 
+                font-family: "Verdana", sans-serif;
             }
             .register-container {
                 max-width: 500px;
@@ -137,7 +138,7 @@
         <div class="register-container">
             <div class="logo-header">
                 <div class="logo-placeholder">
-                    <img src="image/Logo.png" alt="Logo de Hyprdesk" class="img-fluid" style="max-width: 120px; height: auto; display: block; margin: 0 auto; position: relative; z-index: 1;"/>
+                    <img src="resources/image/Logo.png" alt="Logo de Hyprdesk" class="img-fluid" style="max-width: 120px; height: auto; display: block; margin: 0 auto; position: relative; z-index: 1;"/>
                 </div>
                 <h3 class="mt-3" style="position: relative; z-index: 1;">Bienvenido a Hyprdesk</h3>
             </div>
