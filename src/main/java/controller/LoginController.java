@@ -19,20 +19,29 @@ public class LoginController extends HttpServlet {
         response.setContentType("text/html;charset=UTF-8");
 
         String email = request.getParameter("email");
-        String contrasena = request.getParameter("contrasena"); 
+        String contrasena = request.getParameter("contrasena");
 
         UsuarioDAO usuarioDAO = new UsuarioDAO();
         Usuarios usuario = usuarioDAO.validarCredenciales(email, contrasena);
 
         if (usuario != null) {
-            
             HttpSession session = request.getSession();
             session.setAttribute("usuarioLogueado", usuario);
 
-           
-            response.sendRedirect("index.jsp"); 
+            String rol = usuario.getRol();
+
+            if ("Admin".equalsIgnoreCase(rol)) {
+                request.setAttribute("confirmacion", "guardado");
+                request.getRequestDispatcher("register.jsp").forward(request, response);
+            } else if ("Usuario".equalsIgnoreCase(rol)) {
+                request.setAttribute("confirmacion", "guardado");
+                request.getRequestDispatcher("index.jsp").forward(request, response);
+            } else {
+                response.sendRedirect("index.jsp");
+            }
         } else {
-            response.sendRedirect("login.jsp?mensaje=error");
+            request.setAttribute("error", "Credenciales incorrectas");
+            request.getRequestDispatcher("register.jsp").forward(request, response);
         }
     }
     

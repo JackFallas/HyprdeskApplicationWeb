@@ -21,6 +21,7 @@
                 </i>Ir al Registro
             </a>
             <p class="mt-3">Ya tienes cuenta? <a href="login.jsp" class="text-decoration-none">Inicia sesion</a></p>
+            <p class="mt-3">Prueba <a href="ServletDetallePedido" class="text-decoration-none">Prueba</a></p>
         </div>
 
         </body>
