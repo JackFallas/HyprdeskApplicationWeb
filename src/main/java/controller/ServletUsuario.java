@@ -20,6 +20,8 @@ public class ServletUsuario extends HttpServlet {
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
         
+        request.setCharacterEncoding("UTF-8");
+
         String accion = request.getParameter("accion");
         
         if (accion == null || accion.isEmpty()) {
@@ -29,9 +31,6 @@ public class ServletUsuario extends HttpServlet {
         switch (accion) {
             case "listar":
                 doListarUsuarios(request, response);
-                break;
-            case "eliminar":
-                doEliminarUsuario(request, response);
                 break;
             case "actualizar":
                 doActualizarUsuario(request, response);
@@ -50,41 +49,59 @@ public class ServletUsuario extends HttpServlet {
         request.getRequestDispatcher("mantenimientoUsuario.jsp").forward(request, response); 
     }
 
-    private void doEliminarUsuario(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
-        int idEliminar = Integer.parseInt(request.getParameter("id"));
-        UsuarioDAO dao = new UsuarioDAO();
-        dao.eliminar(idEliminar);
-        response.sendRedirect("UsuarioServlet?accion=listar"); 
-    }
-
     private void doActualizarUsuario(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         UsuarioDAO dao = new UsuarioDAO();
-        int idActualizar = Integer.parseInt(request.getParameter("id"));
+        
+       
+        int idActualizar = -1; 
+        String codigoUsuarioParam = request.getParameter("codigoUsuario");
+
+        if (codigoUsuarioParam != null && !codigoUsuarioParam.trim().isEmpty()) {
+            try {
+                idActualizar = Integer.parseInt(codigoUsuarioParam);
+            } catch (NumberFormatException e) {
+                System.err.println("Error: El parámetro 'codigoUsuario' no es un número válido: " + codigoUsuarioParam);
+                response.sendRedirect("ServletUsuario?accion=listar&error=idInvalido");
+                return; 
+            }
+        } else {
+            System.err.println("Error: El parámetro 'codigoUsuario' es nulo o vacío.");
+            response.sendRedirect("ServletUsuario?accion=listar&error=idFaltante");
+            return; 
+        }
+       
+
         Usuarios usuarioActualizar = dao.buscarPorId(idActualizar);
 
-        usuarioActualizar.setNombreUsuario(request.getParameter("nombreUsuario"));
-        usuarioActualizar.setApellidoUsuario(request.getParameter("apellidoUsuario"));
-        usuarioActualizar.setTelefono(request.getParameter("telefono"));
-        usuarioActualizar.setDireccionUsuario(request.getParameter("direccionUsuario"));
-        usuarioActualizar.setEmail(request.getParameter("email"));
-        usuarioActualizar.setContrasena(request.getParameter("contrasena"));
-        usuarioActualizar.setEstadoUsuario(request.getParameter("estadoUsuario"));
-        usuarioActualizar.setRol(request.getParameter("rol"));
-        
-        String fechaNacimientoStrAct = request.getParameter("fechaNacimiento");
-        if (fechaNacimientoStrAct != null && !fechaNacimientoStrAct.isEmpty()) {
-            try {
-                LocalDate fechaNacimientoLocalDate = LocalDate.parse(fechaNacimientoStrAct); 
-                usuarioActualizar.setFechaNacimiento(fechaNacimientoLocalDate);
-            } catch (java.time.format.DateTimeParseException e) {
-                e.printStackTrace(); 
+        if (usuarioActualizar != null) {
+            usuarioActualizar.setNombreUsuario(request.getParameter("nombreUsuario"));
+            usuarioActualizar.setApellidoUsuario(request.getParameter("apellidoUsuario"));
+            usuarioActualizar.setTelefono(request.getParameter("telefono"));
+            usuarioActualizar.setDireccionUsuario(request.getParameter("direccionUsuario"));
+            usuarioActualizar.setEmail(request.getParameter("email"));
+            usuarioActualizar.setContrasena(request.getParameter("contrasena"));
+            
+            usuarioActualizar.setEstadoUsuario(request.getParameter("estadoUsuario"));
+            usuarioActualizar.setRol(request.getParameter("rol"));
+            
+            String fechaNacimientoStrAct = request.getParameter("fechaNacimiento");
+            if (fechaNacimientoStrAct != null && !fechaNacimientoStrAct.isEmpty()) {
+                try {
+                    LocalDate fechaNacimientoLocalDate = LocalDate.parse(fechaNacimientoStrAct); 
+                    usuarioActualizar.setFechaNacimiento(fechaNacimientoLocalDate);
+                } catch (java.time.format.DateTimeParseException e) {
+                    System.err.println("Error al parsear fecha de nacimiento: " + e.getMessage());
+                   
+                }
             }
+            
+            dao.actualizar(usuarioActualizar);
+            response.sendRedirect("ServletUsuario?accion=listar&success=true"); 
+        } else {
+            System.err.println("Usuario con ID " + idActualizar + " no encontrado para actualizar.");
+            response.sendRedirect("ServletUsuario?accion=listar&error=usuarioNoEncontrado"); 
         }
-        
-        dao.actualizar(usuarioActualizar);
-        response.sendRedirect("UsuarioServlet?accion=listar"); 
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">

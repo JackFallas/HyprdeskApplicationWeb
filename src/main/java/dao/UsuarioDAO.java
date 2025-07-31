@@ -77,7 +77,7 @@ public class UsuarioDAO {
         try{
             return admin.find(Usuarios.class, id);
         }finally {
-         admin.close();
+           admin.close();
         }
     }
     
@@ -91,25 +91,11 @@ public class UsuarioDAO {
             transaccion.commit();
         } catch (Exception e) {
             if(transaccion.isActive()) transaccion.rollback();
+            System.err.println("Error al actualizar usuario: " + e.getMessage()); 
         }finally{
             admin.close();
         }
     }
     
-    public void eliminar(int id){
-        EntityManager admin = enti.createEntityManager();
-        EntityTransaction transaccion = admin.getTransaction();
-        try {
-            transaccion.begin();
-            Usuarios usuarios = admin.find(Usuarios.class, id);
-            if (usuarios != null) {
-                admin.remove(usuarios);
-            }
-            transaccion.commit();
-        } catch (Exception e) {
-            if(transaccion.isActive()) transaccion.rollback();
-        }finally{
-            admin.close();
-        }
-    }
+    
 }
