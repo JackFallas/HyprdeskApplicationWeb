@@ -2,7 +2,7 @@ package controller; // Asegúrate de que este archivo esté en la carpeta 'contr
 
 import dao.DetallePedidoDAO; // Tu DAO para DetallePedido (singular)
 import model.DetallePedido;  // Tu modelo para DetallePedido (singular)
-import model.Pedidos;        // ¡Tu modelo real para Pedidos (plural)!
+import model.Pedido;        // ¡Tu modelo real para Pedidos (plural)!
 import model.Producto;       // Tu modelo para Producto (asumiendo singular, sin cambios)
 import dao.PedidoDAO;        // ¡Tu DAO real para Pedido (singular, opera en Pedidos)!
 import dao.ProductoDAO;      // Tu DAO para Producto (asumiendo singular, sin cambios)
@@ -22,7 +22,7 @@ import javax.servlet.http.HttpServletResponse;
  * utilizando métodos separados para cada acción.
  */
 @WebServlet(name = "ServletDetallePedido", urlPatterns = {"/ServletDetallePedido"})
-public class ServletDetallePedido extends HttpServlet {
+public class ServletDetallePedidos extends HttpServlet {
 
     // Instancias de los DAOs, se inicializan una vez para ser reutilizadas.
     // Ahora PedidoDAO y Pedidos se refieren a tus clases reales.
@@ -106,7 +106,7 @@ public class ServletDetallePedido extends HttpServlet {
             int codigoProductoGuardar = Integer.parseInt(request.getParameter("codigoProducto"));
 
             // ¡Ahora usamos el PedidoDAO real y el modelo Pedidos real!
-            Pedidos pedidoFK = pedidoDao.buscarPorId(codigoPedidoGuardar);
+            Pedido pedidoFK = pedidoDao.buscarPorId(codigoPedidoGuardar);
             Producto productoFK = productoDao.buscarPorID(codigoProductoGuardar); // Se mantiene Producto
 
             if (pedidoFK == null) {
@@ -185,7 +185,7 @@ public class ServletDetallePedido extends HttpServlet {
 
                 // Actualizar las entidades relacionadas (llaves foráneas) si han cambiado
                 // Ahora se espera que getPedido() devuelva un objeto Pedidos (plural)
-                Pedidos pedidoActualizadoFK = detalleActualizar.getPedido();
+                Pedido pedidoActualizadoFK = detalleActualizar.getPedido();
                 if (pedidoActualizadoFK == null || pedidoActualizadoFK.getCodigoPedido() != codigoPedidoActualizar) {
                     pedidoActualizadoFK = pedidoDao.buscarPorId(codigoPedidoActualizar);
                     if (pedidoActualizadoFK == null) {

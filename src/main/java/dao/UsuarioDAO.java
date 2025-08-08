@@ -7,12 +7,12 @@ import javax.persistence.EntityTransaction;
 import javax.persistence.NoResultException;
 import javax.persistence.Persistence;
 import javax.persistence.TypedQuery;
-import model.Usuarios;
+import model.Usuario;
 
 public class UsuarioDAO {
     private EntityManagerFactory enti = Persistence.createEntityManagerFactory("proyectoBimestralPU");
     
-    public void guardar(Usuarios usuario){
+    public void guardar(Usuario usuario){
         EntityManager en = enti.createEntityManager();
         try{
             en.getTransaction().begin();
@@ -23,11 +23,11 @@ public class UsuarioDAO {
         }
     }
     
-    public Usuarios buscarPorEmail(String email) {
+    public Usuario buscarPorEmail(String email) {
         EntityManager en = enti.createEntityManager();
-        Usuarios usuario = null;
+        Usuario usuario = null;
         try {
-            TypedQuery<Usuarios> query = en.createQuery("SELECT u FROM Usuarios u WHERE u.email = :email", Usuarios.class);
+            TypedQuery<Usuario> query = en.createQuery("SELECT u FROM Usuarios u WHERE u.email = :email", Usuario.class);
             query.setParameter("email", email);
             usuario = query.getSingleResult(); 
         } catch (NoResultException e) {
@@ -42,8 +42,8 @@ public class UsuarioDAO {
         return usuario;
     }
     
-    public Usuarios validarCredenciales(String email, String contraseña) {
-        Usuarios usuario = buscarPorEmail(email);
+    public Usuario validarCredenciales(String email, String contraseña) {
+        Usuario usuario = buscarPorEmail(email);
         if (usuario != null && usuario.getContrasena().equals(contraseña)) {
             return usuario; 
         }
@@ -62,26 +62,26 @@ public class UsuarioDAO {
         }
     }
     
-   public List<Usuarios> listarUsuarios(){
+   public List<Usuario> listarUsuarios(){
         String jpql = "SELECT u FROM Usuarios u";
         EntityManager admin = enti.createEntityManager();
         try{
-            return admin.createQuery(jpql, Usuarios.class).getResultList();
+            return admin.createQuery(jpql, Usuario.class).getResultList();
         }finally{
             admin.close();
         }
     }
     
-    public Usuarios buscarPorId(int id){
+    public Usuario buscarPorId(int id){
         EntityManager admin = enti.createEntityManager();
         try{
-            return admin.find(Usuarios.class, id);
+            return admin.find(Usuario.class, id);
         }finally {
            admin.close();
         }
     }
     
-    public void actualizar(Usuarios usuario){
+    public void actualizar(Usuario usuario){
         EntityManager admin = enti.createEntityManager();
         EntityTransaction transaccion = admin.getTransaction();
         

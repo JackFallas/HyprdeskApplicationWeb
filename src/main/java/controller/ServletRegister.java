@@ -9,10 +9,10 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import model.Usuarios;
+import model.Usuario;
 
 @WebServlet("/guardarUsuario")
-public class RegisterController extends HttpServlet {
+public class ServletRegister extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest solicitud, HttpServletResponse respuesta) throws IOException, ServletException {
@@ -36,7 +36,7 @@ public class RegisterController extends HttpServlet {
             return;
         }
 
-        Usuarios usuario = new Usuarios(nombreUsuario, apellidoUsuario, telefono, direccionUsuario, email, contrasena, estadoUsuario, rol, fechaNacimiento);
+        Usuario usuario = new Usuario(nombreUsuario, apellidoUsuario, telefono, direccionUsuario, email, contrasena, estadoUsuario, rol, fechaNacimiento);
 
         UsuarioDAO dao = new UsuarioDAO();
         if (dao.erorEmail(email)) {

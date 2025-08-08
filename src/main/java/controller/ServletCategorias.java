@@ -6,7 +6,7 @@ import java.util.List;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.*;
-import model.Categorias;
+import model.Categoria;
 
 @WebServlet(name = "ServletCategorias", urlPatterns = {"/ServletCategorias"})
 public class ServletCategorias extends HttpServlet {
@@ -50,7 +50,7 @@ public class ServletCategorias extends HttpServlet {
 
     private void listarCategorias(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        List<Categorias> listaCategorias = dao.listarTodos();
+        List<Categoria> listaCategorias = dao.listarTodos();
         request.setAttribute("listaCategorias", listaCategorias);
         request.getRequestDispatcher("Categoria.jsp").forward(request, response);
     }
@@ -60,7 +60,7 @@ public class ServletCategorias extends HttpServlet {
         String nombreCategoria = request.getParameter("nombreCategoria");
         String descripcionCategoria = request.getParameter("descripcionCategoria");
 
-        Categorias categoria = new Categorias(nombreCategoria, descripcionCategoria);
+        Categoria categoria = new Categoria(nombreCategoria, descripcionCategoria);
         dao.guardar(categoria);
 
         response.sendRedirect("ServletCategorias?accion=listar");
@@ -69,7 +69,7 @@ public class ServletCategorias extends HttpServlet {
     private void editarCategoria(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         int idEditar = Integer.parseInt(request.getParameter("id"));
-        Categorias categoria = dao.buscarPorId(idEditar);
+        Categoria categoria = dao.buscarPorId(idEditar);
         request.setAttribute("categoriaEditar", categoria);
         request.getRequestDispatcher("Categoria.jsp").forward(request, response);
     }
@@ -77,7 +77,7 @@ public class ServletCategorias extends HttpServlet {
     private void actualizarCategoria(HttpServletRequest request, HttpServletResponse response)
             throws IOException {
         int idActualizar = Integer.parseInt(request.getParameter("id"));
-        Categorias categoria = dao.buscarPorId(idActualizar);
+        Categoria categoria = dao.buscarPorId(idActualizar);
         if (categoria != null) {
             categoria.setNombreCategoria(request.getParameter("nombreCategoria"));
             categoria.setDescripcionCategoria(request.getParameter("descripcionCategoria"));

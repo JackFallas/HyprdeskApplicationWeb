@@ -8,10 +8,10 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import model.Marcas;
+import model.Marca;
 
 @WebServlet("/MarcaController")
-public class MarcaController extends HttpServlet {
+public class ServletMarcas extends HttpServlet {
 
     private MarcaDAO marcaDAO;
 
@@ -67,7 +67,7 @@ public class MarcaController extends HttpServlet {
     }
 
     private void listarMarcas(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        List<Marcas> listaMarcas = marcaDAO.listarMarcas();
+        List<Marca> listaMarcas = marcaDAO.listarMarcas();
         request.setAttribute("listaMarcas", listaMarcas);
         request.getRequestDispatcher("marcas.jsp").forward(request, response);
     }
@@ -77,7 +77,7 @@ public class MarcaController extends HttpServlet {
         String descripcion = request.getParameter("descripcion");
         String estadoMarca = request.getParameter("estadoMarca");
 
-        Marcas nuevaMarca = new Marcas(nombreMarca, descripcion, estadoMarca);
+        Marca nuevaMarca = new Marca(nombreMarca, descripcion, estadoMarca);
 
         try {
             marcaDAO.guardar(nuevaMarca);
@@ -94,7 +94,7 @@ public class MarcaController extends HttpServlet {
         String descripcion = request.getParameter("descripcion");
         String estadoMarca = request.getParameter("estadoMarca");
 
-        Marcas marcaExistente = marcaDAO.buscarPorId(codigoMarca);
+        Marca marcaExistente = marcaDAO.buscarPorId(codigoMarca);
 
         if (marcaExistente != null) {
             marcaExistente.setNombreMarca(nombreMarca);

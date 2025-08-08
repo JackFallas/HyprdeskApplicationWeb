@@ -17,7 +17,7 @@ import javax.persistence.Table;
  */
 @Entity
 @Table(name = "Categorias")
-public class Categorias {
+public class Categoria {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -27,10 +27,10 @@ public class Categorias {
     @Column(name = "descripcionCategoria", nullable = false)
     private String descripcionCategoria;
 
-    public Categorias() {
+    public Categoria() {
     }
 
-    public Categorias(String nombreCategoria, String descripcionCategoria) {
+    public Categoria(String nombreCategoria, String descripcionCategoria) {
         this.nombreCategoria = nombreCategoria;
         this.descripcionCategoria = descripcionCategoria;
     }

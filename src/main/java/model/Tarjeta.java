@@ -12,7 +12,7 @@ import javax.persistence.TemporalType;
 
 @Entity
 @Table(name = "Tarjetas")
-public class Tarjetas {
+public class Tarjeta {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -44,10 +44,10 @@ public class Tarjetas {
     @Column(name = "fechaRegistro", nullable = false, insertable = false, updatable = false, columnDefinition = "DATETIME DEFAULT CURRENT_TIMESTAMP")
     private Date fechaRegistro;
 
-    public Tarjetas() {
+    public Tarjeta() {
     }
 
-    public Tarjetas(int codigoUsuario, String ultimos4, String marca, String token, Date fechaExpiracion, String nombreTitular, String tipoTarjeta) {
+    public Tarjeta(int codigoUsuario, String ultimos4, String marca, String token, Date fechaExpiracion, String nombreTitular, String tipoTarjeta) {
         this.codigoUsuario = codigoUsuario;
         this.ultimos4 = ultimos4;
         this.marca = marca;
@@ -57,7 +57,7 @@ public class Tarjetas {
         this.tipoTarjeta = tipoTarjeta;
     }
 
-    public Tarjetas(int codigoTarjeta, int codigoUsuario, String ultimos4, String marca, String token, Date fechaExpiracion, String nombreTitular, String tipoTarjeta) {
+    public Tarjeta(int codigoTarjeta, int codigoUsuario, String ultimos4, String marca, String token, Date fechaExpiracion, String nombreTitular, String tipoTarjeta) {
         this.codigoTarjeta = codigoTarjeta;
         this.codigoUsuario = codigoUsuario;
         this.ultimos4 = ultimos4;

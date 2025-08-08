@@ -9,7 +9,7 @@ import javax.persistence.Table;
 
 @Entity
 @Table(name = "Marcas")
-public class Marcas {
+public class Marca {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int codigoMarca;
@@ -23,10 +23,10 @@ public class Marcas {
     @Column(name = "estadoMarca", nullable = false, columnDefinition = "ENUM('Disponible', 'No disponible') DEFAULT 'Disponible'")
     private String estadoMarca;
 
-    public Marcas() {
+    public Marca() {
     }
 
-    public Marcas(String nombreMarca, String descripcion, String estadoMarca) {
+    public Marca(String nombreMarca, String descripcion, String estadoMarca) {
         this.nombreMarca = nombreMarca;
         this.descripcion = descripcion;
         this.estadoMarca = estadoMarca;

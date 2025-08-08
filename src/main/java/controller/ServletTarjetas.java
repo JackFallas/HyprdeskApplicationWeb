@@ -11,7 +11,7 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import model.Tarjetas;
+import model.Tarjeta;
 
 @WebServlet("/ServletTarjetas")
 public class ServletTarjetas extends HttpServlet {
@@ -68,7 +68,7 @@ public class ServletTarjetas extends HttpServlet {
 
     private void listarTodasLasTarjetas(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         try {
-            List<Tarjetas> listaTarjetas = tarjetaDAO.listarTodas(); 
+            List<Tarjeta> listaTarjetas = tarjetaDAO.listarTodas(); 
             request.setAttribute("listaTarjetas", listaTarjetas);
             request.getRequestDispatcher("tarjetas.jsp").forward(request, response);
         } catch (Exception e) {
@@ -80,7 +80,7 @@ public class ServletTarjetas extends HttpServlet {
     private void listarTarjetasPorUsuario(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         try {
             int codigoUsuario = Integer.parseInt(request.getParameter("codigoUsuario"));
-            List<Tarjetas> listaTarjetas = tarjetaDAO.listarPorUsuario(codigoUsuario);
+            List<Tarjeta> listaTarjetas = tarjetaDAO.listarPorUsuario(codigoUsuario);
             request.setAttribute("listaTarjetas", listaTarjetas);
             request.setAttribute("codigoUsuario", codigoUsuario); 
             request.getRequestDispatcher("tarjetas.jsp").forward(request, response);
@@ -118,7 +118,7 @@ public class ServletTarjetas extends HttpServlet {
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
             Date fechaExpiracion = sdf.parse(request.getParameter("fechaExpiracion"));
 
-            Tarjetas nuevaTarjeta = new Tarjetas(codigoUsuario, ultimos4, marca, token, fechaExpiracion, nombreTitular, tipoTarjeta);
+            Tarjeta nuevaTarjeta = new Tarjeta(codigoUsuario, ultimos4, marca, token, fechaExpiracion, nombreTitular, tipoTarjeta);
             tarjetaDAO.guardar(nuevaTarjeta);
 
             response.sendRedirect("ServletTarjetas?accion=listarTodas&success=true"); 
@@ -158,7 +158,7 @@ public class ServletTarjetas extends HttpServlet {
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
             Date fechaExpiracion = sdf.parse(request.getParameter("fechaExpiracion"));
 
-            Tarjetas tarjetaActualizar = new Tarjetas(codigoTarjeta, codigoUsuario, ultimos4, marca, token, fechaExpiracion, nombreTitular, tipoTarjeta);
+            Tarjeta tarjetaActualizar = new Tarjeta(codigoTarjeta, codigoUsuario, ultimos4, marca, token, fechaExpiracion, nombreTitular, tipoTarjeta);
             tarjetaDAO.actualizar(tarjetaActualizar);
 
             response.sendRedirect("ServletTarjetas?accion=listarTodas&success=true"); 

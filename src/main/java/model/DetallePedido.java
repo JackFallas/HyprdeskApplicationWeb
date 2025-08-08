@@ -31,7 +31,7 @@ public class DetallePedido { // El nombre de la clase es singular
     // Relación ManyToOne con Pedidos
     @ManyToOne
     @JoinColumn(name = "codigoPedido", referencedColumnName = "codigoPedido")
-    private Pedidos pedido; // Tipo de dato: model.Pedidos (plural)
+    private Pedido pedido; // Tipo de dato: model.Pedidos (plural)
 
     // Relación ManyToOne con Producto
     @ManyToOne
@@ -41,7 +41,7 @@ public class DetallePedido { // El nombre de la clase es singular
     public DetallePedido() {
     }
 
-    public DetallePedido(int cantidad, BigDecimal precio, BigDecimal subtotal, Pedidos pedido, Producto producto) {
+    public DetallePedido(int cantidad, BigDecimal precio, BigDecimal subtotal, Pedido pedido, Producto producto) {
         this.cantidad = cantidad;
         this.precio = precio;
         this.subtotal = subtotal;
@@ -82,11 +82,11 @@ public class DetallePedido { // El nombre de la clase es singular
         this.subtotal = subtotal;
     }
 
-    public Pedidos getPedido() {
+    public Pedido getPedido() {
         return pedido;
     }
 
-    public void setPedido(Pedidos pedido) {
+    public void setPedido(Pedido pedido) {
         this.pedido = pedido;
     }
 

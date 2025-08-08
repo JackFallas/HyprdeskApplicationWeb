@@ -5,14 +5,14 @@ import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 import javax.persistence.TypedQuery;
-import model.Marcas;
+import model.Marca;
 
 
 public class MarcaDAO {
 
     private EntityManagerFactory emf = Persistence.createEntityManagerFactory("proyectoBimestralPU");
 
-    public void guardar(Marcas marca) {
+    public void guardar(Marca marca) {
         EntityManager em = emf.createEntityManager();
         try {
             em.getTransaction().begin();
@@ -29,11 +29,11 @@ public class MarcaDAO {
         }
     }
 
-    public Marcas buscarPorId(int codigoMarca) {
+    public Marca buscarPorId(int codigoMarca) {
         EntityManager em = emf.createEntityManager();
-        Marcas marca = null;
+        Marca marca = null;
         try {
-            marca = em.find(Marcas.class, codigoMarca);
+            marca = em.find(Marca.class, codigoMarca);
         } finally {
             if (em != null && em.isOpen()) {
                 em.close();
@@ -42,11 +42,11 @@ public class MarcaDAO {
         return marca;
     }
 
-    public List<Marcas> listarMarcas() {
+    public List<Marca> listarMarcas() {
         EntityManager em = emf.createEntityManager();
-        List<Marcas> listaMarcas = null;
+        List<Marca> listaMarcas = null;
         try {
-            TypedQuery<Marcas> query = em.createQuery("SELECT m FROM Marcas m", Marcas.class);
+            TypedQuery<Marca> query = em.createQuery("SELECT m FROM Marcas m", Marca.class);
             listaMarcas = query.getResultList();
         } finally {
             if (em != null && em.isOpen()) {
@@ -56,7 +56,7 @@ public class MarcaDAO {
         return listaMarcas;
     }
 
-    public void actualizar(Marcas marca) {
+    public void actualizar(Marca marca) {
         EntityManager em = emf.createEntityManager();
         try {
             em.getTransaction().begin();
@@ -79,7 +79,7 @@ public class MarcaDAO {
         EntityManager em = emf.createEntityManager();
         try {
             em.getTransaction().begin();
-            Marcas marca = em.find(Marcas.class, codigoMarca);
+            Marca marca = em.find(Marca.class, codigoMarca);
             if (marca != null) {
                 em.remove(marca);
             }

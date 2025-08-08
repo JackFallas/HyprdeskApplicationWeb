@@ -11,7 +11,7 @@ import javax.persistence.Table;
  
 @Entity
 @Table (name ="Usuarios")
-public class Usuarios {
+public class Usuario {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int codigoUsuario;
@@ -35,10 +35,10 @@ public class Usuarios {
     private Timestamp fechaCreacion;
     @Column (name = "fechaNacimiento")
     private LocalDate fechaNacimiento;
-    public Usuarios() {
+    public Usuario() {
     }
  
-    public Usuarios(String nombreUsuario, String apellidoUsuario, String telefono, String direccionUsuario, String email, String contrasena, String estadoUsuario, String rol, LocalDate fechaNacimiento) {
+    public Usuario(String nombreUsuario, String apellidoUsuario, String telefono, String direccionUsuario, String email, String contrasena, String estadoUsuario, String rol, LocalDate fechaNacimiento) {
         this.nombreUsuario = nombreUsuario;
         this.apellidoUsuario = apellidoUsuario;
         this.telefono = telefono;
@@ -50,7 +50,7 @@ public class Usuarios {
         this.fechaNacimiento = fechaNacimiento;
     }
  
-    public Usuarios(String nombreUsuario, String apellidoUsuario, String telefono, String direccionUsuario, String email, String contrasena) {
+    public Usuario(String nombreUsuario, String apellidoUsuario, String telefono, String direccionUsuario, String email, String contrasena) {
         this.nombreUsuario = nombreUsuario;
         this.apellidoUsuario = apellidoUsuario;
         this.telefono = telefono;

@@ -9,8 +9,8 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import model.Pedidos;
-import model.Pedidos.EstadoPedido;
+import model.Pedido;
+import model.Pedido.EstadoPedido;
 
 @WebServlet("/ServletPedidos")
 public class ServletPedidos extends HttpServlet {
@@ -69,7 +69,7 @@ public class ServletPedidos extends HttpServlet {
     }
 
     private void listarPedidos(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        List<Pedidos> listaPedidos = pedidoDAO.listarTodos();
+        List<Pedido> listaPedidos = pedidoDAO.listarTodos();
         request.setAttribute("listaMarcas", listaPedidos);
         request.getRequestDispatcher("pedidos.jsp").forward(request, response);
     }
@@ -84,7 +84,7 @@ public class ServletPedidos extends HttpServlet {
         int codigoUsuario = Integer.parseInt(request.getParameter("codigoUsuario"));
 
         // Crear un nuevo objeto Pedido
-        Pedidos nuevoPedido = new Pedidos(fechaPedido, estadoPedido, totalPedido, direccionPedido, codigoPedido, codigoUsuario);
+        Pedido nuevoPedido = new Pedido(fechaPedido, estadoPedido, totalPedido, direccionPedido, codigoPedido, codigoUsuario);
 
         try {
             pedidoDAO.guardar(nuevoPedido);
@@ -104,7 +104,7 @@ public class ServletPedidos extends HttpServlet {
         int codigoRecibo = Integer.parseInt(request.getParameter("codigoRecibo"));
         int codigoUsuario = Integer.parseInt(request.getParameter("codigoUsuario"));
 
-        Pedidos pedidoExistente = pedidoDAO.buscarPorId(codigoPedido);
+        Pedido pedidoExistente = pedidoDAO.buscarPorId(codigoPedido);
 
         if (pedidoExistente != null) {
          

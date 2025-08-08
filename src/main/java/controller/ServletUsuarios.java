@@ -11,10 +11,10 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import model.Usuarios;
+import model.Usuario;
 
 @WebServlet(name = "ServletUsuario", urlPatterns = {"/ServletUsuario"})
-public class ServletUsuario extends HttpServlet {
+public class ServletUsuarios extends HttpServlet {
 
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
@@ -44,7 +44,7 @@ public class ServletUsuario extends HttpServlet {
     private void doListarUsuarios(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         UsuarioDAO dao = new UsuarioDAO();
-        List<Usuarios> listaUsuarios = dao.listarUsuarios();
+        List<Usuario> listaUsuarios = dao.listarUsuarios();
         request.setAttribute("listaUsuarios", listaUsuarios);
         request.getRequestDispatcher("mantenimientoUsuario.jsp").forward(request, response); 
     }
@@ -72,7 +72,7 @@ public class ServletUsuario extends HttpServlet {
         }
        
 
-        Usuarios usuarioActualizar = dao.buscarPorId(idActualizar);
+        Usuario usuarioActualizar = dao.buscarPorId(idActualizar);
 
         if (usuarioActualizar != null) {
             usuarioActualizar.setNombreUsuario(request.getParameter("nombreUsuario"));

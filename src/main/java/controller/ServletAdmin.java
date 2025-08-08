@@ -1,7 +1,7 @@
 package controller;
 
 import dao.UsuarioDAO;
-import model.Usuarios;
+import model.Usuario;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -15,15 +15,15 @@ import javax.servlet.ServletContextListener;
 import javax.servlet.annotation.WebListener;
 
 @WebListener
-public class CrearAdmin implements ServletContextListener {
+public class ServletAdmin implements ServletContextListener {
 
     @Override
     public void contextInitialized(ServletContextEvent sce) {
         UsuarioDAO usuarioDAO = new UsuarioDAO();
-        Usuarios admin = usuarioDAO.buscarPorEmail("admin@miempresa.com");
+        Usuario admin = usuarioDAO.buscarPorEmail("admin@miempresa.com");
 
         if (admin == null) {
-            admin = new Usuarios();
+            admin = new Usuario();
             admin.setNombreUsuario("Admin");
             admin.setApellidoUsuario("Admin");
             admin.setTelefono("1234567890");

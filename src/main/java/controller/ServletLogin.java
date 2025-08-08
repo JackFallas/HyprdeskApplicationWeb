@@ -9,10 +9,10 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-import model.Usuarios;
+import model.Usuario;
 
 @WebServlet("/loginController")
-public class LoginController extends HttpServlet {
+public class ServletLogin extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -22,7 +22,7 @@ public class LoginController extends HttpServlet {
         String contrasena = request.getParameter("contrasena");
 
         UsuarioDAO usuarioDAO = new UsuarioDAO();
-        Usuarios usuario = usuarioDAO.validarCredenciales(email, contrasena);
+        Usuario usuario = usuarioDAO.validarCredenciales(email, contrasena);
 
         if (usuario != null) {
             HttpSession session = request.getSession();

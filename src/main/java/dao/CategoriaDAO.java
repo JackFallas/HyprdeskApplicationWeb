@@ -5,7 +5,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.EntityTransaction;
 import javax.persistence.Persistence;
-import model.Categorias;
+import model.Categoria;
 
 public class CategoriaDAO {
     // servicio de transacciones y acceso a datos
@@ -16,7 +16,7 @@ public class CategoriaDAO {
 
     private EntityManagerFactory fabrica = Persistence.createEntityManagerFactory("proyectoBimestralPU");
 
-    public void guardar(Categorias categoria) {
+    public void guardar(Categoria categoria) {
         EntityManager admin = fabrica.createEntityManager();
         EntityTransaction transaccion = admin.getTransaction();
         
@@ -32,27 +32,27 @@ public class CategoriaDAO {
         }
     }
 
-    public List<Categorias> listarTodos() {
+    public List<Categoria> listarTodos() {
         String jpql = "SELECT c FROM Categorias c";
         EntityManager admin = fabrica.createEntityManager();
         try{
             //getResultList()->SQL = resultSet
-            return admin.createQuery(jpql, Categorias.class).getResultList();
+            return admin.createQuery(jpql, Categoria.class).getResultList();
         }finally{
             admin.close();
         }
     }
 
-    public Categorias buscarPorId(int id) {
+    public Categoria buscarPorId(int id) {
         EntityManager admin = fabrica.createEntityManager();
         try{
-            return admin.find(Categorias.class, id);
+            return admin.find(Categoria.class, id);
         }finally {
          admin.close();
         }
     }
 
-    public void Actualizar(Categorias categoria) {
+    public void Actualizar(Categoria categoria) {
         EntityManager admin = fabrica.createEntityManager();
         EntityTransaction transaccion = admin.getTransaction();
         
@@ -74,7 +74,7 @@ public class CategoriaDAO {
         EntityTransaction transaccion = admin.getTransaction();
         try {
             transaccion.begin();
-            Categorias categoria = admin.find(Categorias.class, id);
+            Categoria categoria = admin.find(Categoria.class, id);
             if (categoria != null) {
                 admin.remove(categoria);
             }

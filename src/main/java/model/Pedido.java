@@ -17,7 +17,7 @@ import javax.persistence.Table;
  
 @Entity
 @Table(name = "Pedidos")
-public class Pedidos {
+public class Pedido {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int codigoPedido;
@@ -41,10 +41,10 @@ public class Pedidos {
         Entragado,
         Cancelado
     }
-    public Pedidos(LocalDateTime fechaPedido1, EstadoPedido estadoPedido1, Double totalPedido1, String direccionPedido1, int codigoPedido1, int codigoUsuario1) {
+    public Pedido(LocalDateTime fechaPedido1, EstadoPedido estadoPedido1, Double totalPedido1, String direccionPedido1, int codigoPedido1, int codigoUsuario1) {
     }
  
-    public Pedidos(int codigoPedido, LocalDateTime fechaPedido, EstadoPedido estadoPedido, 
+    public Pedido(int codigoPedido, LocalDateTime fechaPedido, EstadoPedido estadoPedido, 
                    Double totalPedido, String direccionPedido, int codigoRecibo, int codigoUsuario) {
         this.codigoPedido = codigoPedido;
         this.fechaPedido = fechaPedido;

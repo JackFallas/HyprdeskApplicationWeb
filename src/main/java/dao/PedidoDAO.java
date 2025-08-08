@@ -1,13 +1,13 @@
 package dao;
  
-import model.Pedidos;
+import model.Pedido;
 import javax.persistence.*;
 import java.util.List;
  
 public class PedidoDAO {
     private EntityManagerFactory fabrica = Persistence.createEntityManagerFactory("proyectoBimestralPU");
     // Guardar un nuevo pedido
-    public void guardar(Pedidos pedidos) {
+    public void guardar(Pedido pedidos) {
         EntityManager admin = fabrica.createEntityManager();
         EntityTransaction transaccion = admin.getTransaction();
         try {
@@ -22,28 +22,28 @@ public class PedidoDAO {
     }
  
     // Listar todos los pedidos
-    public List<Pedidos> listarTodos() {
+    public List<Pedido> listarTodos() {
         String jpql = "SELECT p FROM Pedidos p";
         EntityManager admin = fabrica.createEntityManager();
         try {
-            return admin.createQuery(jpql, Pedidos.class).getResultList();
+            return admin.createQuery(jpql, Pedido.class).getResultList();
         } finally {
             admin.close();
         }
     }
  
     // Buscar un pedido por ID
-    public Pedidos buscarPorId(int id) {
+    public Pedido buscarPorId(int id) {
         EntityManager admin = fabrica.createEntityManager();
         try {
-            return admin.find(Pedidos.class, id);
+            return admin.find(Pedido.class, id);
         } finally {
             admin.close();
         }
     }
  
     // Actualizar un pedido existente
-    public void Actualizar(Pedidos pedidos) {
+    public void Actualizar(Pedido pedidos) {
         EntityManager admin = fabrica.createEntityManager();
         EntityTransaction transaccion = admin.getTransaction();
         try {
@@ -63,7 +63,7 @@ public class PedidoDAO {
         EntityTransaction transaccion = admin.getTransaction();
         try {
             transaccion.begin();
-            Pedidos pedidos = admin.find(Pedidos.class, id);
+            Pedido pedidos = admin.find(Pedido.class, id);
             if (pedidos != null) {
                 admin.remove(pedidos);
             }
