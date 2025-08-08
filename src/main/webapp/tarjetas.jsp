@@ -158,7 +158,7 @@
                                     <td>
                                         <button type="button" class="btn btn-edit btn-sm me-2" data-bs-toggle="modal" data-bs-target="#tarjetaModal"
                                                 onclick="prepararModalEditar(this)">Editar</button>
-                                        <a href="${pageContext.request.contextPath}/TarjetaController?accion=eliminar&id=${tarjeta.codigoTarjeta}"
+                                        <a href="${pageContext.request.contextPath}/ServletTarjetas?accion=eliminar&id=${tarjeta.codigoTarjeta}"
                                            class="btn btn-delete btn-sm" onclick="return confirm('¿Está seguro de eliminar esta tarjeta?');">Eliminar</a>
                                     </td>
                                 </tr>
@@ -182,7 +182,7 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                <form id="tarjetaForm" action="${pageContext.request.contextPath}/TarjetaController" method="post">
+                <form id="tarjetaForm" action="${pageContext.request.contextPath}/ServletTarjetas" method="post">
                     <input type="hidden" name="accion" id="formAccion" value="insertar">
                     <input type="hidden" name="codigoTarjeta" id="formCodigoTarjeta">
                     <%-- Eliminar o manejar este campo si el usuario ya no es un filtro --%>
