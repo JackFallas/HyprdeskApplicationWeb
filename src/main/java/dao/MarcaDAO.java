@@ -46,7 +46,7 @@ public class MarcaDAO {
         EntityManager em = emf.createEntityManager();
         List<Marca> listaMarcas = null;
         try {
-            TypedQuery<Marca> query = em.createQuery("SELECT m FROM Marcas m", Marca.class);
+            TypedQuery<Marca> query = em.createQuery("SELECT m FROM Marca m", Marca.class);
             listaMarcas = query.getResultList();
         } finally {
             if (em != null && em.isOpen()) {

@@ -1,4 +1,6 @@
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
+<%@ page import="java.util.List"%>
+<%@ page import="model.Marca"%>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <!DOCTYPE html>
@@ -163,7 +165,7 @@
                                     <td>
                                         <button type="button" class="btn btn-edit btn-sm me-2" data-bs-toggle="modal" data-bs-target="#marcaModal"
                                                 onclick="prepararModalEditar(this)">Editar</button>
-                                        <a href="${pageContext.request.contextPath}/MarcaController?accion=eliminar&id=${marca.codigoMarca}"
+                                        <a href="${pageContext.request.contextPath}/ServletMarcas?accion=eliminar&id=${marca.codigoMarca}"
                                            class="btn btn-delete btn-sm" onclick="return confirm('¿Está seguro de eliminar esta marca?');">Eliminar</a>
                                     </td>
                                 </tr>
@@ -187,7 +189,7 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                <form id="marcaForm" action="${pageContext.request.contextPath}/MarcaController" method="post">
+                <form id="marcaForm" action="${pageContext.request.contextPath}/ServletMarcas" method="post">
                     <input type="hidden" name="accion" id="formAccion" value="insertar">
                     <input type="hidden" name="codigoMarca" id="formCodigoMarca">
                     <div class="mb-3">

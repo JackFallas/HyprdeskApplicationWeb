@@ -19,7 +19,7 @@ public class ProductoDAO {
     private EntityManagerFactory fabrica = Persistence.createEntityManagerFactory("proyectoBimestralPU");
     
     public List<Producto> listarTodos() {
-        String jpql = "SELECT c FROM Productos p";
+        String jpql = "SELECT p FROM Producto p";
         EntityManager admin = fabrica.createEntityManager();
         try {
             return admin.createQuery(jpql, Producto.class).getResultList();
