@@ -1,122 +1,145 @@
 package model;
- 
+
 import java.time.LocalDateTime;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
- 
+import java.math.BigDecimal;
+
 /**
-* Clase que representa un pedido.
-* Contiene información sobre el pedido, incluyendo estado, fecha, total, etc.
-* 
-* @author informatica
-*/
- 
+ * Clase que representa un pedido.
+ * Mapea a la tabla 'Pedidos' en la base de datos.
+ * * @author informatica
+ */
 @Entity
 @Table(name = "Pedidos")
 public class Pedido {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int codigoPedido;
+
     @Column(name = "fechaPedido", nullable = false)
     private LocalDateTime fechaPedido;
-    @Column(name = "estadoPedido", nullable = false)
+
+    // Se utiliza EnumType.STRING para mapear el enum a la cadena de texto en la base de datos
+    @Enumerated(EnumType.STRING)
+    @Column(name = "estadoPedido", nullable = false, length = 64)
     private EstadoPedido estadoPedido;
-    @Column(name = "totalPedido", nullable = false)
-    private Double totalPedido;
-    @Column(name = "direccionPedido", nullable = false)
+
+    @Column(name = "totalPedido", nullable = false, precision = 10, scale = 2)
+    private BigDecimal totalPedido;
+
+    @Column(name = "direccionPedido", nullable = false, length = 128)
     private String direccionPedido;
-    @Column(name = "codigoRecibo", nullable = false)
-    private int codigoRecibo;
-    @Column(name = "codigoUsuario", nullable = false)
-    private int codigoUsuario;
-    
+
+    // Mapeo de la clave foránea a la entidad Recibo
+    @ManyToOne
+    @JoinColumn(name = "codigoRecibo", referencedColumnName = "codigoRecibo")
+    private Recibo recibo;
+
+    // Mapeo de la clave foránea a la entidad Usuario
+    @ManyToOne
+    @JoinColumn(name = "codigoUsuario", referencedColumnName = "codigoUsuario")
+    private Usuario usuario;
+
+    // La constante del enum debe coincidir con el valor de la base de datos
     public enum EstadoPedido {
         Pendiente,
         En_proceso,
         Enviado,
-        Entragado,
+        Entregado,
         Cancelado
     }
-    public Pedido(LocalDateTime fechaPedido1, EstadoPedido estadoPedido1, Double totalPedido1, String direccionPedido1, int codigoPedido1, int codigoUsuario1) {
+
+    public Pedido() {
     }
- 
-    public Pedido(int codigoPedido, LocalDateTime fechaPedido, EstadoPedido estadoPedido, 
-                   Double totalPedido, String direccionPedido, int codigoRecibo, int codigoUsuario) {
-        this.codigoPedido = codigoPedido;
+
+    public Pedido(LocalDateTime fechaPedido, EstadoPedido estadoPedido,
+                  BigDecimal totalPedido, String direccionPedido, Recibo recibo, Usuario usuario) {
         this.fechaPedido = fechaPedido;
         this.estadoPedido = estadoPedido;
         this.totalPedido = totalPedido;
         this.direccionPedido = direccionPedido;
-        this.codigoRecibo = codigoRecibo;
-        this.codigoUsuario = codigoUsuario;
+        this.recibo = recibo;
+        this.usuario = usuario;
     }
+
+    // Getters y setters para todos los campos
+
     public int getCodigoPedido() {
         return codigoPedido;
     }
+
     public void setCodigoPedido(int codigoPedido) {
         this.codigoPedido = codigoPedido;
     }
+
     public LocalDateTime getFechaPedido() {
         return fechaPedido;
     }
- 
+
     public void setFechaPedido(LocalDateTime fechaPedido) {
         this.fechaPedido = fechaPedido;
     }
- 
+
     public EstadoPedido getEstadoPedido() {
         return estadoPedido;
     }
- 
+
     public void setEstadoPedido(EstadoPedido estadoPedido) {
         this.estadoPedido = estadoPedido;
     }
- 
-    public Double getTotalPedido() {
+
+    public BigDecimal getTotalPedido() {
         return totalPedido;
     }
- 
-    public void setTotalPedido(Double totalPedido) {
+
+    public void setTotalPedido(BigDecimal totalPedido) {
         this.totalPedido = totalPedido;
     }
- 
+
     public String getDireccionPedido() {
         return direccionPedido;
     }
- 
+
     public void setDireccionPedido(String direccionPedido) {
         this.direccionPedido = direccionPedido;
     }
- 
-    public int getCodigoRecibo() {
-        return codigoRecibo;
+
+    public Recibo getRecibo() {
+        return recibo;
     }
- 
-    public void setCodigoRecibo(int codigoRecibo) {
-        this.codigoRecibo = codigoRecibo;
+
+    public void setRecibo(Recibo recibo) {
+        this.recibo = recibo;
     }
- 
-    public int getCodigoUsuario() {
-        return codigoUsuario;
+
+    public Usuario getUsuario() {
+        return usuario;
     }
- 
-    public void setCodigoUsuario(int codigoUsuario) {
-        this.codigoUsuario = codigoUsuario;
+
+    public void setUsuario(Usuario usuario) {
+        this.usuario = usuario;
     }
- 
+
     @Override
     public String toString() {
         return "Pedido{" +
-               ", fechaPedido=" + fechaPedido +
-               ", estadoPedido=" + estadoPedido +
-               ", totalPedido=" + totalPedido +
-               ", direccionPedido='" + direccionPedido + '\'' +
-               ", codigoRecibo=" + codigoRecibo +
-               ", codigoUsuario=" + codigoUsuario +
-               '}';
+                "codigoPedido=" + codigoPedido +
+                ", fechaPedido=" + fechaPedido +
+                ", estadoPedido=" + estadoPedido +
+                ", totalPedido=" + totalPedido +
+                ", direccionPedido='" + direccionPedido + '\'' +
+                ", recibo=" + (recibo != null ? recibo.getCodigoRecibo() : "null") +
+                ", usuario=" + (usuario != null ? usuario.getCodigoUsuario() : "null") +
+                '}';
     }
 }

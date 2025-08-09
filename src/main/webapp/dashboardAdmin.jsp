@@ -81,28 +81,28 @@
                 <a href="#" class="menu__item active">
                     <i class='bx bx-home-alt'></i><span>Dashboard</span>
                 </a>
-                <a href="mantenimientoUsuarios.jsp" class="menu__item">
+                <a href="ServletUsuario" class="menu__item">
                     <i class='bx bx-user'></i><span>Usuarios</span>
                 </a>
-                <a href="mantenimientoMarcas.jsp" class="menu__item">
+                <a href="ServletMarcas" class="menu__item">
                     <i class='bx bx-cogs'></i><span>Marcas</span>
                 </a>
-                <a href="mantenimientoCategorias.jsp" class="menu__item">
+                <a href="ServletCategorias" class="menu__item">
                     <i class='bx bx-category'></i><span>Categorías</span>
                 </a>
-                <a href="mantenimientoProductos.jsp" class="menu__item">
+                <a href="ServletProducto" class="menu__item">
                     <i class='bx bx-package'></i><span>Productos</span>
                 </a>
-                <a href="mantenimientoTarjetas.jsp" class="menu__item">
+                <a href="ServletTarjetas" class="menu__item">
                     <i class='bx bx-credit-card'></i><span>Tarjetas</span>
                 </a>
-                <a href="mantenimientoRecibos.jsp" class="menu__item">
+                <a href="ServletRecibos" class="menu__item">
                     <i class='bx bx-receipt'></i><span>Recibos</span>
                 </a>
-                <a href="mantenimientoPedidos.jsp" class="menu__item">
+                <a href="ServletPedidos" class="menu__item">
                     <i class='bx bx-cart'></i><span>Pedidos</span>
                 </a>
-                <a href="mantenimientoDetallePedidos.jsp" class="menu__item">
+                <a href="ServletDetallePedido" class="menu__item">
                     <i class='bx bx-list-ul'></i><span>Detalle de Pedidos</span>
                 </a>
                 <a href="login.jsp" class="menu__item">

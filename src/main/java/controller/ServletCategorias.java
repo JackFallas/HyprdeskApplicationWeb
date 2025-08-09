@@ -15,7 +15,7 @@ public class ServletCategorias extends HttpServlet {
 
     @Override
     public void init() throws ServletException {
-        dao = new CategoriaDAO(); // inicializar DAO una sola vez
+        dao = new CategoriaDAO(); 
     }
 
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
@@ -52,7 +52,7 @@ public class ServletCategorias extends HttpServlet {
             throws ServletException, IOException {
         List<Categoria> listaCategorias = dao.listarTodos();
         request.setAttribute("listaCategorias", listaCategorias);
-        request.getRequestDispatcher("Categoria.jsp").forward(request, response);
+        request.getRequestDispatcher("mantenimientoCategorias.jsp").forward(request, response);
     }
 
     private void agregarCategoria(HttpServletRequest request, HttpServletResponse response)
@@ -71,7 +71,7 @@ public class ServletCategorias extends HttpServlet {
         int idEditar = Integer.parseInt(request.getParameter("id"));
         Categoria categoria = dao.buscarPorId(idEditar);
         request.setAttribute("categoriaEditar", categoria);
-        request.getRequestDispatcher("Categoria.jsp").forward(request, response);
+        request.getRequestDispatcher("mantenimientoCategorias.jsp").forward(request, response);
     }
 
     private void actualizarCategoria(HttpServletRequest request, HttpServletResponse response)

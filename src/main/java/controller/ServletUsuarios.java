@@ -1,9 +1,7 @@
-
 package controller;
 
 import dao.UsuarioDAO;
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.time.LocalDate;
 import java.util.List;
 import javax.servlet.ServletException;
@@ -16,131 +14,100 @@ import model.Usuario;
 @WebServlet(name = "ServletUsuario", urlPatterns = {"/ServletUsuario"})
 public class ServletUsuarios extends HttpServlet {
 
-    protected void processRequest(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
-        response.setContentType("text/html;charset=UTF-8");
-        
-        request.setCharacterEncoding("UTF-8");
+    private final UsuarioDAO dao = new UsuarioDAO();
 
+    @Override
+    protected void doGet(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
         String accion = request.getParameter("accion");
-        
         if (accion == null || accion.isEmpty()) {
-            accion = "listar"; 
+            accion = "listar";
         }
 
         switch (accion) {
-            case "listarUsuarios":
+            case "listar":
                 doListarUsuarios(request, response);
                 break;
-            case "actualizar":
-                doActualizarUsuario(request, response);
+            case "editar":
+                doMostrarFormularioEdicion(request, response);
                 break;
             default:
-                doListarUsuarios(request, response); 
-                break;
+                doListarUsuarios(request, response);
+        }
+    }
+
+    @Override
+    protected void doPost(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        String accion = request.getParameter("accion");
+        if ("actualizar".equals(accion)) {
+            doActualizarUsuario(request, response);
+        } else {
+            doListarUsuarios(request, response);
         }
     }
 
     private void doListarUsuarios(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        UsuarioDAO dao = new UsuarioDAO();
         List<Usuario> listaUsuarios = dao.listarUsuarios();
-        request.setAttribute("listarUsuarios", listaUsuarios);
-        request.getRequestDispatcher("mantenimientoUsuario.jsp").forward(request, response); 
+        request.setAttribute("listaUsuarios", listaUsuarios);
+        request.getRequestDispatcher("mantenimientoUsuarios.jsp").forward(request, response);
+    }
+
+    private void doMostrarFormularioEdicion(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        try {
+            int idEditar = Integer.parseInt(request.getParameter("codigoUsuario"));
+            Usuario usuario = dao.buscarPorId(idEditar);
+            request.setAttribute("usuarioEditar", usuario);
+            
+            request.getRequestDispatcher("mantenimientoUsuarios.jsp").forward(request, response);
+        } catch (NumberFormatException e) {
+            System.err.println("Error: El parámetro 'codigoUsuario' no es un número válido: " + request.getParameter("codigoUsuario"));
+            doListarUsuarios(request, response);
+        }
     }
 
     private void doActualizarUsuario(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        UsuarioDAO dao = new UsuarioDAO();
-        
-       
-        int idActualizar = -1; 
-        String codigoUsuarioParam = request.getParameter("codigoUsuario");
+        try {
+            int idActualizar = Integer.parseInt(request.getParameter("codigoUsuario"));
+            Usuario usuarioActualizar = dao.buscarPorId(idActualizar);
 
-        if (codigoUsuarioParam != null && !codigoUsuarioParam.trim().isEmpty()) {
-            try {
-                idActualizar = Integer.parseInt(codigoUsuarioParam);
-            } catch (NumberFormatException e) {
-                System.err.println("Error: El parámetro 'codigoUsuario' no es un número válido: " + codigoUsuarioParam);
-                response.sendRedirect("ServletUsuario?accion=listar&error=idInvalido");
-                return; 
-            }
-        } else {
-            System.err.println("Error: El parámetro 'codigoUsuario' es nulo o vacío.");
-            response.sendRedirect("ServletUsuario?accion=listar&error=idFaltante");
-            return; 
-        }
-       
+            if (usuarioActualizar != null) {
+                usuarioActualizar.setNombreUsuario(request.getParameter("nombreUsuario"));
+                usuarioActualizar.setApellidoUsuario(request.getParameter("apellidoUsuario"));
+                usuarioActualizar.setTelefono(request.getParameter("telefono"));
+                usuarioActualizar.setDireccionUsuario(request.getParameter("direccionUsuario"));
+                usuarioActualizar.setEmail(request.getParameter("email"));
+                usuarioActualizar.setContrasena(request.getParameter("contrasena"));
+                usuarioActualizar.setEstadoUsuario(request.getParameter("estadoUsuario"));
+                usuarioActualizar.setRol(request.getParameter("rol"));
 
-        Usuario usuarioActualizar = dao.buscarPorId(idActualizar);
-
-        if (usuarioActualizar != null) {
-            usuarioActualizar.setNombreUsuario(request.getParameter("nombreUsuario"));
-            usuarioActualizar.setApellidoUsuario(request.getParameter("apellidoUsuario"));
-            usuarioActualizar.setTelefono(request.getParameter("telefono"));
-            usuarioActualizar.setDireccionUsuario(request.getParameter("direccionUsuario"));
-            usuarioActualizar.setEmail(request.getParameter("email"));
-            usuarioActualizar.setContrasena(request.getParameter("contrasena"));
-            
-            usuarioActualizar.setEstadoUsuario(request.getParameter("estadoUsuario"));
-            usuarioActualizar.setRol(request.getParameter("rol"));
-            
-            String fechaNacimientoStrAct = request.getParameter("fechaNacimiento");
-            if (fechaNacimientoStrAct != null && !fechaNacimientoStrAct.isEmpty()) {
-                try {
-                    LocalDate fechaNacimientoLocalDate = LocalDate.parse(fechaNacimientoStrAct); 
-                    usuarioActualizar.setFechaNacimiento(fechaNacimientoLocalDate);
-                } catch (java.time.format.DateTimeParseException e) {
-                    System.err.println("Error al parsear fecha de nacimiento: " + e.getMessage());
-                   
+                String fechaNacimientoStrAct = request.getParameter("fechaNacimiento");
+                if (fechaNacimientoStrAct != null && !fechaNacimientoStrAct.isEmpty()) {
+                    try {
+                        LocalDate fechaNacimientoLocalDate = LocalDate.parse(fechaNacimientoStrAct);
+                        usuarioActualizar.setFechaNacimiento(fechaNacimientoLocalDate);
+                    } catch (java.time.format.DateTimeParseException e) {
+                        System.err.println("Error al parsear fecha de nacimiento: " + e.getMessage());
+                    }
                 }
+
+                dao.actualizar(usuarioActualizar);
             }
-            
-            dao.actualizar(usuarioActualizar);
-            response.sendRedirect("ServletUsuario?accion=listar&success=true"); 
-        } else {
-            System.err.println("Usuario con ID " + idActualizar + " no encontrado para actualizar.");
-            response.sendRedirect("ServletUsuario?accion=listar&error=usuarioNoEncontrado"); 
+            response.sendRedirect("ServletUsuario?accion=listar");
+        } catch (NumberFormatException e) {
+            System.err.println("Error: El parámetro 'codigoUsuario' no es un número válido.");
+            response.sendRedirect("ServletUsuario?accion=listar");
+        } catch (Exception e) {
+            System.err.println("Error al actualizar usuario: " + e.getMessage());
+            response.sendRedirect("ServletUsuario?accion=listar");
         }
     }
-
-    // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
-    /**
-     * Handles the HTTP <code>GET</code> method.
-     *
-     * @param request servlet request
-     * @param response servlet response
-     * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
-     */
-    @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
-        processRequest(request, response);
-    }
-
-    /**
-     * Handles the HTTP <code>POST</code> method.
-     *
-     * @param request servlet request
-     * @param response servlet response
-     * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
-     */
-    @Override
-    protected void doPost(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
-        processRequest(request, response);
-    }
-
-    /**
-     * Returns a short description of the servlet.
-     *
-     * @return a String containing servlet description
-     */
+    
     @Override
     public String getServletInfo() {
-        return "Short description";
-    }// </editor-fold>
-
+        return "Servlet para el mantenimiento de usuarios";
+    }
 }

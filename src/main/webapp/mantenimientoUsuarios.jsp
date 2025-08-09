@@ -1,4 +1,3 @@
-
 <%@ page import="java.util.List" %>
 <%@ page import="model.Usuario" %>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
@@ -79,7 +78,6 @@
         <nav class="navbar navbar-expand-lg navbar-dark mb-4">
             <div class="container-fluid">
                 <a class="navbar-brand" href="#">
-
                     <img src="${pageContext.request.contextPath}/resources/image/Logo con nombre.png" alt="Hyprdesk Logo">
                 </a>
                 <span class="navbar-text text-white ms-3 h4">
@@ -112,16 +110,7 @@
 
                         <tbody>
                             <c:forEach var="usuario" items="${listaUsuarios}">
-                                <tr data-codigo="${usuario.codigoUsuario}" 
-                                    data-nombre="${usuario.nombreUsuario}" 
-                                    data-apellido="${usuario.apellidoUsuario}"
-                                    data-telefono="${usuario.telefono}"
-                                    data-direccion="${usuario.direccionUsuario}"
-                                    data-email="${usuario.email}"
-                                    data-contrasena="${usuario.contrasena}"
-                                    data-estado="${usuario.estadoUsuario}"
-                                    data-rol="${usuario.rol}"
-                                    data-nacimiento="${usuario.fechaNacimiento}">
+                                <tr>
                                     <td>${usuario.codigoUsuario}</td>
                                     <td>${usuario.nombreUsuario}</td>
                                     <td>${usuario.apellidoUsuario}</td>
@@ -133,8 +122,7 @@
                                     <td>${usuario.rol}</td>
                                     <td>${usuario.fechaNacimiento}</td>
                                     <td>
-                                        <button type="button" class="btn btn-edit btn-sm me-2" data-bs-toggle="modal" data-bs-target="#usuarioModal"
-                                                onclick="prepararModalEditar(this)">Editar</button>
+                                        <a href="ServletUsuario?accion=editar&codigoUsuario=${usuario.codigoUsuario}" class="btn btn-edit btn-sm me-2">Editar</a>
                                     </td>
                                 </tr>
                             </c:forEach>
@@ -149,62 +137,73 @@
             </div>
         </div>
 
+        <c:if test="${not empty usuarioEditar}">
+            <script>
+                document.addEventListener('DOMContentLoaded', function () {
+                    const usuarioModal = new bootstrap.Modal(document.getElementById('usuarioModal'));
+                    usuarioModal.show();
+                });
+            </script>
+        </c:if>
 
         <div class="modal fade" id="usuarioModal" tabindex="-1" aria-labelledby="usuarioModalLabel" aria-hidden="true">
             <div class="modal-dialog modal-lg">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h5 class="modal-title" id="usuarioModalLabel">Editar Usuario</h5>
+                        <h5 class="modal-title" id="usuarioModalLabel">
+                            <c:if test="${not empty usuarioEditar}">Editar Usuario ID: ${usuarioEditar.codigoUsuario}</c:if>
+                            <c:if test="${empty usuarioEditar}">Agregar Nuevo Usuario</c:if>
+                        </h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body">
                         <form id="usuarioForm" action="${pageContext.request.contextPath}/ServletUsuario" method="post">
                             <input type="hidden" name="accion" id="formAccion" value="actualizar">
-                            <input type="hidden" name="codigoUsuario" id="formCodigoUsuario">
+                            <input type="hidden" name="codigoUsuario" id="formCodigoUsuario" value="${usuarioEditar.codigoUsuario}">
 
                             <div class="mb-3">
                                 <label for="modalNombre" class="form-label">Nombre:</label>
-                                <input type="text" name="nombreUsuario" id="modalNombre" class="form-control" required>
+                                <input type="text" name="nombreUsuario" id="modalNombre" class="form-control" value="${usuarioEditar.nombreUsuario}" required>
                             </div>
                             <div class="mb-3">
                                 <label for="modalApellido" class="form-label">Apellido:</label>
-                                <input type="text" name="apellidoUsuario" id="modalApellido" class="form-control" required>
+                                <input type="text" name="apellidoUsuario" id="modalApellido" class="form-control" value="${usuarioEditar.apellidoUsuario}" required>
                             </div>
                             <div class="mb-3">
                                 <label for="modalTelefono" class="form-label">Teléfono:</label>
-                                <input type="text" name="telefono" id="modalTelefono" class="form-control" required>
+                                <input type="text" name="telefono" id="modalTelefono" class="form-control" value="${usuarioEditar.telefono}" required>
                             </div>
                             <div class="mb-3">
                                 <label for="modalDireccion" class="form-label">Dirección:</label>
-                                <input type="text" name="direccionUsuario" id="modalDireccion" class="form-control" required>
+                                <input type="text" name="direccionUsuario" id="modalDireccion" class="form-control" value="${usuarioEditar.direccionUsuario}" required>
                             </div>
                             <div class="mb-3">
                                 <label for="modalEmail" class="form-label">Email:</label>
-                                <input type="email" name="email" id="modalEmail" class="form-control" required>
+                                <input type="email" name="email" id="modalEmail" class="form-control" value="${usuarioEditar.email}" required>
                             </div>
                             <div class="mb-3">
                                 <label for="modalContrasena" class="form-label">Contraseña:</label>
-                                <input type="password" name="contrasena" id="modalContrasena" class="form-control" required>
+                                <input type="password" name="contrasena" id="modalContrasena" class="form-control" value="${usuarioEditar.contrasena}" required>
                             </div>
                             <div class="mb-3">
                                 <label for="modalEstadoUsuario" class="form-label">Estado:</label>
                                 <select name="estadoUsuario" id="modalEstadoUsuario" class="form-select" required>
-                                    <option value="Activo">Activo</option>
-                                    <option value="Inactivo">Inactivo</option>
-                                    <option value="Suspendido">Suspendido</option>
+                                    <option value="Activo" <c:if test="${usuarioEditar.estadoUsuario == 'Activo'}">selected</c:if>>Activo</option>
+                                    <option value="Inactivo" <c:if test="${usuarioEditar.estadoUsuario == 'Inactivo'}">selected</c:if>>Inactivo</option>
+                                    <option value="Suspendido" <c:if test="${usuarioEditar.estadoUsuario == 'Suspendido'}">selected</c:if>>Suspendido</option>
                                 </select>
                             </div>
                             <div class="mb-3">
                                 <label for="modalRol" class="form-label">Rol:</label>
                                 <select name="rol" id="modalRol" class="form-select" required>
-                                    <option value="Admin">Admin</option>
-                                    <option value="Empleado">Empleado</option>
-                                    <option value="Usuario">Usuario</option>
+                                    <option value="Admin" <c:if test="${usuarioEditar.rol == 'Admin'}">selected</c:if>>Admin</option>
+                                    <option value="Empleado" <c:if test="${usuarioEditar.rol == 'Empleado'}">selected</c:if>>Empleado</option>
+                                    <option value="Usuario" <c:if test="${usuarioEditar.rol == 'Usuario'}">selected</c:if>>Usuario</option>
                                 </select>
                             </div>
                             <div class="mb-3">
                                 <label for="modalFechaNacimiento" class="form-label">Fecha de Nacimiento:</label>
-                                <input type="date" name="fechaNacimiento" id="modalFechaNacimiento" class="form-control">
+                                <input type="date" name="fechaNacimiento" id="modalFechaNacimiento" class="form-control" value="${usuarioEditar.fechaNacimiento}">
                             </div>
 
                             <div class="modal-footer">
@@ -218,89 +217,5 @@
         </div>
 
         <script src="${pageContext.request.contextPath}/resources/js/bootstrap.bundle.min.js"></script>
-        <script>
-                                                    function prepararModalAgregar() {
-                                                        document.getElementById('usuarioModalLabel').innerText = 'Agregar Nuevo Usuario';
-                                                        document.getElementById('usuarioForm').reset();
-                                                        document.getElementById('formAccion').value = 'agregar';
-                                                        document.getElementById('formCodigoUsuario').value = '';
-                                                        document.getElementById('modalEstadoUsuario').value = 'Activo';
-                                                        document.getElementById('modalRol').value = 'Usuario';
-                                                    }
-
-                                                    function prepararModalEditar(button) {
-                                                        const row = button.closest('tr');
-
-                                                        const id = row.dataset.codigo;
-                                                        const nombre = row.dataset.nombre;
-                                                        const apellido = row.dataset.apellido;
-                                                        const telefono = row.dataset.telefono;
-                                                        const direccion = row.dataset.direccion;
-                                                        const email = row.dataset.email;
-                                                        const contrasena = row.dataset.contrasena;
-                                                        const estado = row.dataset.estado;
-                                                        const rol = row.dataset.rol;
-                                                        let nacimiento = row.dataset.nacimiento;
-
-                                                        console.log("Datos obtenidos de la fila para edición:");
-                                                        console.log("ID:", id);
-                                                        console.log("Nombre:", nombre);
-                                                        console.log("Apellido:", apellido);
-                                                        console.log("Teléfono:", telefono);
-                                                        console.log("Dirección:", direccion);
-                                                        console.log("Email:", email);
-                                                        console.log("Contraseña:", contrasena);
-                                                        console.log("Estado:", estado);
-                                                        console.log("Rol:", rol);
-                                                        console.log("Fecha Nacimiento (original):", nacimiento);
-
-                                                        document.getElementById('usuarioModalLabel').innerText = 'Editar Usuario ID: ' + id;
-                                                        document.getElementById('formCodigoUsuario').value = id;
-                                                        document.getElementById('formAccion').value = 'actualizar';
-
-                                                        document.getElementById('modalNombre').value = nombre;
-                                                        document.getElementById('modalApellido').value = apellido;
-                                                        document.getElementById('modalTelefono').value = telefono;
-                                                        document.getElementById('modalDireccion').value = direccion;
-                                                        document.getElementById('modalEmail').value = email;
-                                                        document.getElementById('modalContrasena').value = contrasena;
-
-                                                        document.getElementById('modalEstadoUsuario').value = estado;
-                                                        document.getElementById('modalRol').value = rol;
-
-                                                        if (nacimiento && nacimiento.includes(' ')) {
-                                                            nacimiento = nacimiento.split(' ')[0];
-                                                        }
-                                                        document.getElementById('modalFechaNacimiento').value = nacimiento;
-
-                                                        console.log("Valores asignados al formulario del modal:");
-                                                        console.log("ID Form:", document.getElementById('formCodigoUsuario').value);
-                                                        console.log("Nombre Form:", document.getElementById('modalNombre').value);
-                                                        console.log("Fecha Nacimiento Form:", document.getElementById('modalFechaNacimiento').value);
-                                                    }
-
-                                                    document.addEventListener('DOMContentLoaded', function () {
-                                                        var myModalEl = document.getElementById('usuarioModal');
-                                                        if (myModalEl) {
-                                                            myModalEl.addEventListener('show.bs.modal', function (event) {
-                                                                console.log('Modal de Bootstrap se está abriendo.');
-                                                            });
-                                                            myModalEl.addEventListener('shown.bs.modal', function (event) {
-                                                                console.log('Modal de Bootstrap ya está abierto.');
-                                                            });
-                                                            myModalEl.addEventListener('hide.bs.modal', function (event) {
-                                                                console.log('Modal de Bootstrap se está cerrando.');
-                                                            });
-                                                        } else {
-                                                            console.error('El elemento del modal con ID "usuarioModal" no fue encontrado.');
-                                                        }
-
-                                                        if (typeof bootstrap !== 'undefined' && bootstrap.Modal) {
-                                                            console.log('Bootstrap JS (Modal) cargado correctamente.');
-                                                        } else {
-                                                            console.error('Bootstrap JS (Modal) NO cargado. Verifica la ruta del script.');
-                                                        }
-                                                    });
-        </script>
     </body>
 </html>

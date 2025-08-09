@@ -23,7 +23,7 @@ public class PedidoDAO {
  
     // Listar todos los pedidos
     public List<Pedido> listarTodos() {
-        String jpql = "SELECT p FROM Pedidos p";
+        String jpql = "SELECT p FROM Pedido p";
         EntityManager admin = fabrica.createEntityManager();
         try {
             return admin.createQuery(jpql, Pedido.class).getResultList();

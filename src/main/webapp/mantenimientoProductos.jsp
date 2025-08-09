@@ -5,6 +5,8 @@
 --%>
 
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
+<%@ page import="java.util.List" %>
+<%@ page import="model.Producto" %>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <!DOCTYPE html>
 <html lang="es">
@@ -141,8 +143,8 @@
                                     data-stock="${producto.stock}"
                                     data-fechaentrada="${producto.fechaEntrada}"
                                     data-fechasalida="${producto.fechaSalida}"
-                                    data-codigomarca="${producto.codigoMarca}"
-                                    data-codigocategoria="${producto.codigoCategoria}">
+                                    data-codigomarca="${producto.marca.codigoMarca}"
+                                    data-codigocategoria="${producto.categoria.codigoCategoria}">
                                     <td>${producto.codigoProducto}</td>
                                     <td>${producto.nombre}</td>
                                     <td>${producto.descripcion}</td>
@@ -150,8 +152,8 @@
                                     <td>${producto.stock}</td>
                                     <td>${producto.fechaEntrada}</td>
                                     <td>${producto.fechaSalida}</td>
-                                    <td>${producto.codigoMarca}</td>
-                                    <td>${producto.codigoCategoria}</td>
+                                    <td>${producto.marca.codigoMarca}</td>
+                                    <td>${producto.categoria.codigoCategoria}</td>
                                     <td>
                                         <button type="button" class="btn btn-edit btn-sm me-2" data-bs-toggle="modal" data-bs-target="#elementoModal" 
                                                 onclick="prepararModalEditar(this)">Editar</button>

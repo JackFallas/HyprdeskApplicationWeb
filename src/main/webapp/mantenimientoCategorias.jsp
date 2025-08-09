@@ -5,7 +5,7 @@
 --%>
 
 <%@ page import="java.util.List" %>
-<%@ page import="model.Categorias" %>
+<%@ page import="model.Categoria" %>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <!DOCTYPE html>
 <html lang="es">
@@ -129,9 +129,9 @@
 
                         <tbody>
                             <%
-                                List<Categorias> listaCategorias = (List<Categorias>) request.getAttribute("listaCategorias");
+                                List<Categoria> listaCategorias = (List<Categoria>) request.getAttribute("listaCategorias");
                                 if (listaCategorias != null && !listaCategorias.isEmpty()) {
-                                    for (Categorias c : listaCategorias) {
+                                    for (Categoria c : listaCategorias) {
                             %>
                             <tr data-id="<%= c.getCodigoCategoria()%>" 
                                 data-nombre="<%= c.getNombreCategoria()%>" 

@@ -83,7 +83,7 @@ public class ServletDetallePedidos extends HttpServlet {
             throws ServletException, IOException {
         List<DetallePedido> listaDetallePedidos = detallePedidosDao.listarTodos();
         request.setAttribute("listaDetallePedidos", listaDetallePedidos);
-        request.getRequestDispatcher("mantenimientoDetallePedido.jsp").forward(request, response);
+        request.getRequestDispatcher("mantenimientoDetallePedidos.jsp").forward(request, response);
     }
 
     /**
@@ -145,7 +145,7 @@ public class ServletDetallePedidos extends HttpServlet {
 
             if (detalleEditar != null) {
                 request.setAttribute("detalleEditar", detalleEditar);
-                request.getRequestDispatcher("formDetallePedidos.jsp").forward(request, response);
+                request.getRequestDispatcher("mantenimientoDetallePedidos.jsp").forward(request, response);
             } else {
                 throw new ServletException("Detalle de Pedido con ID " + idEditar + " no encontrado para editar.");
             }

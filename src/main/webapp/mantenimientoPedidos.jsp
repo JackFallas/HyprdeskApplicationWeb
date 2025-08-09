@@ -1,4 +1,6 @@
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
+<%@ page import="java.util.List"%>
+<%@ page import="model.Pedido"%>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <!DOCTYPE html>
@@ -149,12 +151,14 @@
                     <c:choose>
                         <c:when test="${not empty listaPedidos}">
                             <c:forEach var="pedido" items="${listaPedidos}">
+                                <!-- CORRECCIÓN AQUÍ: Acceder al código del usuario a través del objeto usuario -->
                                 <tr data-codigo="${pedido.codigoPedido}"
                                     data-fecha="${pedido.fechaPedido}"
                                     data-estado="${pedido.estadoPedido}"
                                     data-total="${pedido.totalPedido}"
                                     data-direccion="${pedido.direccionPedido}"
-                                    data-usuario="${pedido.codigoUsuario}">
+                                    data-usuario="${pedido.usuario.codigoUsuario}"
+                                    data-recibo="${pedido.recibo.codigoRecibo}">
                                     <td>${pedido.codigoPedido}</td>
                                     <td>${pedido.fechaPedido}</td>
                                     <td>${pedido.estadoPedido}</td>
@@ -202,9 +206,11 @@
                     <div class="mb-3">
                         <label for="modalEstadoPedido" class="form-label">Estado Pedido:</label>
                         <select id="modalEstadoPedido" name="estadoPedido" class="form-select" required>
-                            <option value="PENDIENTE">Pendiente</option>
-                            <option value="ENVIADO">Enviado</option>
-                            <option value="ENTREGADO">Entregado</option>
+                            <option value="Pendiente">Pendiente</option>
+                            <option value="En_proceso">En proceso</option>
+                            <option value="Enviado">Enviado</option>
+                            <option value="Entregado">Entregado</option>
+                            <option value="Cancelado">Cancelado</option>
                         </select>
                     </div>
 
@@ -225,6 +231,12 @@
                         <label for="modalCodigoUsuario" class="form-label">Código Usuario:</label>
                         <input type="number" name="codigoUsuario" id="modalCodigoUsuario" class="form-control" required>
                     </div>
+                    
+                    <!-- Código Recibo -->
+                    <div class="mb-3">
+                        <label for="modalCodigoRecibo" class="form-label">Código Recibo:</label>
+                        <input type="number" name="codigoRecibo" id="modalCodigoRecibo" class="form-control" required>
+                    </div>
 
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
@@ -243,7 +255,8 @@
         document.getElementById('pedidoForm').reset();
         document.getElementById('formAccion').value = 'insertar';
         document.getElementById('formCodigoPedido').value = '';
-        document.getElementById('modalEstadoPedido').value = 'PENDIENTE';
+        // CORRECCIÓN: Usar el valor correcto para el enum 'En proceso'
+        document.getElementById('modalEstadoPedido').value = 'EN_PROCESO';
     }
 
     function prepararModalEditar(button) {
@@ -254,6 +267,7 @@
         const total = row.dataset.total;
         const direccion = row.dataset.direccion;
         const usuario = row.dataset.usuario;
+        const recibo = row.dataset.recibo;
 
         document.getElementById('pedidoModalLabel').innerText = 'Editar Pedido Código: ' + codigo;
         document.getElementById('formCodigoPedido').value = codigo;
@@ -261,7 +275,9 @@
         document.getElementById('modalEstadoPedido').value = estado;
         document.getElementById('modalTotalPedido').value = total;
         document.getElementById('modalDireccionPedido').value = direccion;
+        // CORRECCIÓN: Asignar el valor a los campos correctos
         document.getElementById('modalCodigoUsuario').value = usuario;
+        document.getElementById('modalCodigoRecibo').value = recibo;
         document.getElementById('formAccion').value = 'actualizar';
     }
 </script>

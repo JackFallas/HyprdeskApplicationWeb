@@ -25,7 +25,7 @@ public class ServletMarcas extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String accion = request.getParameter("accion");
 
-        if (accion == null) {
+        if (accion == null || accion.isEmpty()) {
             accion = "listar";
         }
 
@@ -34,7 +34,7 @@ public class ServletMarcas extends HttpServlet {
                 listarMarcas(request, response);
                 break;
             case "editar":
-                listarMarcas(request, response);
+                mostrarFormularioEdicion(request, response); // Nuevo método para manejar la edición
                 break;
             case "eliminar":
                 eliminarMarca(request, response);
@@ -49,7 +49,7 @@ public class ServletMarcas extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String accion = request.getParameter("accion");
 
-        if (accion == null) {
+        if (accion == null || accion.isEmpty()) {
             accion = "insertar";
         }
 
@@ -69,7 +69,21 @@ public class ServletMarcas extends HttpServlet {
     private void listarMarcas(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         List<Marca> listaMarcas = marcaDAO.listarMarcas();
         request.setAttribute("listaMarcas", listaMarcas);
-        request.getRequestDispatcher("marcas.jsp").forward(request, response);
+        request.getRequestDispatcher("mantenimientoMarcas.jsp").forward(request, response);
+    }
+    
+    // Método para mostrar el formulario de edición
+    private void mostrarFormularioEdicion(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        try {
+            int codigoMarca = Integer.parseInt(request.getParameter("id"));
+            Marca marca = marcaDAO.buscarPorId(codigoMarca);
+            
+            request.setAttribute("marcaEditar", marca);
+            listarMarcas(request, response); // Muestra el formulario con los datos de la marca
+        } catch (NumberFormatException e) {
+            System.err.println("Error al obtener ID para editar: " + e.getMessage());
+            listarMarcas(request, response); // Si hay un error, solo muestra la lista
+        }
     }
 
     private void insertarMarca(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -81,7 +95,7 @@ public class ServletMarcas extends HttpServlet {
 
         try {
             marcaDAO.guardar(nuevaMarca);
-            response.sendRedirect("ServletMarcas?success=true");
+            response.sendRedirect(request.getContextPath() + "/ServletMarcas?accion=listar");
         } catch (Exception e) {
             request.setAttribute("error", "Error al insertar la marca: " + e.getMessage());
             listarMarcas(request, response);
@@ -89,40 +103,35 @@ public class ServletMarcas extends HttpServlet {
     }
 
     private void actualizarMarca(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        int codigoMarca = Integer.parseInt(request.getParameter("codigoMarca"));
-        String nombreMarca = request.getParameter("nombreMarca");
-        String descripcion = request.getParameter("descripcion");
-        String estadoMarca = request.getParameter("estadoMarca");
+        try {
+            int codigoMarca = Integer.parseInt(request.getParameter("codigoMarca"));
+            String nombreMarca = request.getParameter("nombreMarca");
+            String descripcion = request.getParameter("descripcion");
+            String estadoMarca = request.getParameter("estadoMarca");
 
-        Marca marcaExistente = marcaDAO.buscarPorId(codigoMarca);
+            Marca marcaExistente = marcaDAO.buscarPorId(codigoMarca);
 
-        if (marcaExistente != null) {
-            marcaExistente.setNombreMarca(nombreMarca);
-            marcaExistente.setDescripcion(descripcion);
-            marcaExistente.setEstadoMarca(estadoMarca);
-
-            try {
+            if (marcaExistente != null) {
+                marcaExistente.setNombreMarca(nombreMarca);
+                marcaExistente.setDescripcion(descripcion);
+                marcaExistente.setEstadoMarca(estadoMarca);
                 marcaDAO.actualizar(marcaExistente);
-                response.sendRedirect("ServletMarcas?success=true");
-            } catch (Exception e) {
-                request.setAttribute("error", "Error al actualizar la marca: " + e.getMessage());
-                listarMarcas(request, response);
             }
-        } else {
-            request.setAttribute("error", "Marca no encontrada para actualizar.");
+            response.sendRedirect(request.getContextPath() + "/ServletMarcas?accion=listar");
+        } catch (Exception e) {
+            request.setAttribute("error", "Error al actualizar la marca: " + e.getMessage());
             listarMarcas(request, response);
         }
     }
 
     private void eliminarMarca(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        int codigoMarca = Integer.parseInt(request.getParameter("id"));
-
         try {
+            int codigoMarca = Integer.parseInt(request.getParameter("id"));
             marcaDAO.eliminar(codigoMarca);
-            response.sendRedirect("ServletMarcas?deleted=true");
-        } catch (Exception e) {
-            request.setAttribute("error", "Error al eliminar la marca: " + e.getMessage());
-            listarMarcas(request, response);
+        } catch (NumberFormatException e) {
+            System.err.println("Error al obtener ID para eliminar: " + e.getMessage());
+        } finally {
+            response.sendRedirect(request.getContextPath() + "/ServletMarcas?accion=listar");
         }
     }
 }

@@ -33,7 +33,7 @@ public class CategoriaDAO {
     }
 
     public List<Categoria> listarTodos() {
-        String jpql = "SELECT c FROM Categorias c";
+        String jpql = "SELECT c FROM Categoria c";
         EntityManager admin = fabrica.createEntityManager();
         try{
             //getResultList()->SQL = resultSet
