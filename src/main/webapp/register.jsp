@@ -143,42 +143,63 @@
                 <h3 class="mt-3" style="position: relative; z-index: 1;">Bienvenido a Hyprdesk</h3>
             </div>
             <div class="form-content">
-                <h2 class="text-center mb-5 fw-bold">Crear una Cuenta</h2>
-                <form id="formulario" action="guardarUsuario" method="POST">
-                    <div class="row mb-3">
-                        <div class="col-md-6">
-                            <label for="nombreUsuario" class="form-label">Nombre</label>
-                            <input type="text" class="form-control" id="nombreUsuario" name="nombreUsuario" required>
-                        </div>
-                        <div class="col-md-6">
-                            <label for="apellidoUsuario" class="form-label">Apellido</label>
-                            <input type="text" class="form-control" id="apellidoUsuario" name="apellidoUsuario" required>
-                        </div>
+                <h2 class="text-center mb-4">Crear una cuenta</h2>
+            <form id="formulario" action="guardarUsuario" method="POST">
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label for="nombreUsuario" class="form-label">Nombre</label>
+                        <input type="text" class="form-control" id="nombreUsuario" name="nombreUsuario" required>
                     </div>
-                    <div class="mb-3">
-                        <label for="email" class="form-label">Correo Electrónico</label>
-                        <input type="email" class="form-control" id="email" name="email" required>
+                    <div class="col-md-6 mb-3">
+                        <label for="apellidoUsuario" class="form-label">Apellido</label>
+                        <input type="text" class="form-control" id="apellidoUsuario" name="apellidoUsuario" required>
                     </div>
-                    <div class="mb-3">
-                        <label for="telefono" class="form-label">Teléfono</label>
-                        <input type="tel" class="form-control" id="telefono" name="telefono" required>
-                    </div>
-                    <div class="mb-3">
-                        <label for="direccionUsuario" class="form-label">Dirección</label>
-                        <input type="text" class="form-control" id="direccionUsuario" name="direccionUsuario" required>
-                    </div>
-                    <div class="mb-3">
-                        <label for="contrasena" class="form-label">Contraseña</label>
-                        <input type="password" class="form-control" id="contrasena" name="contrasena" required>
-                    </div>
-                    <div class="mb-4">
-                        <label for="confirmarContrasena" class="form-label">Confirmar Contraseña</label>
-                        <input type="password" class="form-control" id="confirmarContrasena" oninput="this.setCustomValidity(this.value !== contrasena.value ? 'Las contraseñas no coinciden' : '')" required>
-                    </div>
-                    <button type="submit" class="btn btn-success w-100 mt-3">Registrarse</button>
-                    <p class="text-center mt-4">
-                        ¿Ya tienes una cuenta? <a href="login.jsp">Inicia Sesión aquí</a>
-                    </p>
+                </div>
+                <div class="mb-3">
+                    <label for="email" class="form-label">Correo Electrónico</label>
+                    <input type="email" class="form-control" id="email" name="email" required>
+                </div>
+                <div class="mb-3">
+                    <label for="telefono" class="form-label">Teléfono</label>
+                    <input type="tel" class="form-control" id="telefono" name="telefono" required>
+                </div>
+                <div class="mb-3">
+                    <label for="fechaNacimiento" class="form-label">Fecha de Nacimiento</label>
+                    <input type="date" class="form-control" id="fechaNacimiento" name="fechaNacimiento" required>
+                </div>
+                <div class="mb-3">
+                    <label for="direccionUsuario" class="form-label">Dirección</label>
+                    <input type="text" class="form-control" id="direccionUsuario" name="direccionUsuario" required>
+                </div>
+                <div class="mb-3">
+                    <label for="contrasena" class="form-label">Contraseña</label>
+                    <input type="password" class="form-control" id="contrasena" name="contrasena" required>
+                </div>
+                <div class="mb-3">
+                    <label for="confirmarContrasena" class="form-label">Confirmar Contraseña</label>
+                    <input type="password" class="form-control" id="confirmarContrasena" oninput="this.setCustomValidity(this.value !== contrasena.value ? 'Las contraseñas no coinciden' : '')">
+                </div>
+                <%
+                    String error = (String) request.getAttribute("error");
+                    String confirma = (String) request.getAttribute("confirmacion");
+                    if (error != null) {
+                %>
+                <div class="alert alert-danger" role="alert">
+                    <%= error%>
+                </div>
+                <%
+                } else if ("guardado".equals(confirmacion)) {
+                %>
+                <div class="alert alert-success mt-3" role="alert">
+                    ¡Registro exitoso! Ahora puedes iniciar sesión.
+                </div>
+                <%
+                    }
+                %>
+                <button type="submit" class="btn btn-success w-100 mt-3">Registrarse</button>
+                <p class="text-center mt-3">
+                    ¿Ya tienes una cuenta? <a href="login.jsp">Inicia Sesión aquí</a>
+                </p>
                 </form>
             </div>
         </div>

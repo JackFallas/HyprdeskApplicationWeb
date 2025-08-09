@@ -32,10 +32,10 @@ public class ServletLogin extends HttpServlet {
 
             if ("Admin".equalsIgnoreCase(rol)) {
                 request.setAttribute("confirmacion", "guardado");
-                request.getRequestDispatcher("register.jsp").forward(request, response);
+                request.getRequestDispatcher("/dashboardAdmin.jsp").forward(request, response);
             } else if ("Usuario".equalsIgnoreCase(rol)) {
                 request.setAttribute("confirmacion", "guardado");
-                request.getRequestDispatcher("index.jsp").forward(request, response);
+                request.getRequestDispatcher("/dashboardUsuario.jsp").forward(request, response);
             } else {
                 response.sendRedirect("index.jsp");
             }

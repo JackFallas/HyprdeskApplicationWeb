@@ -29,7 +29,7 @@ public class ServletUsuarios extends HttpServlet {
         }
 
         switch (accion) {
-            case "listar":
+            case "listarUsuarios":
                 doListarUsuarios(request, response);
                 break;
             case "actualizar":
@@ -45,7 +45,7 @@ public class ServletUsuarios extends HttpServlet {
             throws ServletException, IOException {
         UsuarioDAO dao = new UsuarioDAO();
         List<Usuario> listaUsuarios = dao.listarUsuarios();
-        request.setAttribute("listaUsuarios", listaUsuarios);
+        request.setAttribute("listarUsuarios", listaUsuarios);
         request.getRequestDispatcher("mantenimientoUsuario.jsp").forward(request, response); 
     }
 

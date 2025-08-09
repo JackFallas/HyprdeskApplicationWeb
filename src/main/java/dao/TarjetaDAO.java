@@ -40,6 +40,7 @@ public class TarjetaDAO {
     public List<Tarjeta> listarTodas() {
         EntityManager em = emf.createEntityManager();
         try {
+<<<<<<< HEAD
             TypedQuery<Tarjeta> query = em.createQuery("SELECT t FROM Tarjetas t", Tarjeta.class);
             return query.getResultList();
         } finally {
@@ -52,6 +53,9 @@ public class TarjetaDAO {
         try {
             TypedQuery<Tarjeta> query = em.createQuery("SELECT t FROM Tarjetas t WHERE t.codigoUsuario = :codigoUsuario", Tarjeta.class);
             query.setParameter("codigoUsuario", codigoUsuario);
+=======
+            TypedQuery<Tarjeta> query = em.createQuery("SELECT t FROM Tarjeta t", Tarjeta.class);
+>>>>>>> KennethMazariegos
             return query.getResultList();
         } finally {
             em.close();

@@ -1,8 +1,11 @@
 package model;
 
+import java.io.Serializable;
 import java.util.Date;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -12,10 +15,11 @@ import javax.persistence.TemporalType;
 
 @Entity
 @Table(name = "Tarjetas")
-public class Tarjeta {
+public class Tarjeta implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "codigoTarjeta")
     private int codigoTarjeta;
 
     @Column(name = "codigoUsuario", nullable = false)
@@ -24,7 +28,7 @@ public class Tarjeta {
     @Column(name = "ultimos_4", nullable = false, length = 4)
     private String ultimos4;
 
-    @Column(name = "marca", nullable = false, columnDefinition = "ENUM('Visa', 'MasterCard', 'Amex', 'Discover', 'Otro')")
+    @Column(name = "marca", nullable = false)
     private String marca;
 
     @Column(name = "token", nullable = false, length = 36)
@@ -37,16 +41,18 @@ public class Tarjeta {
     @Column(name = "nombreTitular", nullable = false, length = 40)
     private String nombreTitular;
 
-    @Column(name = "tipoTarjeta", columnDefinition = "ENUM('Crédito', 'Débito', 'Prepago') DEFAULT 'Crédito'")
+    @Column(name = "tipoTarjeta", nullable = false)
     private String tipoTarjeta;
 
     @Temporal(TemporalType.TIMESTAMP)
-    @Column(name = "fechaRegistro", nullable = false, insertable = false, updatable = false, columnDefinition = "DATETIME DEFAULT CURRENT_TIMESTAMP")
+    @Column(name = "fechaRegistro", nullable = false, insertable = false, updatable = false)
     private Date fechaRegistro;
 
+    // --- Constructores ---
     public Tarjeta() {
     }
 
+    // Constructor para insertar una nueva tarjeta
     public Tarjeta(int codigoUsuario, String ultimos4, String marca, String token, Date fechaExpiracion, String nombreTitular, String tipoTarjeta) {
         this.codigoUsuario = codigoUsuario;
         this.ultimos4 = ultimos4;
@@ -56,7 +62,8 @@ public class Tarjeta {
         this.nombreTitular = nombreTitular;
         this.tipoTarjeta = tipoTarjeta;
     }
-
+    
+    // Constructor para actualizar una tarjeta existente
     public Tarjeta(int codigoTarjeta, int codigoUsuario, String ultimos4, String marca, String token, Date fechaExpiracion, String nombreTitular, String tipoTarjeta) {
         this.codigoTarjeta = codigoTarjeta;
         this.codigoUsuario = codigoUsuario;
@@ -68,6 +75,7 @@ public class Tarjeta {
         this.tipoTarjeta = tipoTarjeta;
     }
 
+    // --- Getters y Setters ---
     public int getCodigoTarjeta() {
         return codigoTarjeta;
     }
@@ -142,6 +150,6 @@ public class Tarjeta {
 
     @Override
     public String toString() {
-        return "Tarjetas{" + "codigoTarjeta=" + codigoTarjeta + ", codigoUsuario=" + codigoUsuario + ", ultimos4=" + ultimos4 + ", marca=" + marca + ", token=" + token + ", fechaExpiracion=" + fechaExpiracion + ", nombreTitular=" + nombreTitular + ", tipoTarjeta=" + tipoTarjeta + ", fechaRegistro=" + fechaRegistro + '}';
+        return "Tarjeta{" + "codigoTarjeta=" + codigoTarjeta + ", codigoUsuario=" + codigoUsuario + ", ultimos4=" + ultimos4 + ", marca=" + marca + '}';
     }
 }

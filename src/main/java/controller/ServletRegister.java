@@ -46,7 +46,7 @@ public class ServletRegister extends HttpServlet {
         }
         dao.guardar(usuario);
 
-        solicitud.setAttribute("confirmacion", "guardado");
+        solicitud.setAttribute("confirma", "guardado");
         solicitud.getRequestDispatcher("login.jsp").forward(solicitud, respuesta);
 
     }

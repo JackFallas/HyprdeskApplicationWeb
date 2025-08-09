@@ -81,31 +81,31 @@
                 <a href="#" class="menu__item active">
                     <i class='bx bx-home-alt'></i><span>Dashboard</span>
                 </a>
-                <a href="#usuarios" class="menu__item">
+                <a href="mantenimientoUsuarios.jsp" class="menu__item">
                     <i class='bx bx-user'></i><span>Usuarios</span>
                 </a>
-                <a href="#marcas" class="menu__item">
+                <a href="mantenimientoMarcas.jsp" class="menu__item">
                     <i class='bx bx-cogs'></i><span>Marcas</span>
                 </a>
-                <a href="#categorias" class="menu__item">
+                <a href="mantenimientoCategorias.jsp" class="menu__item">
                     <i class='bx bx-category'></i><span>Categorías</span>
                 </a>
-                <a href="#productos" class="menu__item">
+                <a href="mantenimientoProductos.jsp" class="menu__item">
                     <i class='bx bx-package'></i><span>Productos</span>
                 </a>
-                <a href="#tarjetas" class="menu__item">
+                <a href="mantenimientoTarjetas.jsp" class="menu__item">
                     <i class='bx bx-credit-card'></i><span>Tarjetas</span>
                 </a>
-                <a href="#recibos" class="menu__item">
+                <a href="mantenimientoRecibos.jsp" class="menu__item">
                     <i class='bx bx-receipt'></i><span>Recibos</span>
                 </a>
-                <a href="#pedidos" class="menu__item">
+                <a href="mantenimientoPedidos.jsp" class="menu__item">
                     <i class='bx bx-cart'></i><span>Pedidos</span>
                 </a>
-                <a href="#detalle-pedidos" class="menu__item">
+                <a href="mantenimientoDetallePedidos.jsp" class="menu__item">
                     <i class='bx bx-list-ul'></i><span>Detalle de Pedidos</span>
                 </a>
-                <a href="#" class="menu__item">
+                <a href="login.jsp" class="menu__item">
                     <i class='bx bx-power-off'></i><span>Cerrar sesión</span>
                 </a>
             </nav>

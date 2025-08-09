@@ -16,46 +16,52 @@ import javax.persistence.Table;
  */
 
 @Entity
-
 @Table (name = "Productos")
 public class Producto {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int codigoProducto;
+
     @Column(name = "nombreProducto", nullable = false)
     private String nombre;
+
     @Column(name = "descripcionProducto", nullable = false)
     private String descripcion;
+
     @Column(name = "precioProducto", nullable = false)
     private double precio;
+
     @Column(name = "stock", nullable = false)
     private int stock;
+
     @Column(name = "fechaEntrada", updatable = false)
     private Date fechaEntrada;
+
     @Column(name = "fechaSalida", updatable = false)
     private Date fechaSalida;
-    
-    // Llaves foraneas
+
+    // Relaciones
     @ManyToOne
     @JoinColumn(name = "codigoMarca", referencedColumnName = "codigoMarca")
-    private int codigoMarca;
-    
+    private Marca marca;
+
     @ManyToOne
     @JoinColumn(name = "codigoCategoria", referencedColumnName = "codigoCategoria")
-    private int codigoCategoria;
+    private Categoria categoria;
 
     public Producto() {
     }
 
-    public Producto(String nombre, String descripcion, double precio, int stock, Date fechaEntrada, Date fechaSalida, int codigoMarca, int codigoCategoria) {
+    public Producto(String nombre, String descripcion, double precio, int stock, Date fechaEntrada, Date fechaSalida, Marca marca, Categoria categoria) {
         this.nombre = nombre;
         this.descripcion = descripcion;
         this.precio = precio;
         this.stock = stock;
         this.fechaEntrada = fechaEntrada;
         this.fechaSalida = fechaSalida;
-        this.codigoMarca = codigoMarca;
-        this.codigoCategoria = codigoCategoria;
+        this.marca = marca;
+        this.categoria = categoria;
     }
 
     public int getCodigoProducto() {
@@ -114,19 +120,20 @@ public class Producto {
         this.fechaSalida = fechaSalida;
     }
 
-    public int getCodigoMarca() {
-        return codigoMarca;
+    public Marca getMarca() {
+        return marca;
     }
 
-    public void setCodigoMarca(int codigoMarca) {
-        this.codigoMarca = codigoMarca;
+    public void setMarca(Marca marca) {
+        this.marca = marca;
     }
 
-    public int getCodigoCategoria() {
-        return codigoCategoria;
+    public Categoria getCategoria() {
+        return categoria;
     }
 
-    public void setCodigoCategoria(int codigoCategoria) {
-        this.codigoCategoria = codigoCategoria;
+    public void setCategoria(Categoria categoria) {
+        this.categoria = categoria;
     }
 }
+

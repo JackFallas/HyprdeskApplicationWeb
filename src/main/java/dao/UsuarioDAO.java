@@ -27,7 +27,7 @@ public class UsuarioDAO {
         EntityManager en = enti.createEntityManager();
         Usuario usuario = null;
         try {
-            TypedQuery<Usuario> query = en.createQuery("SELECT u FROM Usuarios u WHERE u.email = :email", Usuario.class);
+            TypedQuery<Usuario> query = en.createQuery("SELECT u FROM Usuario u WHERE u.email = :email", Usuario.class);
             query.setParameter("email", email);
             usuario = query.getSingleResult(); 
         } catch (NoResultException e) {
@@ -53,7 +53,7 @@ public class UsuarioDAO {
     public boolean erorEmail(String email) {
         EntityManager en = enti.createEntityManager();
         try {
-            Long count = en.createQuery("select count(u) from Usuarios u where u.email = :email", Long.class)
+            Long count = en.createQuery("select count(u) from Usuario u where u.email = :email", Long.class)
                            .setParameter("email", email)
                            .getSingleResult();
             return count > 0;
@@ -63,7 +63,7 @@ public class UsuarioDAO {
     }
     
    public List<Usuario> listarUsuarios(){
-        String jpql = "SELECT u FROM Usuarios u";
+        String jpql = "SELECT u FROM Usuario u";
         EntityManager admin = enti.createEntityManager();
         try{
             return admin.createQuery(jpql, Usuario.class).getResultList();

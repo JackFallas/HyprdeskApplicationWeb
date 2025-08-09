@@ -10,7 +10,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import model.Marca;
 
-@WebServlet("/MarcaController")
+@WebServlet(name = "ServletMarcas", urlPatterns = {"/ServletMarcas"})
 public class ServletMarcas extends HttpServlet {
 
     private MarcaDAO marcaDAO;
@@ -81,7 +81,7 @@ public class ServletMarcas extends HttpServlet {
 
         try {
             marcaDAO.guardar(nuevaMarca);
-            response.sendRedirect("MarcaController?success=true");
+            response.sendRedirect("ServletMarcas?success=true");
         } catch (Exception e) {
             request.setAttribute("error", "Error al insertar la marca: " + e.getMessage());
             listarMarcas(request, response);
@@ -103,7 +103,7 @@ public class ServletMarcas extends HttpServlet {
 
             try {
                 marcaDAO.actualizar(marcaExistente);
-                response.sendRedirect("MarcaController?success=true");
+                response.sendRedirect("ServletMarcas?success=true");
             } catch (Exception e) {
                 request.setAttribute("error", "Error al actualizar la marca: " + e.getMessage());
                 listarMarcas(request, response);
@@ -119,7 +119,7 @@ public class ServletMarcas extends HttpServlet {
 
         try {
             marcaDAO.eliminar(codigoMarca);
-            response.sendRedirect("MarcaController?deleted=true");
+            response.sendRedirect("ServletMarcas?deleted=true");
         } catch (Exception e) {
             request.setAttribute("error", "Error al eliminar la marca: " + e.getMessage());
             listarMarcas(request, response);
