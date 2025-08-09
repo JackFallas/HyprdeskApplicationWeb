@@ -6,6 +6,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
+import java.util.UUID;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -28,150 +29,109 @@ public class ServletTarjetas extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String accion = request.getParameter("accion");
         if (accion == null) {
-            accion = "listarTodas"; 
+            accion = "listar";
         }
 
         switch (accion) {
-            case "listarTodas": 
-                listarTodasLasTarjetas(request, response);
+            case "listar":
+                listarTarjetas(request, response);
                 break;
             case "eliminar":
                 eliminarTarjeta(request, response);
                 break;
-           
             default:
-                listarTodasLasTarjetas(request, response); 
+                listarTarjetas(request, response);
                 break;
         }
     }
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        request.setCharacterEncoding("UTF-8");
         String accion = request.getParameter("accion");
-        if (accion == null) {
-            response.sendRedirect("index.jsp");
-            return;
-        }
 
         switch (accion) {
             case "insertar":
                 insertarTarjeta(request, response);
                 break;
             case "actualizar":
-                actualizarTarjeta(request, response); 
+                actualizarTarjeta(request, response);
                 break;
             default:
-                response.sendRedirect("index.jsp");
+                listarTarjetas(request, response);
                 break;
         }
     }
 
-    private void listarTodasLasTarjetas(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    private void listarTarjetas(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         try {
-            List<Tarjeta> listaTarjetas = tarjetaDAO.listarTodas(); 
+            List<Tarjeta> listaTarjetas = tarjetaDAO.listarTodas();
             request.setAttribute("listaTarjetas", listaTarjetas);
-            request.getRequestDispatcher("tarjetas.jsp").forward(request, response);
+            request.getRequestDispatcher("mantenimientoTarjetas.jsp").forward(request, response);
         } catch (Exception e) {
-            request.setAttribute("error", "Error al cargar todas las tarjetas: " + e.getMessage());
-            request.getRequestDispatcher("tarjetas.jsp").forward(request, response);
+            request.setAttribute("error", "Error al cargar las tarjetas: " + e.getMessage());
+            request.getRequestDispatcher("mantenimientoTarjetas.jsp").forward(request, response);
         }
     }
 
-    private void listarTarjetasPorUsuario(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    private void insertarTarjeta(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         try {
             int codigoUsuario = Integer.parseInt(request.getParameter("codigoUsuario"));
-            List<Tarjeta> listaTarjetas = tarjetaDAO.listarPorUsuario(codigoUsuario);
-            request.setAttribute("listaTarjetas", listaTarjetas);
-            request.setAttribute("codigoUsuario", codigoUsuario); 
-            request.getRequestDispatcher("tarjetas.jsp").forward(request, response);
-        } catch (NumberFormatException e) {
-            request.setAttribute("error", "Código de usuario inválido.");
-            request.getRequestDispatcher("tarjetas.jsp").forward(request, response);
-        }
-    }
-    private void insertarTarjeta(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-
-        int codigoUsuario = 0; 
-        try {
-            String codigoUsuarioStr = request.getParameter("codigoUsuario");
-            if (codigoUsuarioStr != null && !codigoUsuarioStr.isEmpty()) {
-                codigoUsuario = Integer.parseInt(codigoUsuarioStr);
-            } else {
-                request.setAttribute("error", "El código de usuario es obligatorio para insertar una tarjeta.");
-                listarTodasLasTarjetas(request, response); 
-                return;
-            }
-        } catch (NumberFormatException e) {
-            request.setAttribute("error", "Código de usuario inválido al insertar la tarjeta.");
-            listarTodasLasTarjetas(request, response);
-            return;
-        }
-
-
-        try {
             String ultimos4 = request.getParameter("ultimos4");
             String marca = request.getParameter("marca");
-            String token = request.getParameter("token");
             String nombreTitular = request.getParameter("nombreTitular");
             String tipoTarjeta = request.getParameter("tipoTarjeta");
-
+            String fechaExpStr = request.getParameter("fechaExpiracion");
+            
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-            Date fechaExpiracion = sdf.parse(request.getParameter("fechaExpiracion"));
+            Date fechaExpiracion = sdf.parse(fechaExpStr);
+            
+            // Generar un token único para la tarjeta
+            String token = UUID.randomUUID().toString();
 
             Tarjeta nuevaTarjeta = new Tarjeta(codigoUsuario, ultimos4, marca, token, fechaExpiracion, nombreTitular, tipoTarjeta);
             tarjetaDAO.guardar(nuevaTarjeta);
 
-            response.sendRedirect("ServletTarjetas?accion=listarTodas&success=true"); 
-        } catch (ParseException e) {
-            request.setAttribute("error", "El formato de la fecha de expiración es incorrecto. Use AAAA-MM-DD.");
-            listarTodasLasTarjetas(request, response);
+            response.sendRedirect("ServletTarjetas?accion=listar&success=true");
+        } catch (ParseException | NumberFormatException e) {
+            request.setAttribute("error", "Datos inválidos. Verifique el formato de los números y fechas.");
+            listarTarjetas(request, response);
         } catch (Exception e) {
             request.setAttribute("error", "Error al guardar la tarjeta: " + e.getMessage());
-            listarTodasLasTarjetas(request, response);
+            listarTarjetas(request, response);
         }
     }
-    private void actualizarTarjeta(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        int codigoUsuario = 0; 
-        try {
-            String codigoUsuarioStr = request.getParameter("codigoUsuario");
-            if (codigoUsuarioStr != null && !codigoUsuarioStr.isEmpty()) {
-                codigoUsuario = Integer.parseInt(codigoUsuarioStr);
-            } else {
-                request.setAttribute("error", "El código de usuario es obligatorio para actualizar una tarjeta.");
-                listarTodasLasTarjetas(request, response);
-                return;
-            }
-        } catch (NumberFormatException e) {
-            request.setAttribute("error", "Código de usuario inválido al actualizar la tarjeta.");
-            listarTodasLasTarjetas(request, response);
-            return;
-        }
 
+    private void actualizarTarjeta(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         try {
             int codigoTarjeta = Integer.parseInt(request.getParameter("codigoTarjeta"));
+            int codigoUsuario = Integer.parseInt(request.getParameter("codigoUsuario"));
             String ultimos4 = request.getParameter("ultimos4");
             String marca = request.getParameter("marca");
-            String token = request.getParameter("token");
             String nombreTitular = request.getParameter("nombreTitular");
             String tipoTarjeta = request.getParameter("tipoTarjeta");
+            String fechaExpStr = request.getParameter("fechaExpiracion");
 
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-            Date fechaExpiracion = sdf.parse(request.getParameter("fechaExpiracion"));
+            Date fechaExpiracion = sdf.parse(fechaExpStr);
+            
+            // Al actualizar, mantenemos el token original
+            Tarjeta tarjetaExistente = tarjetaDAO.buscarPorId(codigoTarjeta);
+            if(tarjetaExistente == null){
+                throw new Exception("No se encontró la tarjeta con el código " + codigoTarjeta);
+            }
+            String token = tarjetaExistente.getToken();
 
             Tarjeta tarjetaActualizar = new Tarjeta(codigoTarjeta, codigoUsuario, ultimos4, marca, token, fechaExpiracion, nombreTitular, tipoTarjeta);
             tarjetaDAO.actualizar(tarjetaActualizar);
 
-            response.sendRedirect("ServletTarjetas?accion=listarTodas&success=true"); 
-
-        } catch (NumberFormatException e) {
-            request.setAttribute("error", "ID de tarjeta inválido para actualizar.");
-            listarTodasLasTarjetas(request, response);
-        } catch (ParseException e) {
-            request.setAttribute("error", "El formato de la fecha de expiración es incorrecto al actualizar. Use AAAA-MM-DD.");
-            listarTodasLasTarjetas(request, response);
+            response.sendRedirect("ServletTarjetas?accion=listar&success=true");
+        } catch (ParseException | NumberFormatException e) {
+            request.setAttribute("error", "Datos inválidos para actualizar. Verifique el formato de los números y fechas.");
+            listarTarjetas(request, response);
         } catch (Exception e) {
             request.setAttribute("error", "Error al actualizar la tarjeta: " + e.getMessage());
-            listarTodasLasTarjetas(request, response);
+            listarTarjetas(request, response);
         }
     }
 
@@ -179,13 +139,13 @@ public class ServletTarjetas extends HttpServlet {
         try {
             int codigoTarjeta = Integer.parseInt(request.getParameter("id"));
             tarjetaDAO.eliminar(codigoTarjeta);
-            response.sendRedirect("ServletTarjetas?accion=listarTodas&deleted=true");
+            response.sendRedirect("ServletTarjetas?accion=listar&deleted=true");
         } catch (NumberFormatException e) {
             request.setAttribute("error", "ID de tarjeta inválido.");
-            listarTodasLasTarjetas(request, response);
+            listarTarjetas(request, response);
         } catch (Exception e) {
             request.setAttribute("error", "Error al eliminar la tarjeta: " + e.getMessage());
-            listarTodasLasTarjetas(request, response);
+            listarTarjetas(request, response);
         }
     }
 }
