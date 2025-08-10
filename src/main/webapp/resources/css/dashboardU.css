@@ -1,7 +1,4 @@
-/*
-Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
-Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/CascadeStyleSheet.css to edit this template
-*/
+
 /* 
     Created on : 23/07/2025, 16:31:34
     Author     : PC
@@ -17,7 +14,6 @@ Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/CascadeStyleSheet.css
 
 body {
     background: #eaeaea;
-    overflow: hidden; /* Oculta scroll en toda la página */
 }
 
 /* SIDEBAR*/
@@ -68,11 +64,11 @@ body {
     z-index: 1000;
     display: flex;
     flex-direction: column;
-    overflow: hidden;  /* No se hace scroll dentro del sidebar */
+    overflow: hidden;  
 }
 #nav-toggle:checked ~ .sidebar{
     width: var(--sidebar-expanded);
-    box-shadow: 0 0 0 100vmax rgba(0,0,0,0.4); /* Overlay oscuro */
+    box-shadow: 0 0 0 100vmax rgba(0,0,0,0.4); 
 }
 
 /* Marca */
@@ -176,7 +172,16 @@ body {
     opacity: 1;
     transform: none;
 }
+.main-content {
+    
+    margin-left: var(--sidebar-collapsed);
+    transition: margin-left .35s;
+    padding-top: 100px;
+}
 
+#nav-toggle:checked ~ .main-content{
+    margin-left: var(--sidebar-expanded);
+}
 
 .main,
 .header,
@@ -362,6 +367,17 @@ body {
     z-index: -1;
     opacity: 0;
     animation: rhombus2 1s ease forwards;
+}
+
+.main-content {
+    padding-top: 100px;
+}
+
+@media (max-width: 768px) {
+  .products-section .card-img-top {
+    height: 180px; 
+    object-fit: cover;
+  }
 }
 
 /* Animaciones */

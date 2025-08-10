@@ -39,7 +39,7 @@
                 <a href="#" class="menu__item active">
                     <i class='bx bx-home-alt'></i><span>Inicio</span>
                 </a>
-                <a href="ServletProducto" class="menu__item">
+                <a href="productos.jsp" class="menu__item">
                     <i class='bx bx-shopping-bag'></i><span>Productos</span>
                 </a>
                 <a href="#" class="menu__item">
