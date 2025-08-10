@@ -21,7 +21,6 @@
 </head>
 
 <body>
-    <!-- Contenedor de la barra lateral (sidebar) usando Bootstrap -->
     <div class="d-flex">
         <input type="checkbox" id="nav-toggle" hidden>
 
