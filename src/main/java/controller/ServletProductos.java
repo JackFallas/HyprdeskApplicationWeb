@@ -12,6 +12,7 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import model.Categoria;
 import model.Marca;
 
@@ -24,6 +25,12 @@ public class ServletProductos extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+        HttpSession session = request.getSession();
+        String rol = (String) session.getAttribute("rol");
+        if (rol == null) {
+            rol = "Usuario"; 
+        }
+
         String accion = request.getParameter("accion");
         if (accion == null || accion.isEmpty()) {
             accion = "listar";
@@ -33,11 +40,12 @@ public class ServletProductos extends HttpServlet {
             case "listar":
                 listarProductos(request, response);
                 break;
-            case "editar":
-                mostrarFormularioEdicion(request, response);
-                break;
             case "eliminar":
-                eliminarProducto(request, response);
+                if ("Admin".equals(rol)) {
+                    eliminarProducto(request, response);
+                } else {
+                    response.sendRedirect(request.getContextPath() + "/ServletProducto?accion=listar");
+                }
                 break;
             default:
                 listarProductos(request, response);
@@ -47,21 +55,31 @@ public class ServletProductos extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+        HttpSession session = request.getSession();
+        String rol = (String) session.getAttribute("rol");
+        if (rol == null) {
+            rol = "Usuario"; 
+        }
+
         String accion = request.getParameter("accion");
         if (accion == null || accion.isEmpty()) {
             listarProductos(request, response);
             return;
         }
         
-        switch (accion) {
-            case "agregar":
-                agregarProductos(request, response);
-                break;
-            case "actualizar":
-                actualizarProductos(request, response);
-                break;
-            default:
-                listarProductos(request, response);
+        if ("Admin".equals(rol)) {
+            switch (accion) {
+                case "agregar":
+                    agregarProductos(request, response);
+                    break;
+                case "actualizar":
+                    actualizarProductos(request, response);
+                    break;
+                default:
+                    listarProductos(request, response);
+            }
+        } else {
+            response.sendRedirect(request.getContextPath() + "/ServletProducto?accion=listar");
         }
     }
 
@@ -72,20 +90,6 @@ public class ServletProductos extends HttpServlet {
         request.getRequestDispatcher("mantenimientoProductos.jsp").forward(request, response);
     }
     
-    private void mostrarFormularioEdicion(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
-        try {
-            int idEditar = Integer.parseInt(request.getParameter("id"));
-            Producto producto = dao.buscarPorID(idEditar);
-            request.setAttribute("productoEditar", producto);
-            // Reenviamos a la misma página JSP, pero ahora con los datos del producto a editar
-            listarProductos(request, response); 
-        } catch (NumberFormatException e) {
-            System.err.println("Error al obtener ID para editar: " + e.getMessage());
-            listarProductos(request, response);
-        }
-    }
-
     private void agregarProductos(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         try {
@@ -108,7 +112,6 @@ public class ServletProductos extends HttpServlet {
             response.sendRedirect(request.getContextPath() + "/ServletProducto?accion=listar");
         } catch (NumberFormatException | ParseException e) {
             System.err.println("Error al agregar producto: " + e.getMessage());
-            // Puedes agregar un mensaje de error a la petición si lo necesitas
             response.sendRedirect(request.getContextPath() + "/ServletProducto?accion=listar");
         }
     }
@@ -116,7 +119,7 @@ public class ServletProductos extends HttpServlet {
     private void actualizarProductos(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         try {
-            int idActualizar = Integer.parseInt(request.getParameter("id"));
+            int idActualizar = Integer.parseInt(request.getParameter("codigoProducto"));
             Producto producto = dao.buscarPorID(idActualizar);
             if (producto != null) {
                 producto.setNombre(request.getParameter("nombreProducto"));

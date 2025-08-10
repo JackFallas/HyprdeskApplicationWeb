@@ -39,20 +39,17 @@
                 <a href="#" class="menu__item active">
                     <i class='bx bx-home-alt'></i><span>Inicio</span>
                 </a>
-                <a href="#" class="menu__item">
-                    <i class='bx bx-shopping-bag'></i><span>Compras</span>
+                <a href="ServletProducto" class="menu__item">
+                    <i class='bx bx-shopping-bag'></i><span>Productos</span>
                 </a>
                 <a href="#" class="menu__item">
-                    <i class='bx bx-calendar'></i><span>Calendario</span>
+                    <i class='bx bx-cart'></i><span>Carrito</span>
                 </a>
                 <a href="#" class="menu__item">
-                    <i class='bx bx-message-square-dots'></i><span>Soporte</span>
+                    <i class='bx bx-shopping-bag'></i><span>Pedidos</span>
                 </a>
-                <a href="#" class="menu__item">
-                    <i class='bx bx-cog'></i><span>Configuracion</span>
-                </a>
-                <a href="#" class="menu__item">
-                    <i class='bx bx-line-chart'></i><span>...</span>
+                <a href="login.jsp" class="menu__item">
+                    <i class='bx bx-power-off'></i><span>Cerrar sesión</span>
                 </a>
             </nav>
 
@@ -80,6 +77,7 @@
             <a href="#" style="--i:1;"><i class='bx bxl-twitter'></i></a>
             <a href="#" style="--i:2;"><i class='bx bxl-facebook'></i></a>
             <a href="#" style="--i:3;"><i class='bx bxl-instagram-alt'></i></a>
+            <a href="#" style="--i:3;"><i class='bx bx-user'></i></a>
         </div>  
     </header>
 

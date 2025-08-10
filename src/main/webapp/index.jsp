@@ -1,28 +1,96 @@
 <%-- 
-    Document   : index
-    Created on : 23 jul. 2025, 08:48:16
+    Document   : dashboardUsuario
+    Created on : 30 jul 2025, 12:03:48
     Author     : informatica
 --%>
 
-<%@page contentType="text/html" pageEncoding="windows-1252"%>
+<%@page contentType="text/html" pageEncoding="UTF-8"%>
 <!DOCTYPE html>
-<html>
-    <head>
-        <title>Bienvenido!</title>
-        <meta name="viewport" content="width=device-width, initial-scale=1">
-        <link href="resources/css/bootstrap.min.css" rel="stylesheet">
-        <link href="resources/css/bootstrap-icons.min.css" rel="stylesheet">
-    </head>
-    <body style="background-color: #18042c;"class="bg-light d-flex justify-content-center align-items-center vh-100">
-        <div class="card shadow-lg p-5 bg-white text-center">
-            <h1 class="mb-4 text-primary"></h1>
-            <p class="lead mb-4"> </p>
-            <a href="register.jsp" class="btn btn-success btn-lg px-5 mb-3">
-                </i>Ir al Registro
-            </a>
-            <p class="mt-3">Ya tienes cuenta? <a href="login.jsp" class="text-decoration-none">Inicia sesion</a></p>
-            <p class="mt-3">Prueba <a href="ServletDetallePedido" class="text-decoration-none">Prueba</a></p>
-        </div>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pagina Principal - Hyprland</title>
 
-        </body>
+    <!-- Agregar Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <link rel="stylesheet" href="resources/css/dashboardU.css"/>
+    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+</head>
+
+<body>
+    <!-- Contenedor de la barra lateral (sidebar) usando Bootstrap -->
+    <div class="d-flex">
+        <input type="checkbox" id="nav-toggle" hidden>
+
+        <label for="nav-toggle" class="toggle-btn">
+            <i class='bx bx-menu'></i>
+        </label>
+
+        <aside class="sidebar d-flex flex-column">
+            <div class="brand d-flex align-items-center justify-content-start">
+                <i class='bx bxl-css3'></i>
+                <span class="brand__name"></span>
+            </div>
+
+            <nav class="menu">
+                <a href="#" class="menu__item active">
+                    <i class='bx bx-home-alt'></i><span>Inicio</span>
+                </a>
+                <a href="#" class="menu__item">
+                    <i class='bx bx-message'></i><span>Acerca De</span>
+                </a>
+                <a href="#" class="menu__item">
+                    <i class='bx bx-message-square-dots'></i><span>Contacto</span>
+                </a>
+            </nav>
+
+            <div class="profile d-flex align-items-center">
+                <img src="Logo.png" alt="avatar" class="rounded-circle">
+                <div class="profile__info ms-3">
+                    <p class="name">Hyperdesk.</p>
+                    <p class="plan">Kinal - Derechos Reservados</p>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Contenedor principal (header + home) -->
+        <main class="flex-grow-1">
+            <header class="header">
+        <a href="#" class="logo">Hyperdesk</a>
+
+        <nav class="navbar">
+        </nav>
+
+        <div class="social-media">
+            <i></i>
+        </div>  
+    </header>
+
+            <!-- Home Section (contenedor) -->
+            <section class="home d-flex justify-content-between align-items-center py-5">
+                <div class="home-content">
+                    <h1>Bienvenido!</h1>
+                    <h3>¿Eres nuevo por aqui?</h3>
+                    <p>Te ayudare con esto!</p>
+                    <a href="register.jsp" class="btn btn-secundary">Registrate</a>
+                    <a href="login.jsp" class="btn btn-secundary">Inicia Sesion</a>
+                </div>
+
+                <div class="home-img">
+                    <div class="rhombus">
+                        <img src="pcgamerblue.png" alt="PC Gamer" class="img-fluid"/>
+                    </div>
+                </div>
+
+                <div class="rhombus2"></div>
+            </section>
+        </main>
+    </div>
+
+    <!-- Agregar Bootstrap JS (para posibles interacciones dinámicas) -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
 </html>

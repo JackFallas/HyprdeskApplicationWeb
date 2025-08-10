@@ -1,4 +1,3 @@
-
 package controller;
 
 import dao.UsuarioDAO;
@@ -29,13 +28,15 @@ public class ServletLogin extends HttpServlet {
             session.setAttribute("usuarioLogueado", usuario);
 
             String rol = usuario.getRol();
+            
+            session.setAttribute("rol", rol);
 
             if ("Admin".equalsIgnoreCase(rol)) {
                 request.setAttribute("confirmacion", "guardado");
-                request.getRequestDispatcher("/dashboardAdmin.jsp").forward(request, response);
+                request.getRequestDispatcher("dashboardAdmin.jsp").forward(request, response);
             } else if ("Usuario".equalsIgnoreCase(rol)) {
                 request.setAttribute("confirmacion", "guardado");
-                request.getRequestDispatcher("/dashboardUsuario.jsp").forward(request, response);
+                request.getRequestDispatcher("dashboardUsuario.jsp").forward(request, response);
             } else {
                 response.sendRedirect("index.jsp");
             }
@@ -55,7 +56,6 @@ public class ServletLogin extends HttpServlet {
             }
             response.sendRedirect("login.jsp?mensaje=logout");
         } else {
-            
             response.sendRedirect("login.jsp");
         }
     }

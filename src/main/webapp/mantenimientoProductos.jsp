@@ -49,7 +49,7 @@
                 border-color: var(--primary-blue);
             }
             .table-custom td {
-                 border-color: var(--light-blue-2);
+                border-color: var(--light-blue-2);
             }
             .btn-edit {
                 background-color: var(--primary-blue);
@@ -112,10 +112,13 @@
             <div class="container-main">
                 <div class="d-flex justify-content-between align-items-center mb-4">
                     <h1>Listado de Productos</h1>
-                    <button type="button" class="btn btn-add" data-bs-toggle="modal" data-bs-target="#elementoModal" 
-                            onclick="prepararModalAgregar()">
-                        <i class="bi bi-plus-circle"></i> Agregar Producto
-                    </button>
+                    <%-- JSTL para mostrar el botón solo si el rol es 'Admin' --%>
+                    <c:if test="${rol == 'Admin'}">
+                        <button type="button" class="btn btn-add" data-bs-toggle="modal" data-bs-target="#elementoModal" 
+                                onclick="prepararModalAgregar()">
+                            <i class="bi bi-plus-circle"></i> Agregar Producto
+                        </button>
+                    </c:if>
                 </div>
                 <div class="table-responsive">
                     <table class="table table-striped table-hover table-bordered table-custom" id="tablaElementos">
@@ -130,7 +133,10 @@
                                 <th scope="col">Fecha Salida</th>
                                 <th scope="col">Código Marca</th>
                                 <th scope="col">Código Categoría</th>
-                                <th scope="col">Acciones</th>
+                                <%-- JSTL para mostrar la columna 'Acciones' solo si el rol es 'Admin' --%>
+                                <c:if test="${rol == 'Admin'}">
+                                    <th scope="col">Acciones</th>
+                                </c:if>
                             </tr>
                         </thead>
                         <tbody>
@@ -154,11 +160,14 @@
                                     <td>${producto.fechaSalida}</td>
                                     <td>${producto.marca.codigoMarca}</td>
                                     <td>${producto.categoria.codigoCategoria}</td>
-                                    <td>
-                                        <button type="button" class="btn btn-edit btn-sm me-2" data-bs-toggle="modal" data-bs-target="#elementoModal" 
-                                                onclick="prepararModalEditar(this)">Editar</button>
-                                        <a href="${pageContext.request.contextPath}/ServletProducto?accion=eliminar&id=${producto.codigoProducto}" class="btn btn-delete btn-sm" onclick="return confirm('¿Está seguro de eliminar este producto?');">Eliminar</a>
-                                    </td>
+                                    <%-- JSTL para mostrar las acciones por fila solo si el rol es 'Admin' --%>
+                                    <c:if test="${rol == 'Admin'}">
+                                        <td>
+                                            <button type="button" class="btn btn-edit btn-sm me-2" data-bs-toggle="modal" data-bs-target="#elementoModal" 
+                                                    onclick="prepararModalEditar(this)">Editar</button>
+                                            <a href="${pageContext.request.contextPath}/ServletProducto?accion=eliminar&id=${producto.codigoProducto}" class="btn btn-delete btn-sm" onclick="return confirm('¿Está seguro de eliminar este producto?');">Eliminar</a>
+                                        </td>
+                                    </c:if>
                                 </tr>
                             </c:forEach>
                         </tbody>
@@ -166,6 +175,7 @@
                 </div>
             </div>
         </div>
+
         <div class="modal fade" id="elementoModal" tabindex="-1" aria-labelledby="elementoModalLabel" aria-hidden="true">
             <div class="modal-dialog modal-lg">
                 <div class="modal-content">
@@ -218,6 +228,7 @@
                 </div>
             </div>
         </div>
+
         <script src="resources/js/bootstrap.bundle.min.js"></script>
         <script>
             function prepararModalAgregar() {
