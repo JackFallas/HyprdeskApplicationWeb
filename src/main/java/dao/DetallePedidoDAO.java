@@ -1,13 +1,13 @@
 package dao;
 
-import model.DetallePedido; 
+import model.DetallePedido;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.EntityTransaction;
 import javax.persistence.Persistence;
 import java.util.List;
 
-public class DetallePedidoDAO { 
+public class DetallePedidoDAO {
 
     private EntityManagerFactory fabrica = Persistence.createEntityManagerFactory("proyectoBimestralPU");
 
@@ -29,7 +29,7 @@ public class DetallePedidoDAO {
     }
 
     public List<DetallePedido> listarTodos() {
-        String jpql = "SELECT dp FROM DetallePedido dp"; 
+        String jpql = "SELECT dp FROM DetallePedido dp";
         EntityManager admin = fabrica.createEntityManager();
         try {
             return admin.createQuery(jpql, DetallePedido.class).getResultList();
@@ -46,18 +46,18 @@ public class DetallePedidoDAO {
             admin.close();
         }
     }
-    
+
     public List<DetallePedido> listarPorUsuario(int idUsuario) {
-    EntityManager admin = fabrica.createEntityManager();
-    try {
-        String jpql = "SELECT dp FROM DetallePedido dp WHERE dp.pedido.usuario.id = :idUsuario";
-        return admin.createQuery(jpql, DetallePedido.class)
+        EntityManager admin = fabrica.createEntityManager();
+        try {
+            String jpql = "SELECT dp FROM DetallePedido dp WHERE dp.pedido.usuario.id = :idUsuario";
+            return admin.createQuery(jpql, DetallePedido.class)
                     .setParameter("idUsuario", idUsuario)
                     .getResultList();
-    } finally {
-        admin.close();
+        } finally {
+            admin.close();
+        }
     }
-}
 
     public void Actualizar(DetallePedido detallePedido) {
         EntityManager admin = fabrica.createEntityManager();
@@ -71,6 +71,18 @@ public class DetallePedidoDAO {
                 transaccion.rollback();
             }
             System.err.println("Error al actualizar DetallePedido: " + e.getMessage());
+        } finally {
+            admin.close();
+        }
+    }
+
+    public List<DetallePedido> listarPorPedido(int idPedido) {
+        EntityManager admin = fabrica.createEntityManager();
+        try {
+            String jpql = "SELECT dp FROM DetallePedido dp WHERE dp.pedido.id = :idPedido";
+            return admin.createQuery(jpql, DetallePedido.class)
+                    .setParameter("idPedido", idPedido)
+                    .getResultList();
         } finally {
             admin.close();
         }

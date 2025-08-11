@@ -1,6 +1,8 @@
 package controller;
 
+import dao.DetallePedidoDAO;
 import dao.PedidoDAO;
+import dao.ProductoDAO;
 import dao.ReciboDAO;
 import java.io.IOException;
 import java.math.BigDecimal;
@@ -11,7 +13,9 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import model.DetallePedido;
 import model.Pedido;
+import model.Producto;
 import model.Recibo;
 
 @WebServlet("/ServletRecibos")
@@ -28,30 +32,30 @@ public class ServletRecibos extends HttpServlet {
     }
 
     @Override
-protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-    String accion = request.getParameter("accion");
-    if (accion == null) {
-        accion = "listarPorUsuarioLogueado"; 
-    }
+    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        String accion = request.getParameter("accion");
+        if (accion == null) {
+            accion = "listarPorUsuarioLogueado";
+        }
 
-    switch (accion) {
-        case "listarTodos":
-            listarTodosLosRecibos(request, response);
-            break;
-        case "listarPorUsuarioLogueado": 
-            listarTodosLosRecibos(request, response);
-            break;
-        case "eliminar":
-            eliminarRecibo(request, response);
-            break;
-        case "listarPorUsuario":
-            listarRecibosPorUsuario(request, response);
-            break;
-        default:
-            listarTodosLosRecibos(request, response);
-            break;
+        switch (accion) {
+            case "listarTodos":
+                listarTodosLosRecibos(request, response);
+                break;
+            case "listarPorUsuarioLogueado":
+                listarTodosLosRecibos(request, response);
+                break;
+            case "eliminar":
+                eliminarRecibo(request, response);
+                break;
+            case "listarPorUsuario":
+                listarRecibosPorUsuario(request, response);
+                break;
+            default:
+                listarTodosLosRecibos(request, response);
+                break;
+        }
     }
-}
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -114,6 +118,23 @@ protected void doGet(HttpServletRequest request, HttpServletResponse response) t
             pedido.setRecibo(recibo);
 
             pedidoDAO.Actualizar(pedido);
+
+            // --- Aquí restamos el stock de cada producto según la cantidad comprada ---
+            DetallePedidoDAO detalleDAO = new DetallePedidoDAO();
+            ProductoDAO productoDAO = new ProductoDAO();
+
+            List<DetallePedido> detalles = detalleDAO.listarPorPedido(codigoPedido);
+
+            for (DetallePedido detalle : detalles) {
+                Producto producto = productoDAO.buscarPorID(detalle.getProducto().getCodigoProducto());
+                int nuevoStock = producto.getStock() - detalle.getCantidad();
+                if (nuevoStock < 0) {
+                    nuevoStock = 0; // evitar stock negativo, o lanzar excepción si quieres validar
+                }
+                producto.setStock(nuevoStock);
+                productoDAO.Actualizar(producto);
+            }
+            // -------------------------------------------------------------------------
 
             response.sendRedirect("ServletRecibos?accion=listar");
         } catch (Exception e) {
