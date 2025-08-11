@@ -14,24 +14,216 @@
         <link href="resources/css/bootstrap.min.css" rel="stylesheet">
         <!-- Bootstrap Icons -->
         <link href="resources/css/bootstrap-icons.min.css" rel="stylesheet">
+        <!-- Enlace al archivo CSS del dashboard -->
+        <link rel="stylesheet" href="resources/css/dashboardU.css"/>
+        <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+        <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
         <style>
+            /* Variables globales para el diseño moderno del dashboard y colores originales */
             :root {
-                --primary-blue: #3498DB;
-                --light-blue-1: #5DADE2;
-                --light-blue-2: #AED6F1;
-                --light-blue-3: #D6EAF8;
-                --gray-text: #717D7E;
+                --sidebar-collapsed: 80px;
+                --sidebar-expanded: 260px;
+                --primary: #0d6efd; /* Azul principal del nuevo diseño para el sidebar */
+                --bg: #ffffff; /* Fondo blanco del sidebar y header */
+                --text: #4b5563; /* Color de texto general del nuevo diseño */
+                --muted: #9ca3af; /* Color de texto más claro del nuevo diseño */
+                --radius: 18px; /* Radio de bordes del nuevo diseño */
+
+                --original-primary-blue: #3498DB;
+                --original-light-blue-1: #5DADE2;
+                --original-light-blue-2: #AED6F1;
+                --original-light-blue-3: #D6EAF8;
+                --original-gray-text: #717D7E;
             }
             body {
-                background-color: var(--light-blue-3);
-                color: var(--gray-text);
+                background-color: var(--original-light-blue-3);
+                font-family: 'Poppins', sans-serif;
+                display: flex; /* **Esencial:** Habilitar flexbox para el layout principal con sidebar */
+                color: var(--original-gray-text);
+                margin: 0; /* Elimina márgenes por defecto del body */
+                min-height: 100vh;
+                overflow-x: hidden; /* Evitar scroll horizontal */
             }
-            .navbar {
-                background-color: var(--primary-blue);
+            /* Estilos del main-content que se ajusta al sidebar y al header fijo */
+            .main-content {
+                margin-left: var(--sidebar-collapsed); /* Espacio inicial para el sidebar colapsado */
+                transition: margin-left .35s ease;
+                flex-grow: 1; /* Ocupa el espacio restante */
+                /* Padding superior para que el contenido no quede oculto bajo el header fijo */
+                padding: 65px 30px 30px 30px; /* Ajustado para compensar la altura del header fijo */
             }
-            .navbar-brand img {
-                height: 50px;
+            #nav-toggle:checked ~ .main-content {
+                margin-left: var(--sidebar-expanded); /* Ajuste para el sidebar expandido */
             }
+            
+            /* Estilos del Header superior (adaptados de dashboardU.css) */
+            .header {
+                position: fixed;
+                top: 0;
+                left: var(--sidebar-collapsed); /* Posición inicial alineada con sidebar colapsado */
+                width: calc(100% - var(--sidebar-collapsed)); /* Ancho ajustado */
+                padding: 18px 30px; /* Padding del header */
+                background: var(--bg); /* Fondo blanco del header */
+                box-shadow: 0 2px 5px rgba(0, 0, 0, .05);
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                z-index: 999; /* Asegura que esté por encima de otros elementos */
+                transition: left .35s ease, width .35s ease;
+            }
+            #nav-toggle:checked ~ .header {
+                left: var(--sidebar-expanded); /* Se mueve con el sidebar expandido */
+                width: calc(100% - var(--sidebar-expanded)); /* Ancho ajustado */
+            }
+            .header .logo-text { /* Estilo para el texto del logo "Gestión de Pedidos" */
+                font-size: 22px;
+                color: var(--text);
+                text-decoration: none;
+                font-weight: 600;
+            }
+            .header .social-media { /* Sección de íconos sociales en el header */
+                display: flex;
+                gap: 15px;
+            }
+            .header .social-media a {
+                color: var(--text);
+                font-size: 1.4rem;
+                transition: color 0.3s ease;
+            }
+            .header .social-media a:hover {
+                color: var(--primary);
+            }
+
+            /* Estilos del Sidebar (adaptados de dashboardU.css) */
+            .sidebar {
+                position: fixed; /* **Esencial:** Fijo en la pantalla para que no se desplace con el scroll */
+                inset: 0 auto 0 0; /* Fijo a la izquierda */
+                width: var(--sidebar-collapsed);
+                background: var(--bg);
+                border-right: 1px solid rgba(0,0,0,.05);
+                box-shadow: 5px 0 15px rgba(0,0,0,.05);
+                padding: 24px 14px 90px;
+                transition: width .35s;
+                z-index: 1000;
+                display: flex;
+                flex-direction: column;
+                overflow: hidden; /* Ocultar contenido desbordado al colapsar */
+            }
+            #nav-toggle:checked ~ .sidebar {
+                width: var(--sidebar-expanded);
+                box-shadow: 0 0 0 100vmax rgba(0,0,0,0.4); /* Overlay cuando está expandido */
+            }
+
+            .toggle-btn { /* Botón para abrir/cerrar el sidebar */
+                position: fixed;
+                top: 18px;
+                left: 18px;
+                z-index: 1100;
+                width: 44px;
+                height: 44px;
+                background: var(--primary);
+                color: #fff;
+                border-radius: 10px;
+                display: grid;
+                place-items: center;
+                cursor: pointer;
+                transition: background .25s;
+            }
+            .toggle-btn:hover{ background:#5DADE2; }
+            .toggle-btn i{
+                font-size: 22px;
+                transition: transform .3s;
+            }
+            #nav-toggle:checked + .toggle-btn i{
+                transform: rotate(90deg);
+            }
+
+            /* Sección de marca en el sidebar */
+            .sidebar .brand{
+                display: flex;
+                align-items: center;
+                gap: 10px;
+                height: 48px;
+                margin-bottom: 26px;
+            }
+            .sidebar .brand i{
+                font-size: 32px;
+                color: var(--primary);
+            }
+            .sidebar .brand__name{
+                font-weight: 600;
+                font-size: 20px;
+                opacity: 0;
+                transform: translateX(-10px);
+                transition: .2s;
+            }
+            #nav-toggle:checked ~ .sidebar .brand__name{
+                opacity: 1;
+                transform: none;
+            }
+
+            /* Menú del sidebar */
+            .sidebar .menu{
+                display: grid;
+                gap: 6px;
+            }
+            .sidebar .menu__item{
+                display: flex;
+                align-items: center;
+                gap: 14px;
+                height: 46px;
+                border-radius: var(--radius);
+                color: var(--text);
+                text-decoration: none;
+                padding: 0 12px;
+                transition: background .2s, color .2s;
+                white-space: nowrap;
+            }
+            .sidebar .menu__item i{
+                font-size: 22px;
+                min-width: 22px;
+                text-align: center;
+            }
+            .sidebar .menu__item span{
+                opacity: 0;
+                transform: translateX(-10px);
+                transition: .2s;
+            }
+            #nav-toggle:checked ~ .sidebar .menu__item span{
+                opacity: 1;
+                transform: none;
+            }
+            .sidebar .menu__item:hover{
+                background: rgba(13,110,253,.08);
+                color: var(--primary);
+            }
+            .sidebar .menu__item.active{
+                background: rgba(13,110,253,.12);
+                color: var(--primary);
+            }
+
+            /* Perfil en el sidebar */
+            .sidebar .profile{
+                position: absolute;
+                left: 14px;
+                right: 14px;
+                bottom: 18px;
+                display: flex;
+                align-items: center;
+                gap: 12px;
+                padding: 10px;
+                border-radius: var(--radius);
+                background: rgba(13,110,253,.05);
+            }
+            .profile img {
+                display: none; /* Ocultar la imagen del logo en el perfil */
+            }
+            .profile__info {
+                display: none; /* Ocultar el texto "Admin" y "Derechos Reservados" */
+            }
+
+
+            /* Estilos del CRUD de Pedidos (originales de tu archivo - se mantienen) */
             .container-main {
                 background-color: white;
                 border-radius: .5rem;
@@ -39,24 +231,24 @@
                 box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
             }
             h1, h2, h3, h4, h5, h6 {
-                color: var(--primary-blue);
+                color: var(--original-primary-blue);
             }
             .table-custom th {
-                background-color: var(--light-blue-1);
+                background-color: var(--original-light-blue-1);
                 color: white;
-                border-color: var(--primary-blue);
+                border-color: var(--original-primary-blue);
             }
             .table-custom td {
-                border-color: var(--light-blue-2);
+                border-color: var(--original-light-blue-2);
             }
             .btn-edit {
-                background-color: var(--primary-blue);
-                border-color: var(--primary-blue);
+                background-color: var(--original-primary-blue);
+                border-color: var(--original-primary-blue);
                 color: white;
             }
             .btn-edit:hover {
-                background-color: var(--light-blue-1);
-                border-color: var(--light-blue-1);
+                background-color: var(--original-light-blue-1);
+                border-color: var(--original-light-blue-1);
             }
             .btn-delete {
                 background-color: #dc3545;
@@ -68,13 +260,22 @@
                 border-color: #bd2130;
             }
             .btn-add {
-                background-color: var(--primary-blue);
-                border-color: var(--primary-blue);
+                background-color: var(--original-primary-blue);
+                border-color: var(--original-primary-blue);
                 color: white;
             }
             .btn-add:hover {
                 background-color: var(--light-blue-1);
                 border-color: var(--light-blue-1);
+            }
+            .btn-add-to-cart {
+                background-color: #28a745;
+                border-color: #28a745;
+                color: white;
+            }
+            .btn-add-to-cart:hover {
+                background-color: #218838;
+                border-color: #1e7e34;
             }
             .modal-content {
                 border-radius: .5rem;
@@ -82,15 +283,15 @@
                 box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
             }
             .modal-header {
-                background-color: var(--primary-blue);
+                background-color: var(--original-primary-blue);
                 color: white;
-                border-bottom: 1px solid var(--light-blue-1);
+                border-bottom: 1px solid var(--original-light-blue-1);
             }
             .modal-header .btn-close {
                 filter: invert(1);
             }
             .modal-footer {
-                border-top: 1px solid var(--light-blue-2);
+                border-top: 1px solid var(--original-light-blue-2);
                 justify-content: flex-end;
             }
             .status-disponible {
@@ -101,19 +302,164 @@
                 color: #dc3545;
                 font-weight: bold;
             }
+
+            /* Estilos de los formularios dentro del modal */
+            .form-label {
+                font-weight: 500;
+                margin-bottom: 8px;
+                color: var(--original-gray-text);
+            }
+            .form-control {
+                border-radius: 6px;
+                padding: 10px 15px;
+                transition: border-color 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+            }
+            .form-control:focus {
+                border-color: var(--original-primary-blue);
+                box-shadow: 0 0 0 0.25rem rgba(52, 152, 219, 0.25);
+                outline: none;
+            }
+
+            /* Media queries para responsividad */
+            @media (max-width: 991px) {
+                .sidebar {
+                    width: 80px;
+                    left: 0;
+                }
+                #nav-toggle:checked + .toggle-btn + .sidebar {
+                    left: 0;
+                }
+                .main-content {
+                    padding-left: calc(var(--sidebar-collapsed) + 20px);
+                }
+                #nav-toggle:checked ~ .main-content {
+                    padding-left: calc(var(--sidebar-expanded) + 20px);
+                }
+                .toggle-btn {
+                    left: 18px;
+                    color: var(--text);
+                }
+                #nav-toggle:checked + .toggle-btn {
+                    left: 18px;
+                }
+            }
+
+            @media (max-width: 767px) {
+                .sidebar {
+                    width: 0;
+                    left: -80px;
+                }
+                #nav-toggle:checked + .toggle-btn + .sidebar {
+                    width: 200px;
+                    left: 0;
+                }
+                .main-content {
+                    padding-left: 20px;
+                }
+                #nav-toggle:checked ~ .main-content {
+                    padding-left: calc(200px + 20px);
+                }
+                .toggle-btn {
+                    left: 10px;
+                    top: 10px;
+                    font-size: 1.8rem;
+                    width: 38px;
+                    height: 38px;
+                    background: var(--original-primary-blue);
+                }
+                #nav-toggle:checked + .toggle-btn {
+                    left: calc(200px + 10px);
+                }
+                h1 {
+                    font-size: 1.5rem;
+                    margin-bottom: 15px !important;
+                }
+                .btn-add {
+                    padding: 8px 15px;
+                    font-size: 0.9rem;
+                }
+                .table-custom th, .table-custom td {
+                    font-size: 0.8rem;
+                    padding: 6px;
+                }
+                .btn-edit {
+                    padding: 4px 8px;
+                    font-size: 0.75rem;
+                }
+                .modal-dialog.modal-lg {
+                    margin: 10px;
+                }
+            }
         </style>
     </head>
     <body>
-        <nav class="navbar navbar-expand-lg navbar-dark mb-4">
-            <div class="container-fluid">
-                <a class="navbar-brand" href="#">
-                    <img src="${pageContext.request.contextPath}/resources/image/Logo con nombre.png" alt="Hyprdesk Logo">
-                </a>
-                <span class="navbar-text text-white ms-3 h4">Gestión de Pedidos</span>
-            </div>
-        </nav>
+        <!-- Input y botón de toggle para el sidebar -->
+        <input type="checkbox" id="nav-toggle">
+        <label for="nav-toggle" class="toggle-btn">
+            <i class='bx bx-menu'></i>
+        </label>
 
-        <div class="container">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="brand">
+                <i class='bx bxl-css3'></i>
+                <span class="brand__name">Hyprdesk</span>
+            </div>
+
+            <nav class="menu">
+                <a href="dashboardAdmin.jsp" class="menu__item">
+                    <i class='bx bx-home-alt'></i><span>Dashboard</span>
+                </a>
+                <a href="ServletUsuario" class="menu__item">
+                    <i class='bx bx-user'></i><span>Usuarios</span>
+                </a>
+                <a href="ServletMarcas" class="menu__item">
+                    <i class='bx bx-building-house'></i><span>Marcas</span>
+                </a>
+                <a href="ServletCategorias" class="menu__item">
+                    <i class='bx bx-category'></i><span>Categorías</span>
+                </a>
+                <a href="ServletProducto" class="menu__item">
+                    <i class='bx bx-package'></i><span>Productos</span>
+                </a>
+                <a href="ServletTarjetas" class="menu__item">
+                    <i class='bx bx-credit-card'></i><span>Tarjetas</span>
+                </a>
+                <a href="ServletRecibos" class="menu__item">
+                    <i class='bx bx-receipt'></i><span>Recibos</span>
+                </a>
+                <a href="ServletPedidos" class="menu__item active"> <!-- PEDIDOS ACTIVO -->
+                    <i class='bx bx-cart'></i><span>Pedidos</span>
+                </a>
+                <a href="ServletDetallePedido" class="menu__item">
+                    <i class='bx bx-list-ul'></i><span>Detalle de Pedidos</span>
+                </a>
+                <a href="login.jsp" class="menu__item">
+                    <i class='bx bx-power-off'></i><span>Cerrar sesión</span>
+                </a>
+            </nav>
+
+            <div class="profile">
+                <!-- Se elimina la imagen del logo -->
+                <div class="profile__info">
+                    <!-- Se elimina el texto "Admin" y "Kinal - Derechos Reservados" -->
+                </div>
+            </div>
+        </aside>
+
+        <!-- Contenido principal de la página (a la derecha del sidebar) -->
+        <main class="main-content">
+            <!-- Navbar original (ahora dentro de main-content) -->
+            <nav class="navbar navbar-expand-lg navbar-dark mb-4">
+                <div class="container-fluid">
+                    <a class="navbar-brand" href="#">
+                        <!-- LOGO ELIMINADO -->
+                    </a>
+                    <span class="navbar-text ms-3 h4" style="color: black !important;">Gestión de Pedidos</span>
+                </div>
+            </nav>
+
+            <div class="container">
             <div class="container-main">
                 <div class="d-flex justify-content-between align-items-center mb-4">
                     <h1>Listado de Pedidos</h1>
@@ -339,11 +685,10 @@
                         <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Cerrar"></button>
                     </div>
                     <form id="addCardForm" action="ServletTarjetas?accion=agregar" method="POST">
-                        <input type="hidden" name="codigoUsuario" value="${codigoUsuarioLogueado}">
                         <div class="modal-body">
                             <div class="mb-3">
                                 <label for="ultimos4" class="form-label">Últimos 4 Dígitos</label>
-                                <input type="text" name="ultimos4" maxlength="4" pattern="\d{4}" title="Ingrese exactamente 4 dígitos" required>
+                                <input type="text" name="ultimos4" maxlength="4" pattern="\d{4}" title="Ingrese exactamente 4 dígitos" class="form-control" required>
                             </div>
                             <div class="mb-3">
                                 <label for="marca" class="form-label">Marca de Tarjeta</label>
@@ -357,8 +702,25 @@
                                 </select>
                             </div>
                             <div class="mb-3">
-                                <label for="fechaExpiracion" class="form-label">Fecha de Expiración</label>
-                                <input type="date" name="fechaExpiracion" class="form-control" required>
+                                <label for="mesExpiracion" class="form-label">Fecha de Expiración</label>
+                                <div class="row">
+                                    <div class="col-6">
+                                        <select id="mesExpiracion" name="mesExpiracion" class="form-select" required>
+                                            <option value="">Mes</option>
+                                            <c:forEach begin="1" end="12" var="mes">
+                                                <option value="${mes < 10 ? '0' : ''}${mes}">${mes}</option>
+                                            </c:forEach>
+                                        </select>
+                                    </div>
+                                    <div class="col-6">
+                                        <select id="anioExpiracion" name="anioExpiracion" class="form-select" required>
+                                            <option value="">Año</option>
+                                            <c:forEach begin="${2024}" end="${2035}" var="anio">
+                                                <option value="${anio}">${anio}</option>
+                                            </c:forEach>
+                                        </select>
+                                    </div>
+                                </div>
                             </div>
                             <div class="mb-3">
                                 <label for="nombreTitular" class="form-label">Nombre del Titular</label>
@@ -431,7 +793,7 @@
                                                            if (cardSelect.options.length <= 1) {
                                                                addCardBtn.style.display = 'block';
                                                            } else {
-                                                               addCardBtn.style.display = 'block'; 
+                                                               addCardBtn.style.display = 'block';
                                                            }
                                                        });
         </script>
