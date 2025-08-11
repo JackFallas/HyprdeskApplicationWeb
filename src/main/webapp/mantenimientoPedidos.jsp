@@ -460,329 +460,342 @@
             </nav>
 
             <div class="container">
-                <div class="container-main">
-                    <div class="d-flex justify-content-between align-items-center mb-4">
-                        <h1>Listado de Pedidos</h1>
-                        <c:if test="${rol == 'Admin'}">
-                            <button type="button" class="btn btn-add" data-bs-toggle="modal" data-bs-target="#pedidoModal" onclick="prepararModalAgregar()">
-                                <i class="bi bi-plus-circle"></i> Agregar Pedido
-                            </button>
-                        </c:if>
+            <div class="container-main">
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h1>Listado de Pedidos</h1>
+                    <c:if test="${rol == 'Admin'}">
+                        <button type="button" class="btn btn-add" data-bs-toggle="modal" data-bs-target="#pedidoModal" onclick="prepararModalAgregar()">
+                            <i class="bi bi-plus-circle"></i> Agregar Pedido
+                        </button>
+                    </c:if>
+                </div>
+
+                <c:if test="${not empty error}">
+                    <div class="alert alert-danger" role="alert">
+                        ${error}
                     </div>
+                </c:if>
+                <c:if test="${param.success eq 'true'}">
+                    <div class="alert alert-success" role="alert">
+                        ¡Pedido guardado exitosamente!
+                    </div>
+                </c:if>
+                <c:if test="${param.deleted eq 'true'}">
+                    <div class="alert alert-success" role="alert">
+                        ¡Pedido eliminado exitosamente!
+                    </div>
+                </c:if>
 
-                    <c:if test="${not empty error}">
-                        <div class="alert alert-danger" role="alert">
-                            ${error}
-                        </div>
-                    </c:if>
-                    <c:if test="${param.success eq 'true'}">
-                        <div class="alert alert-success" role="alert">
-                            ¡Pedido guardado exitosamente!
-                        </div>
-                    </c:if>
-                    <c:if test="${param.deleted eq 'true'}">
-                        <div class="alert alert-success" role="alert">
-                            ¡Pedido eliminado exitosamente!
-                        </div>
-                    </c:if>
-
-                    <div class="table-responsive">
-                        <table class="table table-striped table-hover table-bordered table-custom" id="tablaPedidos">
-                            <thead>
-                                <tr>
-                                    <th scope="col">Código Pedido</th>
-                                    <th scope="col">Fecha</th>
-                                    <th scope="col">Estado</th>
-                                    <th scope="col">Total</th>
-                                    <th scope="col">Dirección</th>
-                                    <th scope="col">Código Recibo</th>
+                <div class="table-responsive">
+                    <table class="table table-striped table-hover table-bordered table-custom" id="tablaPedidos">
+                        <thead>
+                            <tr>
+                                <th scope="col">Código Pedido</th>
+                                <th scope="col">Fecha</th>
+                                <th scope="col">Estado</th>
+                                <th scope="col">Total</th>
+                                <th scope="col">Dirección</th>
+                                <th scope="col">Código Recibo</th>
                                     <c:if test="${rol == 'Admin' || rol == 'Usuario'}">
                                     <th scope="col">Acciones</th>
                                     </c:if>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <c:forEach var="pedido" items="${listaPedidos}">
-                                    <tr data-codigo="${pedido.codigoPedido}" data-fecha="${pedido.fechaPedido}" data-estado="${pedido.estadoPedido}" data-total="${pedido.totalPedido}" data-direccion="${pedido.direccionPedido}" data-usuario="${pedido.usuario.codigoUsuario}" data-recibo="${pedido.recibo != null ? pedido.recibo.codigoRecibo : ''}">
-                                        <td>${pedido.codigoPedido}</td>
-                                        <td>${pedido.fechaPedido}</td>
-                                        <td>${pedido.estadoPedido}</td>
-                                        <td>${pedido.totalPedido}</td>
-                                        <td>${pedido.direccionPedido}</td>
-                                        <td>
-                                            <c:choose>
-                                                <c:when test="${pedido.recibo != null}">
-                                                    ${pedido.recibo.codigoRecibo}
-                                                </c:when>
-                                                <c:otherwise>
-                                                    N/A
-                                                </c:otherwise>
-                                            </c:choose>
-                                        </td>
-
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <c:forEach var="pedido" items="${listaPedidos}">
+                                <tr data-codigo="${pedido.codigoPedido}" data-fecha="${pedido.fechaPedido}" data-estado="${pedido.estadoPedido}" data-total="${pedido.totalPedido}" data-direccion="${pedido.direccionPedido}" data-usuario="${pedido.usuario.codigoUsuario}" data-recibo="${pedido.recibo != null ? pedido.recibo.codigoRecibo : ''}">
+                                    <td>${pedido.codigoPedido}</td>
+                                    <td>${pedido.fechaPedido}</td>
+                                    <td>${pedido.estadoPedido}</td>
+                                    <td>${pedido.totalPedido}</td>
+                                    <td>${pedido.direccionPedido}</td>
+                                    <td>
                                         <c:choose>
-                                            <c:when test="${rol == 'Admin'}">
-                                                <td>
-                                                    <button type="button" class="btn btn-edit btn-sm me-2" data-bs-toggle="modal" data-bs-target="#pedidoModal"
-                                                            onclick="prepararModalEditar(this)">Editar</button>
-                                                    <a href="${pageContext.request.contextPath}/ServletPedidos?accion=eliminar&id=${pedido.codigoPedido}"
-                                                       class="btn btn-delete btn-sm" onclick="return confirm('¿Está seguro de eliminar este pedido?');">Eliminar</a>
-                                                </td>
-                                            </c:when>
-                                            <c:when test="${rol == 'Usuario'}">
-                                                <td>
-                                                    <c:if test="${pedido.estadoPedido != 'Entregado'}">
-                                                        <button type="button"
-                                                                class="btn btn-success btn-sm"
-                                                                data-bs-toggle="modal"
-                                                                data-bs-target="#modalFinalizarCompra"
-                                                                data-codigopedido="${pedido.codigoPedido}"
-                                                                data-totalpedido="${pedido.totalPedido}"
-                                                                data-direccionpedido="${pedido.direccionPedido}">
-                                                            Finalizar Compra
-                                                        </button>
-                                                    </c:if>
-                                                </td>
+                                            <c:when test="${pedido.recibo != null}">
+                                                ${pedido.recibo.codigoRecibo}
                                             </c:when>
                                             <c:otherwise>
-                                                <td></td>
+                                                N/A
                                             </c:otherwise>
                                         </c:choose>
-                                    </tr>
-                                </c:forEach>
-                            </tbody>
-                        </table>
+                                    </td>
+
+                                    <c:choose>
+                                        <c:when test="${rol == 'Admin'}">
+                                            <td>
+                                                <button type="button" class="btn btn-edit btn-sm me-2" data-bs-toggle="modal" data-bs-target="#pedidoModal"
+                                                        onclick="prepararModalEditar(this)">Editar</button>
+                                                <a href="${pageContext.request.contextPath}/ServletPedidos?accion=eliminar&id=${pedido.codigoPedido}"
+                                                   class="btn btn-delete btn-sm" onclick="return confirm('¿Está seguro de eliminar este pedido?');">Eliminar</a>
+                                            </td>
+                                        </c:when>
+                                        <c:when test="${rol == 'Usuario'}">
+                                            <td>
+                                                <c:if test="${pedido.estadoPedido != 'Entregado'}">
+                                                    <button type="button"
+                                                            class="btn btn-success btn-sm"
+                                                            data-bs-toggle="modal"
+                                                            data-bs-target="#modalFinalizarCompra"
+                                                            data-codigopedido="${pedido.codigoPedido}"
+                                                            data-totalpedido="${pedido.totalPedido}"
+                                                            data-direccionpedido="${pedido.direccionPedido}">
+                                                        Finalizar Compra
+                                                    </button>
+                                                </c:if>
+                                            </td>
+                                        </c:when>
+                                        <c:otherwise>
+                                            <td></td>
+                                        </c:otherwise>
+                                    </c:choose>
+                                </tr>
+                            </c:forEach>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- Modal para agregar/editar pedido -->
+        <div class="modal fade" id="pedidoModal" tabindex="-1" aria-labelledby="pedidoModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="pedidoModalLabel"></h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <form id="pedidoForm" action="${pageContext.request.contextPath}/ServletPedidos" method="post">
+                            <input type="hidden" name="accion" id="formAccion" value="insertar">
+                            <input type="hidden" name="codigoPedido" id="formCodigoPedido">
+
+                            <!-- Fecha Pedido -->
+                            <div class="mb-3">
+                                <label for="modalFechaPedido" class="form-label">Fecha Pedido:</label>
+                                <input type="datetime-local" name="fechaPedido" id="modalFechaPedido" class="form-control" required>
+                            </div>
+
+                            <!-- Estado Pedido -->
+                            <div class="mb-3">
+                                <label for="modalEstadoPedido" class="form-label">Estado Pedido:</label>
+                                <select id="modalEstadoPedido" name="estadoPedido" class="form-select" required>
+                                    <option value="Pendiente">Pendiente</option>
+                                    <option value="En_proceso">En proceso</option>
+                                    <option value="Enviado">Enviado</option>
+                                    <option value="Entregado">Entregado</option>
+                                    <option value="Cancelado">Cancelado</option>
+                                </select>
+                            </div>
+
+                            <!-- Total Pedido -->
+                            <div class="mb-3">
+                                <label for="modalTotalPedido" class="form-label">Total Pedido:</label>
+                                <input type="number" name="totalPedido" id="modalTotalPedido" class="form-control" required>
+                            </div>
+
+                            <!-- Dirección Pedido -->
+                            <div class="mb-3">
+                                <label for="modalDireccionPedido" class="form-label">Dirección:</label>
+                                <input type="text" name="direccionPedido" id="modalDireccionPedido" class="form-control" required>
+                            </div>
+
+                            <!-- Código Usuario -->
+                            <div class="mb-3">
+                                <label for="modalCodigoUsuario" class="form-label">Código Usuario:</label>
+                                <input type="number" name="codigoUsuario" id="modalCodigoUsuario" class="form-control" required>
+                            </div>
+
+                            <!-- Código Recibo -->
+                            <div class="mb-3">
+                                <label for="modalCodigoRecibo" class="form-label">Código Recibo:</label>
+                                <input type="number" name="codigoRecibo" id="modalCodigoRecibo" class="form-control" required>
+                            </div>
+
+                            <c:if test="${rol == 'Admin'}">
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                                    <button type="submit" class="btn btn-primary">Guardar</button>
+                                </div>
+                            </c:if>
+                        </form>
                     </div>
                 </div>
             </div>
+        </div>
 
-            <!-- Modal para agregar/editar pedido -->
-            <div class="modal fade" id="pedidoModal" tabindex="-1" aria-labelledby="pedidoModalLabel" aria-hidden="true">
-                <div class="modal-dialog modal-lg">
+        <!-- Modal Finalizar Compra -->
+        <div class="modal fade" id="modalFinalizarCompra" tabindex="-1" aria-labelledby="modalFinalizarCompraLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <form id="formFinalizarCompra" action="${pageContext.request.contextPath}/ServletRecibos" method="post">
+                    <input type="hidden" name="accion" value="finalizarCompra">
+                    <input type="hidden" name="codigoPedido" id="modalCodigoPedido">
+                    <input type="hidden" name="metodoPago" value="Tarjeta">
+                    <input type="hidden" name="codigoUsuario" value="${codigoUsuarioLogueado}">
+
                     <div class="modal-content">
-                        <div class="modal-header">
-                            <h5 class="modal-title" id="pedidoModalLabel"></h5>
-                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        <div class="modal-header bg-primary text-white">
+                            <h5 class="modal-title" id="modalFinalizarCompraLabel">Finalizar Compra - Datos Recibo</h5>
+                            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Cerrar"></button>
                         </div>
                         <div class="modal-body">
-                            <form id="pedidoForm" action="${pageContext.request.contextPath}/ServletPedidos" method="post">
-                                <input type="hidden" name="accion" id="formAccion" value="insertar">
-                                <input type="hidden" name="codigoPedido" id="formCodigoPedido">
+                            <div class="mb-3">
+                                <label for="modalMonto" class="form-label">Monto:</label>
+                                <input type="text" id="modalMonto" name="monto" class="form-control" readonly>
+                            </div>
 
-                                <!-- Fecha Pedido -->
-                                <div class="mb-3">
-                                    <label for="modalFechaPedido" class="form-label">Fecha Pedido:</label>
-                                    <input type="datetime-local" name="fechaPedido" id="modalFechaPedido" class="form-control" required>
-                                </div>
-
-                                <!-- Estado Pedido -->
-                                <div class="mb-3">
-                                    <label for="modalEstadoPedido" class="form-label">Estado Pedido:</label>
-                                    <select id="modalEstadoPedido" name="estadoPedido" class="form-select" required>
-                                        <option value="Pendiente">Pendiente</option>
-                                        <option value="En_proceso">En proceso</option>
-                                        <option value="Enviado">Enviado</option>
-                                        <option value="Entregado">Entregado</option>
-                                        <option value="Cancelado">Cancelado</option>
+                            <div class="mb-3 d-flex align-items-end">
+                                <div class="flex-grow-1 me-2">
+                                    <label for="modalCodigoTarjeta" class="form-label">Seleccione Tarjeta:</label>
+                                    <select id="modalCodigoTarjeta" name="codigoTarjeta" class="form-select" required>
+                                        <option value="">-- Seleccione una tarjeta --</option>
+                                        <!-- Iteramos sobre la lista de tarjetas, que debe ser pasada al JSP -->
+                                        <c:forEach var="tarjeta" items="${tarjetasUsuario}">
+                                            <option value="${tarjeta.codigoTarjeta}">
+                                                <c:out value="${tarjeta.marca} - ****${tarjeta.ultimos4}" />
+                                            </option>
+                                        </c:forEach>
                                     </select>
                                 </div>
+                                <!-- Botón para agregar una nueva tarjeta -->
+                                <button type="button" id="addCardBtn" class="btn btn-info" data-bs-toggle="modal" data-bs-target="#addCardModal">
+                                    <i class="bi bi-plus-circle"></i>
+                                </button>
+                            </div>
 
-                                <!-- Total Pedido -->
-                                <div class="mb-3">
-                                    <label for="modalTotalPedido" class="form-label">Total Pedido:</label>
-                                    <input type="number" name="totalPedido" id="modalTotalPedido" class="form-control" required>
-                                </div>
-
-                                <!-- Dirección Pedido -->
-                                <div class="mb-3">
-                                    <label for="modalDireccionPedido" class="form-label">Dirección:</label>
-                                    <input type="text" name="direccionPedido" id="modalDireccionPedido" class="form-control" required>
-                                </div>
-
-                                <!-- Código Usuario -->
-                                <div class="mb-3">
-                                    <label for="modalCodigoUsuario" class="form-label">Código Usuario:</label>
-                                    <input type="number" name="codigoUsuario" id="modalCodigoUsuario" class="form-control" required>
-                                </div>
-
-                                <!-- Código Recibo -->
-                                <div class="mb-3">
-                                    <label for="modalCodigoRecibo" class="form-label">Código Recibo:</label>
-                                    <input type="number" name="codigoRecibo" id="modalCodigoRecibo" class="form-control" required>
-                                </div>
-
-                                <c:if test="${rol == 'Admin'}">
-                                    <div class="modal-footer">
-                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-                                        <button type="submit" class="btn btn-primary">Guardar</button>
-                                    </div>
-                                </c:if>
-                            </form>
+                            <div class="mb-3">
+                                <label for="modalDireccionPedidoFinalizar" class="form-label">Dirección:</label>
+                                <input type="text" id="modalDireccionPedidoFinalizar" name="direccionPedido" class="form-control" required>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                            <button type="submit" class="btn btn-primary">Confirmar Compra</button>
                         </div>
                     </div>
-                </div>
+                </form>
             </div>
+        </div>
 
-            <!-- Modal Finalizar Compra -->
-            <div class="modal fade" id="modalFinalizarCompra" tabindex="-1" aria-labelledby="modalFinalizarCompraLabel" aria-hidden="true">
-                <div class="modal-dialog">
-                    <div class="modal-content">
-                        <form id="formFinalizarCompra" action="${pageContext.request.contextPath}/ServletRecibos" method="post">
-                            <input type="hidden" name="accion" value="finalizarCompra">
-                            <input type="hidden" name="codigoPedido" id="modalCodigoPedido">
-                            <input type="hidden" name="metodoPago" value="Tarjeta">
-                            <input type="hidden" name="codigoUsuario" value="${codigoUsuarioLogueado}">
-
-                            <div class="modal-header bg-primary text-white">
-                                <h5 class="modal-title" id="modalFinalizarCompraLabel">Finalizar Compra - Datos Recibo</h5>
-                                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+        <!-- Modal para agregar nueva tarjeta -->
+        <div class="modal fade" id="addCardModal" tabindex="-1" aria-labelledby="addCardModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header bg-info text-white">
+                        <h5 class="modal-title" id="addCardModalLabel">Agregar Nueva Tarjeta</h5>
+                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+                    </div>
+                    <form id="addCardForm" action="ServletTarjetas?accion=agregar" method="POST">
+                        <div class="modal-body">
+                            <div class="mb-3">
+                                <label for="ultimos4" class="form-label">Últimos 4 Dígitos</label>
+                                <input type="text" name="ultimos4" maxlength="4" pattern="\d{4}" title="Ingrese exactamente 4 dígitos" class="form-control" required>
                             </div>
-                            <div class="modal-body">
-                                <div class="mb-3">
-                                    <label for="modalMonto" class="form-label">Monto:</label>
-                                    <input type="text" id="modalMonto" name="monto" class="form-control" readonly>
-                                </div>
-
-                                <div class="mb-3 d-flex align-items-end">
-                                    <div class="flex-grow-1 me-2">
-                                        <label for="modalCodigoTarjeta" class="form-label">Seleccione Tarjeta:</label>
-                                        <select id="modalCodigoTarjeta" name="codigoTarjeta" class="form-select" required>
-                                            <option value="">-- Seleccione una tarjeta --</option>
-                                            <!-- Iteramos sobre la lista de tarjetas, que debe ser pasada al JSP -->
-                                            <c:forEach var="tarjeta" items="${tarjetasUsuario}">
-                                                <option value="${tarjeta.codigoTarjeta}">
-                                                    <c:out value="${tarjeta.marca} - ****${tarjeta.ultimos4}" />
-                                                </option>
+                            <div class="mb-3">
+                                <label for="marca" class="form-label">Marca de Tarjeta</label>
+                                <select name="marca" class="form-control" required>
+                                    <option value="">-- Seleccione Marca --</option>
+                                    <option value="Visa">Visa</option>
+                                    <option value="MasterCard">MasterCard</option>
+                                    <option value="Amex">Amex</option>
+                                    <option value="Discover">Discover</option>
+                                    <option value="Otro">Otro</option>
+                                </select>
+                            </div>
+                            <div class="mb-3">
+                                <label for="mesExpiracion" class="form-label">Fecha de Expiración</label>
+                                <div class="row">
+                                    <div class="col-6">
+                                        <select id="mesExpiracion" name="mesExpiracion" class="form-select" required>
+                                            <option value="">Mes</option>
+                                            <c:forEach begin="1" end="12" var="mes">
+                                                <option value="${mes < 10 ? '0' : ''}${mes}">${mes}</option>
                                             </c:forEach>
                                         </select>
                                     </div>
-                                    <!-- Botón para agregar una nueva tarjeta -->
-                                    <button type="button" id="addCardBtn" class="btn btn-info" data-bs-toggle="modal" data-bs-target="#addCardModal">
-                                        <i class="bi bi-plus-circle"></i>
-                                    </button>
-                                </div>
-
-                                <div class="mb-3">
-                                    <label for="modalDireccionPedidoFinalizar" class="form-label">Dirección:</label>
-                                    <input type="text" id="modalDireccionPedidoFinalizar" name="direccionPedido" class="form-control" required>
+                                    <div class="col-6">
+                                        <select id="anioExpiracion" name="anioExpiracion" class="form-select" required>
+                                            <option value="">Año</option>
+                                            <c:forEach begin="${2024}" end="${2035}" var="anio">
+                                                <option value="${anio}">${anio}</option>
+                                            </c:forEach>
+                                        </select>
+                                    </div>
                                 </div>
                             </div>
-                            <div class="modal-footer">
-                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-                                <button type="submit" class="btn btn-primary">Confirmar Compra</button>
+                            <div class="mb-3">
+                                <label for="nombreTitular" class="form-label">Nombre del Titular</label>
+                                <input type="text" name="nombreTitular" maxlength="40" class="form-control" required>
                             </div>
-                        </form>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Modal para agregar nueva tarjeta -->
-            <div class="modal fade" id="addCardModal" tabindex="-1" aria-labelledby="addCardModalLabel" aria-hidden="true">
-                <div class="modal-dialog">
-                    <div class="modal-content">
-                        <div class="modal-header bg-info text-white">
-                            <h5 class="modal-title" id="addCardModalLabel">Agregar Nueva Tarjeta</h5>
-                            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+                            <div class="mb-3">
+                                <label for="tipoTarjeta" class="form-label">Tipo de Tarjeta</label>
+                                <select name="tipoTarjeta" class="form-control" required>
+                                    <option value="">-- Seleccione Tipo --</option>
+                                    <option value="Crédito">Crédito</option>
+                                    <option value="Débito">Débito</option>
+                                    <option value="Prepago">Prepago</option>
+                                </select>
+                            </div>
                         </div>
-                        <form id="addCardForm" action="ServletTarjetas?accion=agregar" method="POST">
-                            <input type="hidden" name="codigoUsuario" value="${codigoUsuarioLogueado}">
-                            <div class="modal-body">
-                                <div class="mb-3">
-                                    <label for="ultimos4" class="form-label">Últimos 4 Dígitos</label>
-                                    <input type="text" name="ultimos4" maxlength="4" pattern="\d{4}" title="Ingrese exactamente 4 dígitos" required>
-                                </div>
-                                <div class="mb-3">
-                                    <label for="marca" class="form-label">Marca de Tarjeta</label>
-                                    <select name="marca" class="form-control" required>
-                                        <option value="">-- Seleccione Marca --</option>
-                                        <option value="Visa">Visa</option>
-                                        <option value="MasterCard">MasterCard</option>
-                                        <option value="Amex">Amex</option>
-                                        <option value="Discover">Discover</option>
-                                        <option value="Otro">Otro</option>
-                                    </select>
-                                </div>
-                                <div class="mb-3">
-                                    <label for="fechaExpiracion" class="form-label">Fecha de Expiración</label>
-                                    <input type="date" name="fechaExpiracion" class="form-control" required>
-                                </div>
-                                <div class="mb-3">
-                                    <label for="nombreTitular" class="form-label">Nombre del Titular</label>
-                                    <input type="text" name="nombreTitular" maxlength="40" class="form-control" required>
-                                </div>
-                                <div class="mb-3">
-                                    <label for="tipoTarjeta" class="form-label">Tipo de Tarjeta</label>
-                                    <select name="tipoTarjeta" class="form-control" required>
-                                        <option value="">-- Seleccione Tipo --</option>
-                                        <option value="Crédito">Crédito</option>
-                                        <option value="Débito">Débito</option>
-                                        <option value="Prepago">Prepago</option>
-                                    </select>
-                                </div>
-                            </div>
-                            <div class="modal-footer">
-                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-                                <button type="submit" class="btn btn-primary">Guardar Tarjeta</button>
-                            </div>
-                        </form>
-                    </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                            <button type="submit" class="btn btn-primary">Guardar Tarjeta</button>
+                        </div>
+                    </form>
                 </div>
             </div>
-        </main>
+        </div>
 
         <script src="resources/js/bootstrap.bundle.min.js"></script>
         <script>
-            function prepararModalAgregar() {
-                document.getElementById('pedidoModalLabel').innerText = 'Agregar Nuevo Pedido';
-                document.getElementById('pedidoForm').reset();
-                document.getElementById('formAccion').value = 'insertar';
-                document.getElementById('formCodigoPedido').value = '';
-                document.getElementById('modalEstadoPedido').value = 'En_proceso';
-            }
+                                                       function prepararModalAgregar() {
+                                                           document.getElementById('pedidoModalLabel').innerText = 'Agregar Nuevo Pedido';
+                                                           document.getElementById('pedidoForm').reset();
+                                                           document.getElementById('formAccion').value = 'insertar';
+                                                           document.getElementById('formCodigoPedido').value = '';
+                                                           document.getElementById('modalEstadoPedido').value = 'En_proceso';
+                                                       }
 
-            function prepararModalEditar(button) {
-                const row = button.closest('tr');
-                const codigo = row.dataset.codigo;
-                const fecha = row.dataset.fecha;
-                const estado = row.dataset.estado;
-                const total = row.dataset.total;
-                const direccion = row.dataset.direccion;
-                const usuario = row.dataset.usuario;
-                const recibo = row.dataset.recibo;
+                                                       function prepararModalEditar(button) {
+                                                           const row = button.closest('tr');
+                                                           const codigo = row.dataset.codigo;
+                                                           const fecha = row.dataset.fecha;
+                                                           const estado = row.dataset.estado;
+                                                           const total = row.dataset.total;
+                                                           const direccion = row.dataset.direccion;
+                                                           const usuario = row.dataset.usuario;
+                                                           const recibo = row.dataset.recibo;
 
-                document.getElementById('pedidoModalLabel').innerText = 'Editar Pedido Código: ' + codigo;
-                document.getElementById('formCodigoPedido').value = codigo;
-                document.getElementById('modalFechaPedido').value = fecha;
-                document.getElementById('modalEstadoPedido').value = estado;
-                document.getElementById('modalTotalPedido').value = total;
-                document.getElementById('modalDireccionPedido').value = direccion;
-                document.getElementById('modalCodigoUsuario').value = usuario;
-                document.getElementById('modalCodigoRecibo').value = recibo;
-                document.getElementById('formAccion').value = 'actualizar';
-            }
+                                                           document.getElementById('pedidoModalLabel').innerText = 'Editar Pedido Código: ' + codigo;
+                                                           document.getElementById('formCodigoPedido').value = codigo;
+                                                           document.getElementById('modalFechaPedido').value = fecha;
+                                                           document.getElementById('modalEstadoPedido').value = estado;
+                                                           document.getElementById('modalTotalPedido').value = total;
+                                                           document.getElementById('modalDireccionPedido').value = direccion;
+                                                           document.getElementById('modalCodigoUsuario').value = usuario;
+                                                           document.getElementById('modalCodigoRecibo').value = recibo;
+                                                           document.getElementById('formAccion').value = 'actualizar';
+                                                       }
 
-            var modalFinalizarCompra = document.getElementById('modalFinalizarCompra');
-            modalFinalizarCompra.addEventListener('show.bs.modal', function (event) {
-                var button = event.relatedTarget;
-                var codigoPedido = button.getAttribute('data-codigopedido');
-                var totalPedido = button.getAttribute('data-totalpedido');
-                var direccionPedido = button.getAttribute('data-direccionpedido');
+                                                       var modalFinalizarCompra = document.getElementById('modalFinalizarCompra');
+                                                       modalFinalizarCompra.addEventListener('show.bs.modal', function (event) {
+                                                           var button = event.relatedTarget;
+                                                           var codigoPedido = button.getAttribute('data-codigopedido');
+                                                           var totalPedido = button.getAttribute('data-totalpedido');
+                                                           var direccionPedido = button.getAttribute('data-direccionpedido');
 
-                document.getElementById('modalCodigoPedido').value = codigoPedido;
-                document.getElementById('modalMonto').value = totalPedido;
-                document.getElementById('modalDireccionPedidoFinalizar').value = direccionPedido;
+                                                           document.getElementById('modalCodigoPedido').value = codigoPedido;
+                                                           document.getElementById('modalMonto').value = totalPedido;
+                                                           document.getElementById('modalDireccionPedidoFinalizar').value = direccionPedido;
 
-                const cardSelect = document.getElementById('modalCodigoTarjeta');
-                const addCardBtn = document.getElementById('addCardBtn');
+                                                           const cardSelect = document.getElementById('modalCodigoTarjeta');
+                                                           const addCardBtn = document.getElementById('addCardBtn');
 
-                // Esta lógica se mantiene de tu código original, aunque es un poco redundante.
-                // Si siempre quieres que el botón "Agregar Tarjeta" esté visible, puedes simplificar esto.
-                if (cardSelect.options.length <= 1) { // Solo "-- Seleccione una tarjeta --"
-                    addCardBtn.style.display = 'block';
-                } else {
-                    addCardBtn.style.display = 'block';
-                }
-            });
+                                                           if (cardSelect.options.length <= 1) {
+                                                               addCardBtn.style.display = 'block';
+                                                           } else {
+                                                               addCardBtn.style.display = 'block';
+                                                           }
+                                                       });
         </script>
     </body>
 </html>

@@ -12,6 +12,7 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import model.Tarjeta;
 
 @WebServlet("/ServletTarjetas")
@@ -77,25 +78,40 @@ public class ServletTarjetas extends HttpServlet {
 
     private void insertarTarjeta(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         try {
-            int codigoUsuario = Integer.parseInt(request.getParameter("codigoUsuario"));
+            HttpSession session = request.getSession(false); // false para no crear si no existe
+            if (session == null || session.getAttribute("idUsuario") == null) {
+                throw new Exception("Usuario no autenticado.");
+            }
+            int codigoUsuario = (Integer) session.getAttribute("idUsuario");
+
             String ultimos4 = request.getParameter("ultimos4");
             String marca = request.getParameter("marca");
             String nombreTitular = request.getParameter("nombreTitular");
             String tipoTarjeta = request.getParameter("tipoTarjeta");
-            String fechaExpStr = request.getParameter("fechaExpiracion");
 
+            String mesExp = request.getParameter("mesExpiracion");
+            String anioExp = request.getParameter("anioExpiracion");
+
+            if (mesExp == null || mesExp.isEmpty() || anioExp == null || anioExp.isEmpty()) {
+                throw new IllegalArgumentException("Mes o año de expiración inválido");
+            }
+
+            String fechaExpStr = anioExp + "-" + mesExp + "-01";
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
             Date fechaExpiracion = sdf.parse(fechaExpStr);
 
-            // Generar token único
             String token = UUID.randomUUID().toString();
 
             Tarjeta nuevaTarjeta = new Tarjeta(codigoUsuario, ultimos4, marca, token, fechaExpiracion, nombreTitular, tipoTarjeta);
             tarjetaDAO.guardar(nuevaTarjeta);
 
-            response.sendRedirect("ServletPedidos?accion=listar&tarjetaAgregada=true");
-        } catch (ParseException | NumberFormatException e) {
-            request.setAttribute("error", "Datos inválidos. Verifique los formatos.");
+            response.sendRedirect("ServletTarjetas?accion=listar&success=true");
+
+        } catch (ParseException e) {
+            request.setAttribute("error", "Formato de fecha inválido.");
+            listarTarjetas(request, response);
+        } catch (IllegalArgumentException e) {
+            request.setAttribute("error", "Datos inválidos: " + e.getMessage());
             listarTarjetas(request, response);
         } catch (Exception e) {
             request.setAttribute("error", "Error al guardar la tarjeta: " + e.getMessage());
@@ -111,8 +127,10 @@ public class ServletTarjetas extends HttpServlet {
             String marca = request.getParameter("marca");
             String nombreTitular = request.getParameter("nombreTitular");
             String tipoTarjeta = request.getParameter("tipoTarjeta");
-            String fechaExpStr = request.getParameter("fechaExpiracion");
+            String mesExpStr = request.getParameter("mesExpiracion");
+            String anioExpStr = request.getParameter("anioExpiracion");
 
+            String fechaExpStr = anioExpStr + "-" + mesExpStr + "-01";
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
             Date fechaExpiracion = sdf.parse(fechaExpStr);
 
