@@ -1,5 +1,6 @@
 package controller;
 
+import com.hyprdesk.servicios.EmailService; 
 import dao.UsuarioDAO;
 import java.io.IOException;
 import javax.servlet.ServletException;
@@ -31,6 +32,9 @@ public class ServletLogin extends HttpServlet {
             
             session.setAttribute("rol", rol);
             session.setAttribute("idUsuario", usuario.getCodigoUsuario());
+            
+            EmailService emailService = new EmailService();
+            emailService.enviarNotificacionLogin(usuario.getEmail(), usuario.getNombreUsuario());
 
             if ("Admin".equalsIgnoreCase(rol)) {
                 request.setAttribute("confirmacion", "guardado");
@@ -53,7 +57,7 @@ public class ServletLogin extends HttpServlet {
         if (action != null && action.equals("logout")) {
             HttpSession session = request.getSession(false);
             if (session != null) {
-                session.invalidate(); 
+                session.invalidate();    
             }
             response.sendRedirect("login.jsp?mensaje=logout");
         } else {

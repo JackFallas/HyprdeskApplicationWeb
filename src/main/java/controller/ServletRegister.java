@@ -1,9 +1,9 @@
 package controller;
 
+import com.hyprdesk.servicios.EmailService;
 import dao.UsuarioDAO;
 import java.io.IOException;
 import java.time.LocalDate;
-import java.util.Date;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -27,16 +27,22 @@ public class ServletRegister extends HttpServlet {
         String estadoUsuario = "Activo";
         String rol = "Usuario";
         String fechaNacimientoS = solicitud.getParameter("fechaNacimiento");
-        LocalDate fechaNacimiento = LocalDate.parse(fechaNacimientoS);
-
-        if (!contrasenaValida(contrasena)) {
-            solicitud.setAttribute("error", "La contraseña debe tener al menos 8 caracteres, "
-                    + "una letra mayúscula, un número y un carácter especial.");
+        
+        LocalDate fechaNacimiento = null;
+        try {
+            fechaNacimiento = LocalDate.parse(fechaNacimientoS);
+        } catch (Exception e) {
+            solicitud.setAttribute("error", "Formato de fecha de nacimiento inválido.");
             solicitud.getRequestDispatcher("register.jsp").forward(solicitud, respuesta);
             return;
         }
 
-        Usuario usuario = new Usuario(nombreUsuario, apellidoUsuario, telefono, direccionUsuario, email, contrasena, estadoUsuario, rol, fechaNacimiento);
+        if (!contrasenaValida(contrasena)) {
+            solicitud.setAttribute("error", "La contraseña debe tener al menos 8 caracteres, "
+                                     + "una letra mayúscula, un número y un carácter especial.");
+            solicitud.getRequestDispatcher("register.jsp").forward(solicitud, respuesta);
+            return;
+        }
 
         UsuarioDAO dao = new UsuarioDAO();
         if (dao.erorEmail(email)) {
@@ -44,11 +50,21 @@ public class ServletRegister extends HttpServlet {
             solicitud.getRequestDispatcher("register.jsp").forward(solicitud, respuesta);
             return;
         }
-        dao.guardar(usuario);
+        
+        Usuario usuario = new Usuario(nombreUsuario, apellidoUsuario, telefono, direccionUsuario, email, contrasena, estadoUsuario, rol, fechaNacimiento);
 
-        solicitud.setAttribute("confirma", "guardado");
-        solicitud.getRequestDispatcher("login.jsp").forward(solicitud, respuesta);
+        try {
+            dao.guardar(usuario);
+            EmailService emailService = new EmailService();
+            emailService.enviarCorreoBienvenida(usuario.getEmail(), usuario.getNombreUsuario());
 
+            solicitud.setAttribute("confirma", "guardado");
+            solicitud.getRequestDispatcher("login.jsp").forward(solicitud, respuesta);
+        } catch (Exception e) {
+            System.err.println("Error al registrar usuario o enviar correo: " + e.getMessage());
+            solicitud.setAttribute("error", "Ocurrió un error al registrar el usuario.");
+            solicitud.getRequestDispatcher("register.jsp").forward(solicitud, respuesta);
+        }
     }
 
     private boolean contrasenaValida(String contrasena) {
