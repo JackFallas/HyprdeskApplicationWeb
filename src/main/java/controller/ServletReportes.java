@@ -77,7 +77,7 @@ public class ServletReportes extends HttpServlet {
             JasperPrint jasperPrint = JasperFillManager.fillReport(jasperReport, parametros, dataSource);
             
             response.setContentType("application/pdf");
-            response.setHeader("Content-Disposition", "inline; filename=\"" + pdfFileName + "\"");
+            response.setHeader("Content-Disposition", "attachment; filename=\"" + pdfFileName + "\"");
             
             OutputStream out = response.getOutputStream();
             JasperExportManager.exportReportToPdfStream(jasperPrint, out);
