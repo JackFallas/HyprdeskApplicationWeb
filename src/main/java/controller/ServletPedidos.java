@@ -1,6 +1,7 @@
 package controller;
 
 import dao.PedidoDAO;
+import dao.TarjetaDAO;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -11,15 +12,19 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import model.Pedido;
 import model.Pedido.EstadoPedido;
 import model.Recibo;
+import model.Tarjeta;
 import model.Usuario;
 
 @WebServlet(name = "ServletPedidos", urlPatterns = {"/ServletPedidos"})
 public class ServletPedidos extends HttpServlet {
 
     private final PedidoDAO pedidoDAO = new PedidoDAO();
+    private final TarjetaDAO tarjetaDAO = new TarjetaDAO();
+
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -64,8 +69,39 @@ public class ServletPedidos extends HttpServlet {
     }
 
     private void listarPedidos(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        List<Pedido> listaPedidos = pedidoDAO.listarTodos();
+        // Obtener sesión
+        HttpSession session = request.getSession(false);
+        if (session == null) {
+            response.sendRedirect("login.jsp");
+            return;
+        }
+
+        String rol = (String) session.getAttribute("rol");
+        Integer idUsuario = (Integer) session.getAttribute("idUsuario");
+
+        List<Pedido> listaPedidos;
+
+        if ("Admin".equalsIgnoreCase(rol)) {
+            // Admin ve todos los pedidos
+            listaPedidos = pedidoDAO.listarTodos();
+        } else if ("Usuario".equalsIgnoreCase(rol) && idUsuario != null) {
+            // Usuario ve solo sus pedidos
+            listaPedidos = pedidoDAO.listarPorUsuario(idUsuario);
+        } else {
+            // Si no hay sesión válida o rol desconocido, redirige a login
+            response.sendRedirect("login.jsp");
+            return;
+        }
+        
+        
+        List<Tarjeta> tarjetasUsuario = null;
+        if (idUsuario != null) {
+            tarjetasUsuario = tarjetaDAO.listarPorUsuario(idUsuario);
+        }
+
         request.setAttribute("listaPedidos", listaPedidos);
+        request.setAttribute("rol", rol);
+        request.setAttribute("tarjetasUsuario", tarjetasUsuario);  // <-- tarjetas para el JSP
         request.getRequestDispatcher("mantenimientoPedidos.jsp").forward(request, response);
     }
 

@@ -21,7 +21,6 @@
 </head>
 
 <body>
-    <!-- Contenedor de la barra lateral (sidebar) usando Bootstrap -->
     <div class="d-flex">
         <input type="checkbox" id="nav-toggle" hidden>
 
@@ -39,14 +38,17 @@
                 <a href="#" class="menu__item active">
                     <i class='bx bx-home-alt'></i><span>Inicio</span>
                 </a>
-                <a href="productos.jsp" class="menu__item">
+                <a href="ServletProducto" class="menu__item">
                     <i class='bx bx-shopping-bag'></i><span>Productos</span>
                 </a>
-                <a href="#" class="menu__item">
+                <a href="ServletDetallePedido" class="menu__item">
                     <i class='bx bx-cart'></i><span>Carrito</span>
                 </a>
-                <a href="#" class="menu__item">
+                <a href="ServletPedidos" class="menu__item">
                     <i class='bx bx-shopping-bag'></i><span>Pedidos</span>
+                </a>
+                <a href="ServletRecibos" class="menu__item">
+                    <i class='bx bx-shopping-bag'></i><span>Recibos</span>
                 </a>
                 <a href="login.jsp" class="menu__item">
                     <i class='bx bx-power-off'></i><span>Cerrar sesión</span>
@@ -62,7 +64,6 @@
             </div>
         </aside>
 
-        <!-- Contenedor principal (header + home) -->
         <main class="flex-grow-1">
             <header class="header">
         <a href="#" class="logo">Hyperdesk.</a>
@@ -81,7 +82,6 @@
         </div>  
     </header>
 
-            <!-- Home Section (contenedor) -->
             <section class="home d-flex justify-content-between align-items-center py-5">
                 <div class="home-content">
                     <h1>Experiencia en Computación.</h1>

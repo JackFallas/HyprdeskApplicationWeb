@@ -30,6 +30,7 @@ public class ServletLogin extends HttpServlet {
             String rol = usuario.getRol();
             
             session.setAttribute("rol", rol);
+            session.setAttribute("idUsuario", usuario.getCodigoUsuario());
 
             if ("Admin".equalsIgnoreCase(rol)) {
                 request.setAttribute("confirmacion", "guardado");

@@ -1,4 +1,4 @@
-<%--
+<%-- 
     Document   : listarDetallePedidos.jsp
     Created on : 29 jul 2025
     Author     : Diego Leiva
@@ -110,43 +110,52 @@
             <div class="container-main">
                 <div class="d-flex justify-content-between align-items-center mb-4">
                     <h1>Listado de Detalles de Pedido</h1>
-                    <button type="button" class="btn btn-add" data-bs-toggle="modal" data-bs-target="#detallePedidoModal"
-                            onclick="prepararModalAgregar()">
-                        <i class="bi bi-plus-circle"></i> Agregar Detalle
-                    </button>
+                    <%-- JSTL para mostrar el botón solo si el rol es 'Admin' --%>
+                    <c:if test="${rol == 'Admin'}">
+                        <button type="button" class="btn btn-add" data-bs-toggle="modal" data-bs-target="#detallePedidoModal"
+                                onclick="prepararModalAgregar()">
+                            <i class="bi bi-plus-circle"></i> Agregar Detalle
+                        </button>
+                    </c:if>
                 </div>
                 <div class="table-responsive">
                     <table class="table table-striped table-hover table-bordered table-custom" id="tablaDetallePedidos">
                         <thead>
                             <tr>
                                 <th scope="col">ID Detalle</th>
+                                <th scope="col">Producto</th>
                                 <th scope="col">Cantidad</th>
                                 <th scope="col">Precio</th>
                                 <th scope="col">Subtotal</th>
                                 <th scope="col">Código Pedido</th>
-                                <th scope="col">Código Producto</th>
-                                <th scope="col">Acciones</th>
+                                <%-- JSTL para mostrar la columna 'Acciones' solo si el rol es 'Admin' --%>
+                                <c:if test="${rol == 'Admin'}">
+                                    <th scope="col">Acciones</th>
+                                </c:if>
                             </tr>
                         </thead>
                         <tbody>
                             <c:forEach var="detalle" items="${listaDetallePedidos}">
                                 <tr data-codigoDetallePedido="${detalle.codigoDetallePedido}"
+                                    data-codigoproducto="${detalle.producto.codigoProducto}"
                                     data-cantidad="${detalle.cantidad}"
                                     data-precio="${detalle.precio}"
                                     data-subtotal="${detalle.subtotal}"
-                                    data-codigopedido="${detalle.pedido.codigoPedido}"
-                                    data-codigoproducto="${detalle.producto.codigoProducto}">
+                                    data-codigopedido="${detalle.pedido.codigoPedido}">
                                     <td>${detalle.codigoDetallePedido}</td>
+                                    <td>${detalle.producto.nombre}</td>
                                     <td>${detalle.cantidad}</td>
                                     <td>${detalle.precio}</td>
                                     <td>${detalle.subtotal}</td>
                                     <td>${detalle.pedido.codigoPedido}</td>
-                                    <td>${detalle.producto.codigoProducto}</td>
-                                    <td>
-                                        <button type="button" class="btn btn-edit btn-sm me-2" data-bs-toggle="modal" data-bs-target="#detallePedidoModal"
-                                                onclick="prepararModalEditar(this)">Editar</button>
-                                        <a href="${pageContext.request.contextPath}/ServletDetallePedido?accion=eliminar&id=${detalle.codigoDetallePedido}" class="btn btn-delete btn-sm" onclick="return confirm('¿Está seguro de eliminar este detalle de pedido?');">Eliminar</a>
-                                    </td>
+                                    <%-- JSTL para mostrar las acciones por fila solo si el rol es 'Admin' --%>
+                                    <c:if test="${rol == 'Admin'}">
+                                        <td>
+                                            <button type="button" class="btn btn-edit btn-sm me-2" data-bs-toggle="modal" data-bs-target="#detallePedidoModal"
+                                                    onclick="prepararModalEditar(this)">Editar</button>
+                                            <a href="${pageContext.request.contextPath}/ServletDetallePedido?accion=eliminar&id=${detalle.codigoDetallePedido}" class="btn btn-delete btn-sm" onclick="return confirm('¿Está seguro de eliminar este detalle de pedido?');">Eliminar</a>
+                                        </td>
+                                    </c:if>
                                 </tr>
                             </c:forEach>
                         </tbody>
@@ -196,13 +205,41 @@
                 </div>
             </div>
         </div>
+                            
+<div class="modal fade" id="finalizarCompraModal" tabindex="-1" aria-labelledby="finalizarCompraModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <form id="formFinalizarCompra" action="${pageContext.request.contextPath}/ServletRecibos" method="post">
+            <div class="modal-content">
+                <div class="modal-header bg-primary text-white">
+                    <h5 class="modal-title" id="finalizarCompraModalLabel">Finalizar Compra - Datos del Recibo</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+                </div>
+                <div class="modal-body">
+                    <input type="hidden" name="codigoPedido" id="modalCodigoPedido">
+                    <input type="hidden" name="codigoUsuario" id="modalCodigoUsuario" value="${codigoUsuarioLogueado}">
+                    <input type="hidden" name="metodoPago" value="Tarjeta">
+
+                    <div class="mb-3">
+                        <label for="modalMonto" class="form-label">Monto:</label>
+                        <input type="number" name="monto" id="modalMonto" class="form-control" step="0.01" readonly>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="modalCodigoTarjeta" class="form-label">Código Tarjeta (opcional):</label>
+                        <input type="number" name="codigoTarjeta" id="modalCodigoTarjeta" class="form-control" placeholder="Ingrese código tarjeta si aplica">
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="submit" class="btn btn-primary">Confirmar Pago</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
 
         <script src="resources/js/bootstrap.bundle.min.js"></script>
         <script>
-            /**
-             * Prepara el modal para la operación de "Agregar nuevo Detalle de Pedido".
-             * Limpia el formulario y establece la acción a "guardar".
-             */
             function prepararModalAgregar() {
                 document.getElementById('detallePedidoModalLabel').innerText = 'Agregar Nuevo Detalle de Pedido';
                 document.getElementById('detallePedidoForm').reset();
@@ -210,11 +247,6 @@
                 document.getElementById('formCodigoDetallePedido').value = ''; // Asegura que el ID esté vacío para agregar
             }
 
-            /**
-             * Prepara el modal para la operación de "Editar Detalle de Pedido".
-             * Carga los datos del detalle seleccionado en el formulario y establece la acción a "actualizar".
-             * @param {HTMLButtonElement} button El botón "Editar" que fue clickeado.
-             */
             function prepararModalEditar(button) {
                 const row = button.closest('tr'); // Obtiene la fila completa
                 const codigoDetallePedido = row.dataset.codigodetallepedido;
@@ -234,5 +266,19 @@
                 document.getElementById('formAccion').value = 'actualizar'; // Cambia la acción a 'actualizar'
             }
         </script>
+        
+        <script>
+  var finalizarModal = document.getElementById('finalizarCompraModal');
+
+  finalizarModal.addEventListener('show.bs.modal', function (event) {
+    var button = event.relatedTarget;
+    var codigoPedido = button.getAttribute('data-codigopedido');
+    var totalPedido = button.getAttribute('data-totalpedido');
+
+    document.getElementById('modalCodigoPedido').value = codigoPedido;
+    document.getElementById('modalMonto').value = totalPedido;
+    document.getElementById('modalCodigoTarjeta').value = '';
+  });
+</script>
     </body>
 </html>

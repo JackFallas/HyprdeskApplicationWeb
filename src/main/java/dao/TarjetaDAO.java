@@ -37,6 +37,18 @@ public class TarjetaDAO {
         }
     }
 
+    public List<Tarjeta> listarPorUsuario(int idUsuario) {
+        EntityManager em = emf.createEntityManager();
+        try {
+            TypedQuery<Tarjeta> query = em.createQuery(
+                    "SELECT t FROM Tarjeta t WHERE t.codigoUsuario = :idUsuario", Tarjeta.class);
+            query.setParameter("idUsuario", idUsuario);
+            return query.getResultList();
+        } finally {
+            em.close();
+        }
+    }
+
     public List<Tarjeta> listarTodas() {
         EntityManager em = emf.createEntityManager();
         try {

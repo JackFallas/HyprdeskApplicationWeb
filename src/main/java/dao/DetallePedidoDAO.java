@@ -1,13 +1,13 @@
 package dao;
 
-import model.DetallePedido; // Importa el modelo DetallePedido (singular)
+import model.DetallePedido; 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.EntityTransaction;
 import javax.persistence.Persistence;
 import java.util.List;
 
-public class DetallePedidoDAO { // ¡Asegúrate de que el nombre de la clase sea exactamente este!
+public class DetallePedidoDAO { 
 
     private EntityManagerFactory fabrica = Persistence.createEntityManagerFactory("proyectoBimestralPU");
 
@@ -29,7 +29,7 @@ public class DetallePedidoDAO { // ¡Asegúrate de que el nombre de la clase sea
     }
 
     public List<DetallePedido> listarTodos() {
-        String jpql = "SELECT dp FROM DetallePedido dp"; // JPQL para la entidad singular
+        String jpql = "SELECT dp FROM DetallePedido dp"; 
         EntityManager admin = fabrica.createEntityManager();
         try {
             return admin.createQuery(jpql, DetallePedido.class).getResultList();
@@ -38,7 +38,7 @@ public class DetallePedidoDAO { // ¡Asegúrate de que el nombre de la clase sea
         }
     }
 
-    public DetallePedido buscarPorId(int id) { // Método con 'Id' en minúsculas
+    public DetallePedido buscarPorId(int id) {
         EntityManager admin = fabrica.createEntityManager();
         try {
             return admin.find(DetallePedido.class, id);
@@ -46,6 +46,18 @@ public class DetallePedidoDAO { // ¡Asegúrate de que el nombre de la clase sea
             admin.close();
         }
     }
+    
+    public List<DetallePedido> listarPorUsuario(int idUsuario) {
+    EntityManager admin = fabrica.createEntityManager();
+    try {
+        String jpql = "SELECT dp FROM DetallePedido dp WHERE dp.pedido.usuario.id = :idUsuario";
+        return admin.createQuery(jpql, DetallePedido.class)
+                    .setParameter("idUsuario", idUsuario)
+                    .getResultList();
+    } finally {
+        admin.close();
+    }
+}
 
     public void Actualizar(DetallePedido detallePedido) {
         EntityManager admin = fabrica.createEntityManager();

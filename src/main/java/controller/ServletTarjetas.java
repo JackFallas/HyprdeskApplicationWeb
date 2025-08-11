@@ -52,6 +52,7 @@ public class ServletTarjetas extends HttpServlet {
 
         switch (accion) {
             case "insertar":
+            case "agregar":
                 insertarTarjeta(request, response);
                 break;
             case "actualizar":
@@ -82,19 +83,19 @@ public class ServletTarjetas extends HttpServlet {
             String nombreTitular = request.getParameter("nombreTitular");
             String tipoTarjeta = request.getParameter("tipoTarjeta");
             String fechaExpStr = request.getParameter("fechaExpiracion");
-            
+
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
             Date fechaExpiracion = sdf.parse(fechaExpStr);
-            
-            // Generar un token único para la tarjeta
+
+            // Generar token único
             String token = UUID.randomUUID().toString();
 
             Tarjeta nuevaTarjeta = new Tarjeta(codigoUsuario, ultimos4, marca, token, fechaExpiracion, nombreTitular, tipoTarjeta);
             tarjetaDAO.guardar(nuevaTarjeta);
 
-            response.sendRedirect("ServletTarjetas?accion=listar&success=true");
+            response.sendRedirect("ServletPedidos?accion=listar&tarjetaAgregada=true");
         } catch (ParseException | NumberFormatException e) {
-            request.setAttribute("error", "Datos inválidos. Verifique el formato de los números y fechas.");
+            request.setAttribute("error", "Datos inválidos. Verifique los formatos.");
             listarTarjetas(request, response);
         } catch (Exception e) {
             request.setAttribute("error", "Error al guardar la tarjeta: " + e.getMessage());
@@ -114,10 +115,9 @@ public class ServletTarjetas extends HttpServlet {
 
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
             Date fechaExpiracion = sdf.parse(fechaExpStr);
-            
-            // Al actualizar, mantenemos el token original
+
             Tarjeta tarjetaExistente = tarjetaDAO.buscarPorId(codigoTarjeta);
-            if(tarjetaExistente == null){
+            if (tarjetaExistente == null) {
                 throw new Exception("No se encontró la tarjeta con el código " + codigoTarjeta);
             }
             String token = tarjetaExistente.getToken();

@@ -1,5 +1,5 @@
-<%-- 
-    Document   : mantenimientoProductos
+<%--
+    Document    : mantenimientoProductos
     Created on : 30 jul 2025, 22:32:53
     Author     : J Craxker
 --%>
@@ -78,6 +78,15 @@
                 background-color: var(--light-blue-1);
                 border-color: var(--light-blue-1);
             }
+            .btn-add-to-cart {
+                background-color: #28a745;
+                border-color: #28a745;
+                color: white;
+            }
+            .btn-add-to-cart:hover {
+                background-color: #218838;
+                border-color: #1e7e34;
+            }
             .modal-content {
                 border-radius: .5rem;
                 border: none;
@@ -112,7 +121,6 @@
             <div class="container-main">
                 <div class="d-flex justify-content-between align-items-center mb-4">
                     <h1>Listado de Productos</h1>
-                    <%-- JSTL para mostrar el botón solo si el rol es 'Admin' --%>
                     <c:if test="${rol == 'Admin'}">
                         <button type="button" class="btn btn-add" data-bs-toggle="modal" data-bs-target="#elementoModal" 
                                 onclick="prepararModalAgregar()">
@@ -133,10 +141,7 @@
                                 <th scope="col">Fecha Salida</th>
                                 <th scope="col">Código Marca</th>
                                 <th scope="col">Código Categoría</th>
-                                <%-- JSTL para mostrar la columna 'Acciones' solo si el rol es 'Admin' --%>
-                                <c:if test="${rol == 'Admin'}">
-                                    <th scope="col">Acciones</th>
-                                </c:if>
+                                <th scope="col">Acciones</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -160,14 +165,35 @@
                                     <td>${producto.fechaSalida}</td>
                                     <td>${producto.marca.codigoMarca}</td>
                                     <td>${producto.categoria.codigoCategoria}</td>
-                                    <%-- JSTL para mostrar las acciones por fila solo si el rol es 'Admin' --%>
-                                    <c:if test="${rol == 'Admin'}">
-                                        <td>
+                                    <td>
+                                        <c:if test="${rol == 'Admin'}">
                                             <button type="button" class="btn btn-edit btn-sm me-2" data-bs-toggle="modal" data-bs-target="#elementoModal" 
                                                     onclick="prepararModalEditar(this)">Editar</button>
                                             <a href="${pageContext.request.contextPath}/ServletProducto?accion=eliminar&id=${producto.codigoProducto}" class="btn btn-delete btn-sm" onclick="return confirm('¿Está seguro de eliminar este producto?');">Eliminar</a>
-                                        </td>
-                                    </c:if>
+                                        </c:if>
+                                        <c:if test="${rol == 'Usuario'}">
+                                            <c:if test="${rol == 'Usuario'}">
+                                                <button type="button" class="btn btn-add-to-cart btn-sm"
+                                                        onclick="abrirModalAgregarCarrito(${producto.codigoProducto}, ${producto.precio})">
+                                                    Añadir al carrito
+                                                </button>
+                                            </c:if>
+
+                                            <script>
+                                                function preguntarCantidad(codigoProducto, precioUnitario) {
+                                                    let cantidad = prompt("¿Cuántas unidades quieres comprar?", "1");
+                                                    cantidad = parseInt(cantidad);
+                                                    if (cantidad && cantidad > 0) {
+                                                        document.getElementById("cantidad" + codigoProducto).value = cantidad;
+                                                        document.getElementById("subtotal" + codigoProducto).value = (precioUnitario * cantidad).toFixed(2);
+                                                        document.getElementById("formAgregarCarrito" + codigoProducto).submit();
+                                                    } else {
+                                                        alert("Cantidad inválida");
+                                                    }
+                                                }
+                                            </script>
+                                        </c:if>
+                                    </td>
                                 </tr>
                             </c:forEach>
                         </tbody>
@@ -229,37 +255,87 @@
             </div>
         </div>
 
+        <div class="modal fade" id="modalAgregarCarrito" tabindex="-1" aria-labelledby="modalAgregarCarritoLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <form id="formAgregarCarrito" action="${pageContext.request.contextPath}/ServletDetallePedido" method="post">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="modalAgregarCarritoLabel">Agregar al carrito</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+                        </div>
+                        <div class="modal-body">
+                            <input type="hidden" name="accion" value="guardar">
+                            <input type="hidden" name="codigoProducto" id="modalCodigoProducto">
+                            <input type="hidden" name="precio" id="modalPrecioProducto">
+                            <input type="hidden" name="subtotal" id="modalSubtotalProducto">
+                            <input type="hidden" name="codigoPedido" value="1"> <!-- Cambia esto según tu pedido actual -->
+
+                            <div class="mb-3">
+                                <label for="modalCantidad" class="form-label">Cantidad:</label>
+                                <input type="number" class="form-control" id="modalCantidad" name="cantidad" min="1" value="1" required>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                            <button type="submit" class="btn btn-primary">Agregar</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
         <script src="resources/js/bootstrap.bundle.min.js"></script>
         <script>
-            function prepararModalAgregar() {
-                document.getElementById('elementoModalLabel').innerText = 'Agregar Nuevo Producto';
-                document.getElementById('elementoForm').reset();
-                document.getElementById('formAccion').value = 'agregar';
-                document.getElementById('formIdElemento').value = '';
-            }
-            function prepararModalEditar(button) {
-                const row = button.closest('tr');
-                const id = row.dataset.id;
-                const nombre = row.dataset.nombre;
-                const descripcion = row.dataset.descripcion;
-                const precio = row.dataset.precio;
-                const stock = row.dataset.stock;
-                const fechaEntrada = row.dataset.fechaentrada;
-                const fechaSalida = row.dataset.fechasalida;
-                const codigoMarca = row.dataset.codigomarca;
-                const codigoCategoria = row.dataset.codigocategoria;
-                
-                document.getElementById('elementoModalLabel').innerText = 'Editar Producto ID: ' + id;
-                document.getElementById('formIdElemento').value = id;
-                document.getElementById('modalNombreProducto').value = nombre;
-                document.getElementById('modalDescripcion').value = descripcion;
-                document.getElementById('modalPrecio').value = precio;
-                document.getElementById('modalStock').value = stock;
-                document.getElementById('modalFechaEntrada').value = fechaEntrada;
-                document.getElementById('modalFechaSalida').value = fechaSalida;
-                document.getElementById('modalCodigoMarca').value = codigoMarca;
-                document.getElementById('modalCodigoCategoria').value = codigoCategoria;
-                document.getElementById('formAccion').value = 'actualizar';
+    function prepararModalAgregar() {
+        document.getElementById('elementoModalLabel').innerText = 'Agregar Nuevo Producto';
+        document.getElementById('elementoForm').reset();
+        document.getElementById('formAccion').value = 'agregar';
+        document.getElementById('formIdElemento').value = '';
+    }
+    function prepararModalEditar(button) {
+        const row = button.closest('tr');
+        const id = row.dataset.id;
+        const nombre = row.dataset.nombre;
+        const descripcion = row.dataset.descripcion;
+        const precio = row.dataset.precio;
+        const stock = row.dataset.stock;
+        const fechaEntrada = row.dataset.fechaentrada;
+        const fechaSalida = row.dataset.fechasalida;
+        const codigoMarca = row.dataset.codigomarca;
+        const codigoCategoria = row.dataset.codigocategoria;
+
+        document.getElementById('elementoModalLabel').innerText = 'Editar Producto ID: ' + id;
+        document.getElementById('formIdElemento').value = id;
+        document.getElementById('modalNombreProducto').value = nombre;
+        document.getElementById('modalDescripcion').value = descripcion;
+        document.getElementById('modalPrecio').value = precio;
+        document.getElementById('modalStock').value = stock;
+        document.getElementById('modalFechaEntrada').value = fechaEntrada;
+        document.getElementById('modalFechaSalida').value = fechaSalida;
+        document.getElementById('modalCodigoMarca').value = codigoMarca;
+        document.getElementById('modalCodigoCategoria').value = codigoCategoria;
+        document.getElementById('formAccion').value = 'actualizar';
+    }
+        </script>
+        <script>
+            function abrirModalAgregarCarrito(codigoProducto, precioUnitario) {
+                document.getElementById('modalCodigoProducto').value = codigoProducto;
+                document.getElementById('modalPrecioProducto').value = precioUnitario.toFixed(2);
+                document.getElementById('modalCantidad').value = 1;
+                document.getElementById('modalSubtotalProducto').value = precioUnitario.toFixed(2);
+
+                // Abrir modal con Bootstrap 5
+                var modal = new bootstrap.Modal(document.getElementById('modalAgregarCarrito'));
+                modal.show();
+
+                document.getElementById('modalCantidad').oninput = function () {
+                    let cantidad = parseInt(this.value);
+                    if (cantidad < 1) {
+                        cantidad = 1;
+                        this.value = cantidad;
+                    }
+                    document.getElementById('modalSubtotalProducto').value = (precioUnitario * cantidad).toFixed(2);
+                };
             }
         </script>
     </body>

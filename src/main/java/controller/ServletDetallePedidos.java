@@ -9,12 +9,15 @@ import dao.ProductoDAO;      // Tu DAO para Producto (asumiendo singular, sin ca
 
 import java.io.IOException;
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.List;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
+import model.Usuario;
 
 /**
  * Servlet centralizado para la gestión de DetallePedido.
@@ -80,11 +83,26 @@ public class ServletDetallePedidos extends HttpServlet {
      * @throws IOException Si ocurre un error de I/O.
      */
     private void listarDetallePedidos(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
-        List<DetallePedido> listaDetallePedidos = detallePedidosDao.listarTodos();
-        request.setAttribute("listaDetallePedidos", listaDetallePedidos);
-        request.getRequestDispatcher("mantenimientoDetallePedidos.jsp").forward(request, response);
+        throws ServletException, IOException {
+    // Obtener sesión y atributos de rol e idUsuario
+    HttpSession session = request.getSession();
+    String rol = (String) session.getAttribute("rol");
+    Integer idUsuario = (Integer) session.getAttribute("idUsuario");
+
+    List<DetallePedido> listaDetallePedidos;
+
+    if ("Admin".equalsIgnoreCase(rol)) {
+        // Admin ve todos
+        listaDetallePedidos = detallePedidosDao.listarTodos();
+    } else {
+        // Usuario ve solo sus detalles
+        listaDetallePedidos = detallePedidosDao.listarPorUsuario(idUsuario);
     }
+
+    request.setAttribute("listaDetallePedidos", listaDetallePedidos);
+    request.setAttribute("rol", rol);
+    request.getRequestDispatcher("mantenimientoDetallePedidos.jsp").forward(request, response);
+}
 
     /**
      * Maneja la lógica para guardar un nuevo detalle de pedido.
@@ -95,48 +113,64 @@ public class ServletDetallePedidos extends HttpServlet {
      * @throws ServletException Si ocurre un error (formato de número, FK no encontrada).
      * @throws IOException Si ocurre un error de I/O.
      */
-    private void guardarDetallePedido(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
-        try {
-            int cantidadGuardar = Integer.parseInt(request.getParameter("cantidad"));
-            BigDecimal precioGuardar = new BigDecimal(request.getParameter("precio"));
-            BigDecimal subtotalGuardar = new BigDecimal(request.getParameter("subtotal"));
-
-            int codigoPedidoGuardar = Integer.parseInt(request.getParameter("codigoPedido"));
-            int codigoProductoGuardar = Integer.parseInt(request.getParameter("codigoProducto"));
-
-            // ¡Ahora usamos el PedidoDAO real y el modelo Pedidos real!
-            Pedido pedidoFK = pedidoDao.buscarPorId(codigoPedidoGuardar);
-            Producto productoFK = productoDao.buscarPorID(codigoProductoGuardar); // Se mantiene Producto
-
-            if (pedidoFK == null) {
-                throw new ServletException("Error al guardar: El Pedido con código " + codigoPedidoGuardar + " no existe.");
-            }
-            if (productoFK == null) {
-                throw new ServletException("Error al guardar: El Producto con código " + codigoProductoGuardar + " no existe.");
-            }
-
-            // Asegúrate de que el constructor de DetallePedido acepte Pedidos y Producto
-            DetallePedido nuevoDetalle = new DetallePedido(cantidadGuardar, precioGuardar, subtotalGuardar, pedidoFK, productoFK);
-            detallePedidosDao.guardar(nuevoDetalle);
-
-            response.sendRedirect("ServletDetallePedido?accion=listar");
-        } catch (NumberFormatException e) {
-            throw new ServletException("Error al guardar: Formato de número inválido. " + e.getMessage(), e);
-        } catch (Exception e) {
-            throw new ServletException("Error inesperado al guardar el detalle de pedido: " + e.getMessage(), e);
+   private void guardarDetallePedido(HttpServletRequest request, HttpServletResponse response)
+        throws ServletException, IOException {
+    try {
+        HttpSession session = request.getSession(false);
+        if (session == null || session.getAttribute("idUsuario") == null) {
+            response.sendRedirect("login.jsp");
+            return;
         }
-    }
+        int idUsuario = (Integer) session.getAttribute("idUsuario");
 
-    /**
-     * Maneja la lógica para cargar los datos de un detalle de pedido para edición.
-     * Busca el detalle por ID y lo envía a la JSP del formulario de edición.
-     *
-     * @param request El objeto HttpServletRequest.
-     * @param response El objeto HttpServletResponse.
-     * @throws ServletException Si ocurre un error (ID inválido, detalle no encontrado).
-     * @throws IOException Si ocurre un error de I/O.
-     */
+        // Datos del producto y subtotal antes de crear pedido
+        int cantidadGuardar = Integer.parseInt(request.getParameter("cantidad"));
+        BigDecimal precioGuardar = new BigDecimal(request.getParameter("precio"));
+        BigDecimal subtotalGuardar = precioGuardar.multiply(BigDecimal.valueOf(cantidadGuardar));
+        int codigoProductoGuardar = Integer.parseInt(request.getParameter("codigoProducto"));
+
+        Producto productoFK = productoDao.buscarPorID(codigoProductoGuardar);
+        if (productoFK == null) {
+            throw new ServletException("Error: Producto con código " + codigoProductoGuardar + " no existe.");
+        }
+
+        // Buscar pedido abierto
+        Pedido pedidoAbierto = pedidoDao.buscarPedidoAbiertoPorUsuario(idUsuario);
+        if (pedidoAbierto == null) {
+            pedidoAbierto = new Pedido();
+            pedidoAbierto.setUsuario(new Usuario());
+            pedidoAbierto.getUsuario().setCodigoUsuario(idUsuario);
+            pedidoAbierto.setEstadoPedido(Pedido.EstadoPedido.En_proceso);
+            pedidoAbierto.setFechaPedido(LocalDateTime.now());
+            pedidoAbierto.setDireccionPedido("Sin especificar aun");
+            pedidoAbierto.setRecibo(null);
+            pedidoAbierto.setTotalPedido(subtotalGuardar); // 🚀 primer producto define el total inicial
+            pedidoDao.guardar(pedidoAbierto);
+        } else {
+            // Si ya existe, sumar el subtotal
+            pedidoAbierto.setTotalPedido(pedidoAbierto.getTotalPedido().add(subtotalGuardar));
+            pedidoDao.Actualizar(pedidoAbierto);
+        }
+
+        // Crear el detalle
+        DetallePedido nuevoDetalle = new DetallePedido(
+                cantidadGuardar,
+                precioGuardar,
+                subtotalGuardar,
+                pedidoAbierto,
+                productoFK
+        );
+        detallePedidosDao.guardar(nuevoDetalle);
+
+        response.sendRedirect("ServletProducto?accion=listar");
+
+    } catch (NumberFormatException e) {
+        throw new ServletException("Error al guardar: Formato de número inválido. " + e.getMessage(), e);
+    } catch (Exception e) {
+        throw new ServletException("Error inesperado al guardar el detalle de pedido: " + e.getMessage(), e);
+    }
+}
+
     private void editarDetallePedido(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         try {
@@ -156,15 +190,6 @@ public class ServletDetallePedidos extends HttpServlet {
         }
     }
 
-    /**
-     * Maneja la lógica para actualizar un detalle de pedido existente.
-     * Recoge los parámetros, busca las FKs (si cambiaron), actualiza el objeto y lo guarda.
-     *
-     * @param request El objeto HttpServletRequest.
-     * @param response El objeto HttpServletResponse.
-     * @throws ServletException Si ocurre un error (formato de número, FK no encontrada, detalle no encontrado).
-     * @throws IOException Si ocurre un error de I/O.
-     */
     private void actualizarDetallePedido(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         try {
@@ -183,8 +208,6 @@ public class ServletDetallePedidos extends HttpServlet {
                 detalleActualizar.setPrecio(precioActualizar);
                 detalleActualizar.setSubtotal(subtotalActualizar);
 
-                // Actualizar las entidades relacionadas (llaves foráneas) si han cambiado
-                // Ahora se espera que getPedido() devuelva un objeto Pedidos (plural)
                 Pedido pedidoActualizadoFK = detalleActualizar.getPedido();
                 if (pedidoActualizadoFK == null || pedidoActualizadoFK.getCodigoPedido() != codigoPedidoActualizar) {
                     pedidoActualizadoFK = pedidoDao.buscarPorId(codigoPedidoActualizar);
@@ -215,15 +238,6 @@ public class ServletDetallePedidos extends HttpServlet {
         }
     }
 
-    /**
-     * Maneja la lógica para eliminar un detalle de pedido.
-     * Elimina el detalle por ID y redirige a la lista.
-     *
-     * @param request El objeto HttpServletRequest.
-     * @param response El objeto HttpServletResponse.
-     * @throws ServletException Si ocurre un error (ID inválido).
-     * @throws IOException Si ocurre un error de I/O.
-     */
     private void eliminarDetallePedido(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         try {
@@ -237,39 +251,18 @@ public class ServletDetallePedidos extends HttpServlet {
         }
     }
  
-    // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
-    /**
-     * Handles the HTTP <code>GET</code> method.
-     * @param request servlet request
-     * @param response servlet response
-     * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
-     */
     @Override
 protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         processRequest(request, response);
     }
  
-    /**
-     * Handles the HTTP <code>POST</code> method.
-     * @param request servlet request
-     * @param response servlet response
-     * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
-     */
 
     @Override
 protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         processRequest(request, response);
     }
- 
-    /**
-     * Returns a short description of the servlet.
-     *
-     * @return a String containing servlet description
-     */
 
     @Override
 public String getServletInfo() {
