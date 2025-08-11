@@ -4,120 +4,183 @@
     <head>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
-        <title>Iniciar Sesión</title>
+        <title>Iniciar Sesión - Hyprdesk</title>
+   
         <link href="resources/css/bootstrap.min.css" rel="stylesheet">
-        <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+     
+        <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
         <style>
+         
+            :root {
+                --primary: #0d6efd;
+                --accent-blue: #5DADE2;
+                --bg-light: #eaeaea;
+                --text-dark: #222; 
+                --text-muted: #4b5563; 
+                --card-bg: #ffffff; 
+                --radius: 12px;
+            }
+
             body {
-                background-color: #3498DB;
+                background-color: var(--bg-light); 
                 display: flex;
                 justify-content: center;
                 align-items: center;
                 min-height: 100vh;
                 margin: 0;
-                font-family: "Verdana", sans-serif;
+                font-family: 'Poppins', sans-serif; 
+                overflow-y: auto; 
             }
             .login-container {
                 padding: 0;
-                border-radius: 10px;
-                box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+                border-radius: var(--radius); 
+                box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
                 width: 100%;
-                max-width: 450px;
+                max-width: 480px; 
                 overflow: hidden;
-                background: linear-gradient(135deg, #f8f8f8 0%, #e0f2f7 100%);
+                background: var(--card-bg); 
+                transition: transform 0.3s ease; 
+                transform: translateY(0);
+                opacity: 1;
+             
+                margin: 20px auto; 
             }
+           
+            @keyframes fadeInSlideUp {
+                from { opacity: 0; transform: translateY(20px); }
+                to { opacity: 1; transform: translateY(0); }
+            }
+            .login-container {
+                animation: fadeInSlideUp 0.8s ease-out forwards;
+            }
+
             .logo-header {
-                background-color: rgba(93, 173, 226, 0.9);
-                padding: 30px 20px;
+                background: linear-gradient(135deg, var(--accent-blue) 0%, var(--primary) 100%);
+                padding: 15px 15px; 
                 text-align: center;
                 position: relative;
                 color: #ffffff;
-                font-family: "Roboto", sans-serif;
+                font-family: 'Poppins', sans-serif;
+                overflow: hidden;
+                border-top-left-radius: var(--radius);
+                border-top-right-radius: var(--radius);
             }
+          
             .logo-header::before {
-                content: '';
-                position: absolute;
-                top: 0;
-                left: 0;
-                right: 0;
-                bottom: 0;
-                background-size: cover;
-                background-position: center;
-                filter: blur(8px);
-                z-index: 0;
+                content: none; 
             }
+
             .logo-placeholder {
-                width: 120px;
-                height: 120px;
-                background-color: #333333;
+                width: 80px; 
+                height: 80px; 
+                background-color: rgba(255, 255, 255, 0.2);
                 border-radius: 50%;
-                margin: 0 auto 15px auto;
+                margin: 0 auto 5px auto; 
                 display: flex;
                 justify-content: center;
                 align-items: center;
                 position: relative;
                 z-index: 1;
-                backdrop-filter: blur(10px);
-                -webkit-backdrop-filter: blur(10px);
-                border: 1px solid rgba(255, 255, 255, 0.3);
+                border: 2px solid rgba(255, 255, 255, 0.5);
             }
+            .logo-placeholder img {
+                max-width: 60px; 
+                height: auto;
+                display: block;
+            }
+            .logo-header h3 {
+                font-size: 1.1rem; 
+                margin-top: 5px !important; 
+                font-weight: 600;
+            }
+
             .form-content {
-                padding: 40px;
+                padding: 20px 25px;
             }
             .form-content h2 {
-                margin-bottom: 30px;
-                color: #3498DB;
+                margin-bottom: 0px;
+                color: var(--accent-blue);
                 text-align: center;
-                font-family: "Roboto", sans-serif;
+                font-family: 'Poppins', sans-serif;
+                font-weight: 700;
+                font-size: 1.6rem;
             }
             .form-label {
                 font-weight: 500;
-                margin-bottom: 8px;
-                color: #717D7E;
+                margin-bottom: 3px;
+                color: var(--text-muted);
+                font-size: 0.85rem;
             }
             .form-control {
-                border-radius: 6px;
-                padding: 10px 15px;
+                border-radius: 8px;
+                padding: 8px 12px;
                 transition: border-color 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+                border: 1px solid #ced4da;
+                font-size: 0.9rem;
             }
             .form-control:focus {
-                border-color: #3498DB;
-                box-shadow: 0 0 0 0.25rem rgba(52, 152, 219, 0.25);
+                border-color: var(--accent-blue);
+                box-shadow: 0 0 0 0.25rem rgba(93, 173, 226, 0.25);
                 outline: none;
             }
             .btn-primary {
-                background-color: #3498DB;
-                border-color: #3498DB;
+                background-color: var(--accent-blue);
+                border-color: var(--accent-blue);
                 font-weight: 600;
-                padding: 12px 20px;
-                font-size: 1.1rem;
-                border-radius: 6px;
+                padding: 10px 15px;
+                font-size: 1rem;
+                border-radius: 8px;
                 color: #ffffff;
                 transition: background-color 0.3s ease-in-out, transform 0.2s ease-in-out, box-shadow 0.3s ease-in-out;
+                box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
             }
             .btn-primary:hover {
-                background-color: #2874A6;
-                border-color: #2874A6;
+                background-color: var(--primary);
+                border-color: var(--primary);
                 transform: translateY(-2px);
-                box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+                box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
             }
             .btn-primary:active {
                 transform: translateY(0);
                 box-shadow: none;
+                background-color: #4A9DC7;
+                border-color: #4A9DC7;
             }
             .text-center a {
-                color: #3498DB;
+                color: var(--accent-blue);
                 text-decoration: none;
                 font-weight: 500;
                 transition: color 0.3s ease-in-out;
+                font-size: 0.85rem;
             }
             .text-center a:hover {
-                color: #717D7E;
+                color: var(--primary);
                 text-decoration: underline;
                 -webkit-font-smoothing: antialiased;
             }
             hr {
-                border-top: 1px solid rgba(0, 0, 0, 0.1);
+                border-top: 1px solid rgba(0, 0, 0, 0.08);
+                margin-top: 0.8rem;
+                margin-bottom: 0.8rem;
+            }
+            
+            .mb-3 {
+                margin-bottom: 0.5rem !important; 
+            }
+            .mb-4 {
+                margin-bottom: 0.8rem !important; 
+            }
+
+            @media (max-height: 600px) {
+                body {
+                    align-items: flex-start; 
+                    padding-top: 10px;
+                    padding-bottom: 10px;
+                }
+                .login-container {
+                    margin: 0 auto;
+                    max-width: 380px;
+                }
             }
         </style>
     </head>
@@ -125,19 +188,20 @@
         <div class="login-container">
             <div class="logo-header">
                 <div class="logo-placeholder">
-                    <img src="resources/image/Logo.png" alt="Logo de Hyprdesk" class="img-fluid" style="max-width: 120px; height: auto; display: block; margin: 0 auto; position: relative; z-index: 1;"/>
+                    <img src="resources/image/Logo.png" alt="Logo de Hyprdesk" class="img-fluid"/>
                 </div>
-                <h3 class="mt-3" style="position: relative; z-index: 1;">Bienvenido a Hyprdesk</h3>
+                <h3 class="mt-3">Bienvenido a Hyprdesk</h3>
             </div>
             <div class="form-content">
-                <h2 class="text-center mb-5 fw-bold">Iniciar Sesión</h2>
+                <h2 class="text-center mb-5">Iniciar Sesión</h2>
+                <!-- Tu formulario (sin cambios en action o nombres) -->
                 <form action="loginController" method="post">
                     <div class="mb-3">
-                        <label for="username" class="form-label">Correo</label>
+                        <label for="email" class="form-label">Correo</label>
                         <input type="text" class="form-control" id="email" name="email" placeholder="Ingresa tu correo" required>
                     </div>
                     <div class="mb-4">
-                        <label for="password" class="form-label">Contraseña</label>
+                        <label for="contrasena" class="form-label">Contraseña</label>
                         <input type="password" class="form-control" id="contrasena" name="contrasena" placeholder="Ingresa tu contraseña" required>
                     </div>
                     <button type="submit" class="btn btn-primary w-100">Ingresar</button>

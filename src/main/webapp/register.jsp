@@ -4,132 +4,204 @@
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Regístrate</title>
+        <title>Regístrate - Hyprdesk</title>
+   
         <link href="resources/css/bootstrap.min.css" rel="stylesheet">
         <link href="resources/css/bootstrap-icons.min.css" rel="stylesheet">
-        <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+       
+        <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
         <style>
+           
+            :root {
+                --primary: #0d6efd; 
+                --accent-blue: #5DADE2; 
+                --bg-light: #eaeaea; 
+                --text-dark: #222; 
+                --text-muted: #4b5563; 
+                --card-bg: #ffffff;
+                --radius: 12px; 
+            }
+
             body {
+                background-color: var(--bg-light);
                 display: flex;
                 justify-content: center;
                 align-items: center;
                 min-height: 100vh;
-                background-color: #3498DB;
-                font-family: "Verdana", sans-serif;
+                margin: 0;
+                font-family: 'Poppins', sans-serif; 
+                overflow-y: auto;
+                padding: 20px 0; 
             }
             .register-container {
-                max-width: 500px;
                 padding: 0;
-                border-radius: 10px;
-                box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+                border-radius: var(--radius);
+                box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+                width: 100%;
+                max-width: 480px; 
                 overflow: hidden;
-                background: linear-gradient(135deg, #f8f8f8 0%, #e0f2f7 100%);
+                background: var(--card-bg);
+                transition: transform 0.3s ease;
+                transform: translateY(0);
+                opacity: 1;
+                margin: auto; 
             }
+          
+            @keyframes fadeInSlideUp {
+                from { opacity: 0; transform: translateY(20px); }
+                to { opacity: 1; transform: translateY(0); }
+            }
+            .register-container {
+                animation: fadeInSlideUp 0.8s ease-out forwards;
+            }
+
             .logo-header {
-                background-color: rgba(93, 173, 226, 0.9);
-                padding: 30px 20px;
+                background: linear-gradient(135deg, var(--accent-blue) 0%, var(--primary) 100%);
+                padding: 15px 15px; 
                 text-align: center;
                 position: relative;
                 color: #ffffff;
-                font-family: "Roboto", sans-serif;
+                font-family: 'Poppins', sans-serif;
+                overflow: hidden;
+                border-top-left-radius: var(--radius);
+                border-top-right-radius: var(--radius);
             }
             .logo-header::before {
-                content: '';
-                position: absolute;
-                top: 0;
-                left: 0;
-                right: 0;
-                bottom: 0;
-                background-size: cover;
-                background-position: center;
-                filter: blur(8px);
-                z-index: 0;
+                content: none; 
             }
             .logo-placeholder {
-                width: 120px;
-                height: 120px;
-                background-color: #333333;
+                width: 80px; 
+                height: 80px;
+                background-color: rgba(255, 255, 255, 0.2);
                 border-radius: 50%;
-                margin: 0 auto 15px auto;
+                margin: 0 auto 5px auto; 
                 display: flex;
                 justify-content: center;
                 align-items: center;
                 position: relative;
                 z-index: 1;
-                backdrop-filter: blur(10px);
-                -webkit-backdrop-filter: blur(10px);
-                border: 1px solid rgba(255, 255, 255, 0.3);
+                border: 2px solid rgba(255, 255, 255, 0.5);
             }
+            .logo-placeholder img {
+                max-width: 60px; 
+                height: auto;
+                display: block;
+            }
+            .logo-header h3 {
+                font-size: 1.1rem;
+                margin-top: 5px !important; 
+                font-weight: 600;
+            }
+
             .form-content {
-                padding: 40px;
+                padding: 20px 25px; 
             }
             .form-content h2 {
-                color: #3498DB;
-                font-family: "Roboto", sans-serif;
+                margin-bottom: 15px; 
+                color: var(--accent-blue);
+                text-align: center;
+                font-family: 'Poppins', sans-serif;
+                font-weight: 700;
+                font-size: 1.6rem;
             }
             .form-label {
                 font-weight: 500;
-                margin-bottom: 8px;
-                color: #717D7E;
+                margin-bottom: 3px; 
+                color: var(--text-muted);
+                font-size: 0.85rem;
             }
             .form-control {
-                border-radius: 6px;
-                padding: 10px 15px;
+                border-radius: 8px;
+                padding: 8px 12px; 
                 transition: border-color 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+                border: 1px solid #ced4da;
+                font-size: 0.9rem;
             }
             .form-control:focus {
-                border-color: #3498DB;
-                box-shadow: 0 0 0 0.25rem rgba(52, 152, 219, 0.25);
+                border-color: var(--accent-blue);
+                box-shadow: 0 0 0 0.25rem rgba(93, 173, 226, 0.25);
                 outline: none;
             }
-            .btn {
-                padding: 12px 20px;
-                font-size: 1.1rem;
-                border-radius: 6px;
-                background-color: #3498DB;
-                border-color: #3498DB;
+           
+            .btn-success { 
+                background-color: var(--accent-blue) !important;
+                border-color: var(--accent-blue) !important;
+                font-weight: 600;
+                padding: 10px 15px;
+                font-size: 1rem;
+                border-radius: 8px;
                 color: #ffffff;
-                transition: background-color 0.3s ease-in-out, transform 0.2s ease-in-out;
-            }
-            .btn:hover {
-                background-color: #2874A6 !important;
-                border-color: #2874A6 !important;
-                transform: translateY(-2px);
-                box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
-            }
-            .btn:active {
-                transform: translateY(0);
-                box-shadow: none;
-            }
-            .btn-success {
-                background-color: #3498DB !important;
-                border-color: #3498DB !important;
+                transition: background-color 0.3s ease-in-out, transform 0.2s ease-in-out, box-shadow 0.3s ease-in-out;
+                box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
             }
             .btn-success:hover {
-                background-color: #2874A6 !important;
-                border-color: #2874A6 !important;
+                background-color: var(--primary) !important;
+                border-color: var(--primary) !important;
+                transform: translateY(-2px);
+                box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
             }
-            .text-center.mt-4 a {
+            .btn-success:active {
+                transform: translateY(0);
+                box-shadow: none;
+                background-color: #4A9DC7 !important;
+                border-color: #4A9DC7 !important;
+            }
+
+            .text-center.mt-3 a { 
                 text-decoration: none;
                 font-weight: 500;
-                color: #3498DB;
+                color: var(--accent-blue);
                 transition: color 0.3s ease-in-out;
+                font-size: 0.85rem;
             }
-            .text-center.mt-4 a:hover {
-                color: #717D7E;
+            .text-center.mt-3 a:hover {
+                color: var(--primary);
                 text-decoration: underline;
                 -webkit-font-smoothing: antialiased;
             }
+            
+            .mb-3 {
+                margin-bottom: 0.75rem !important; 
+            }
+          
+            @media (max-height: 800px) { 
+                .register-container {
+                    margin: 10px auto;
+                }
+                body {
+                    padding: 10px 0; 
+                }
+            }
+            @media (max-height: 650px) { 
+                .form-content {
+                    padding: 15px 20px; 
+                }
+                .form-control {
+                    padding: 6px 10px; 
+                }
+                .btn-success {
+                    padding: 8px 12px;
+                }
+                .form-label {
+                    font-size: 0.8rem;
+                }
+                .text-center.mt-3 a {
+                    font-size: 0.8rem;
+                }
+                .mb-3 {
+                    margin-bottom: 0.6rem !important;
+                }
+            }
         </style>
     </head>
-    <body style="background-color: #3498DB;">
+    <body>
 
         <%
             String confirmacion = request.getParameter("confirmacion");
             if ("guardado".equals(confirmacion)) {
         %>
-        <div class="alert alert-success" role="alert">
-            ¡Registro completo!  inicia sesión.
+        <div class="alert alert-success alert-compact" role="alert">
+            ¡Registro completo! Inicia sesión.
         </div>
         <%
             }
@@ -138,9 +210,9 @@
         <div class="register-container">
             <div class="logo-header">
                 <div class="logo-placeholder">
-                    <img src="resources/image/Logo.png" alt="Logo de Hyprdesk" class="img-fluid" style="max-width: 120px; height: auto; display: block; margin: 0 auto; position: relative; z-index: 1;"/>
+                    <img src="resources/image/Logo.png" alt="Logo de Hyprdesk" class="img-fluid"/>
                 </div>
-                <h3 class="mt-3" style="position: relative; z-index: 1;">Bienvenido a Hyprdesk</h3>
+                <h3 class="mt-3">Bienvenido a Hyprdesk</h3>
             </div>
             <div class="form-content">
                 <h2 class="text-center mb-4">Crear una cuenta</h2>
