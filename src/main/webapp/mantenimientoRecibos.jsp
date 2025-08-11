@@ -155,7 +155,7 @@
                                             <td><fmt:formatNumber value="${recibo.monto}" type="currency" currencySymbol="Q"/></td>
                                             <td>${recibo.metodoPago}</td>
                                             <c:if test="${rol == 'Admin'}">
-                                            <td>${recibo.codigoUsuario}</td>
+                                                <td>${recibo.codigoUsuario}</td>
                                             </c:if>
                                             <td>${recibo.codigoTarjeta}</td>
                                             <td><fmt:formatDate value="${recibo.fechaPago}" pattern="dd/MM/yyyy HH:mm"/></td>
@@ -164,7 +164,13 @@
                                                     <button type="button" class="btn btn-edit btn-sm me-2" data-bs-toggle="modal" data-bs-target="#detallePedidoModal"
                                                             onclick="prepararModalEditar(this)">Editar</button>
                                                 </c:if>
-
+                                                <!-- Nuevo botón factura solo para Usuario -->
+                                                <c:if test="${rol == 'Usuario' and not empty recibo.codigoRecibo}">
+                                                    <a href="${pageContext.request.contextPath}/factura?codigoPedido=${recibo.codigoRecibo}" 
+                                                       class="btn btn-primary btn-sm ms-2">
+                                                        Factura
+                                                    </a>
+                                                </c:if>
                                                 <c:if test="${rol == 'Admin' or rol == 'Usuario'}">
                                                     <a href="${pageContext.request.contextPath}/ServletDetallePedido?accion=eliminar&id=${detalle.codigoDetallePedido}" class="btn btn-delete btn-sm" onclick="return confirm('¿Está seguro de eliminar este detalle de pedido?');">Eliminar</a>
                                                 </c:if>

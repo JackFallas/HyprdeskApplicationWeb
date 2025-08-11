@@ -1,5 +1,6 @@
 package dao;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import model.Pedido;
 import javax.persistence.*;
@@ -140,4 +141,59 @@ public class PedidoDAO {
             admin.close();
         }
     }
+    public FacturaDTO obtenerFacturaPorPedido(int codigoPedido) {
+    EntityManager em = fabrica.createEntityManager();
+    try {
+        String sql = "SELECT p.codigoPedido, p.fechaPedido, u.nombreUsuario, u.apellidoUsuario, " +
+            "p.direccionPedido, u.email, r.metodoPago, " +
+            "pr.nombreProducto, dp.cantidad, dp.precio, dp.subtotal, " +
+            "p.totalPedido " +
+            "FROM Pedidos p " +
+            "INNER JOIN Usuarios u ON p.codigoUsuario = u.codigoUsuario " +
+            "INNER JOIN Recibos r ON p.codigoRecibo = r.codigoRecibo " +
+            "INNER JOIN DetallePedidos dp ON p.codigoPedido = dp.codigoPedido " +
+            "INNER JOIN Productos pr ON dp.codigoProducto = pr.codigoProducto " +
+            "WHERE p.codigoPedido = :codigoPedido";
+
+        @SuppressWarnings("unchecked")
+        List<Object[]> results = em.createNativeQuery(sql)
+            .setParameter("codigoPedido", codigoPedido)
+            .getResultList();
+
+        if (results.isEmpty()) {
+            return null; // No existe ese pedido
+        }
+
+        FacturaDTO factura = null;
+        List<DetalleFacturaDTO> detalles = new ArrayList<>();
+
+        for (Object[] row : results) {
+            if (factura == null) {
+                factura = new FacturaDTO();
+                factura.setCodigoPedido(((Number) row[0]).intValue());
+                factura.setFechaPedido(((java.sql.Timestamp) row[1]).toLocalDateTime());
+                factura.setNombreUsuario((String) row[2]);
+                factura.setApellidoUsuario((String) row[3]);
+                factura.setDireccionPedido((String) row[4]);
+                factura.setEmail((String) row[5]);
+                factura.setMetodoPago((String) row[6]);
+                factura.setTotalPedido((java.math.BigDecimal) row[11]);
+            }
+
+            DetalleFacturaDTO det = new DetalleFacturaDTO();
+            det.setNombreProducto((String) row[7]);
+            det.setCantidad(((Number) row[8]).intValue());
+            det.setPrecio((java.math.BigDecimal) row[9]);
+            det.setSubtotal((java.math.BigDecimal) row[10]);
+            detalles.add(det);
+        }
+
+        factura.setDetalles(detalles);
+        return factura;
+
+    } finally {
+        em.close();
+    }
+}
+
 }

@@ -27,7 +27,12 @@
             <artifactId>hibernate-core</artifactId>
             <version>5.6.15.Final</version>
         </dependency>
-        
+        <dependency>
+            <groupId>com.itextpdf</groupId>
+            <artifactId>itextg</artifactId>
+            <version>5.5.10</version>
+            <type>jar</type>
+        </dependency>
         <dependency>
             <groupId>javax</groupId>
             <artifactId>javaee-api</artifactId>
