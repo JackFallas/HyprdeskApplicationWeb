@@ -598,7 +598,7 @@
                                 <input type="hidden" name="codigoProducto" id="modalCodigoProducto">
                                 <input type="hidden" name="precio" id="modalPrecioProducto">
                                 <input type="hidden" name="subtotal" id="modalSubtotalProducto">
-                                <input type="hidden" name="codigoPedido" value="1"> <!-- Cambia esto según tu pedido actual -->
+                                <input type="hidden" name="codigoPedido" value="${codigoPedidoActual}"> 
 
                                 <div class="mb-3">
                                     <label for="modalCantidad" class="form-label">Cantidad:</label>
